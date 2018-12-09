@@ -1,0 +1,428 @@
+<!DOCTYPE html><html class="theme-next mist use-motion" lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#222"><script src="/lib/pace/pace.min.js?v=1.0.2"></script><link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"><link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css"><link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css"><link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4"><link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4"><link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4"><link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222"><script type="text/javascript" id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Mist",version:"6.0.4",sidebar:{position:"left",display:"hide",offset:12,b2t:!1,scrollpercent:!1,onmobile:!1},fancybox:!0,fastclick:!1,lazyload:!1,tabs:!0,motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}},algolia:{applicationID:"",apiKey:"",indexName:"",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><meta name="keywords" content="esp8266,"><meta name="description" content="简介 ESP8266串口WIFI模块，超低成本（只需10RMB左右）的物联网开发板，而且有非常丰富的引脚，超低的功耗。ESP8266内部有一个完整的 32bit MCU 核心，主频支持80Mz和160Mz。这个模块支持 IEEE802.11 b/g/n 协议，完整的 TCP/IP 协议栈，可以为现有的设备添加联网功能。而且除了C语言，还可以使用 Python, JavaScript, Lua脚本语"><meta name="keywords" content="esp8266"><meta property="og:type" content="article"><meta property="og:title" content="ESP8266 WiFi开发板"><meta property="og:url" content="http://www.hinote.ga/2018/04/29/2018/ESP8266 WiFi开发板/index.html"><meta property="og:site_name" content="某科学的最后之作"><meta property="og:description" content="简介 ESP8266串口WIFI模块，超低成本（只需10RMB左右）的物联网开发板，而且有非常丰富的引脚，超低的功耗。ESP8266内部有一个完整的 32bit MCU 核心，主频支持80Mz和160Mz。这个模块支持 IEEE802.11 b/g/n 协议，完整的 TCP/IP 协议栈，可以为现有的设备添加联网功能。而且除了C语言，还可以使用 Python, JavaScript, Lua脚本语"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="http://www.hinote.ga/uploads/photos/88547ef3bc9cf39581ab10d911e32bcd.jpg"><meta property="og:updated_time" content="2018-12-05T15:10:29.223Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="ESP8266 WiFi开发板"><meta name="twitter:description" content="简介 ESP8266串口WIFI模块，超低成本（只需10RMB左右）的物联网开发板，而且有非常丰富的引脚，超低的功耗。ESP8266内部有一个完整的 32bit MCU 核心，主频支持80Mz和160Mz。这个模块支持 IEEE802.11 b/g/n 协议，完整的 TCP/IP 协议栈，可以为现有的设备添加联网功能。而且除了C语言，还可以使用 Python, JavaScript, Lua脚本语"><meta name="twitter:image" content="http://www.hinote.ga/uploads/photos/88547ef3bc9cf39581ab10d911e32bcd.jpg"><link rel="canonical" href="http://www.hinote.ga/2018/04/29/2018/ESP8266 WiFi开发板/"><script type="text/javascript" id="page.configurations">CONFIG.page={sidebar:""}</script><title>ESP8266 WiFi开发板 | 某科学的最后之作</title><noscript><style type="text/css">.sidebar-inner,.use-motion .brand,.use-motion .collection-title,.use-motion .comments,.use-motion .menu-item,.use-motion .motion-element,.use-motion .pagination,.use-motion .post-block,.use-motion .post-body,.use-motion .post-header{opacity:initial}.use-motion .logo,.use-motion .site-subtitle,.use-motion .site-title{opacity:initial;top:initial}.logo-line-after i{right:initial}</style></noscript></head><body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div><header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">某科学的最后之作</span><span class="logo-line-after"><i></i></span></a></div><p class="site-subtitle">帅的人已经醒来 而丑的人还在沉睡</p></div><div class="site-nav-toggle"> <button><span class="btn-bar"></span><span class="btn-bar"></span><span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class="menu-item menu-item-search"><a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br>搜索</a></li></ul><div class="site-search"><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i></span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"> <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input"></div></div><div id="local-search-result"></div></div></div></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="http://www.hinote.ga/2018/04/29/2018/ESP8266 WiFi开发板/"><span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person"><meta itemprop="name" content="魏云飞"><meta itemprop="description" content=""><meta itemprop="image" content="/uploads/avatar.png"></span><span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization"><meta itemprop="name" content="某科学的最后之作"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">ESP8266 WiFi开发板</h1><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">发表于</span> <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-29T10:12:00+08:00">2018-04-29</time> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-calendar-check-o"></i></span> <span class="post-meta-item-text">更新于&#58;</span> <time title="更新于" itemprop="dateModified" datetime="2018-12-05T23:10:29+08:00">2018-12-05</time></span> <span class="post-category"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-folder-o"></i></span> <span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/IoT/" itemprop="url" rel="index"><span itemprop="name">IoT</span></a></span></span><div class="post-symbolscount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span> <span class="post-meta-item-text">字数统计&#58;</span> <span title="字数统计">15k</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-clock-o"></i></span> <span class="post-meta-item-text">阅读时长 &asymp;</span> <span title="阅读时长">0:15</span></div></div></header><div class="post-body" itemprop="articleBody"><div class="post-gallery" itemscope="" itemtype="http://schema.org/ImageGallery"><div class="post-gallery-row"> <a class="post-gallery-img fancybox" href="/uploads/photos/88547ef3bc9cf39581ab10d911e32bcd.jpg" rel="gallery_cjpgy2uym0081mwe6p5yyopmj" itemscope="" itemtype="http://schema.org/ImageObject" itemprop="url"><img src="/uploads/photos/88547ef3bc9cf39581ab10d911e32bcd.jpg" itemprop="contentUrl"></a></div></div><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote><p>ESP8266串口WIFI模块，超低成本（只需10RMB左右）的物联网开发板，而且有非常丰富的引脚，超低的功耗。ESP8266内部有一个完整的 32bit MCU 核心，主频支持80Mz和160Mz。这个模块支持 IEEE802.11 b/g/n 协议，完整的 TCP/IP 协议栈，可以为现有的设备添加联网功能。而且除了C语言，还可以使用 Python, JavaScript, Lua脚本语言来为ESP8266写程序，极大降低了学习ESP8266的门槛。</p></blockquote><a id="more"></a><h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>在 Win10 下进行开发，因为更熟悉 Python 所以使用 MicroPython 来进行开发。</p><h3 id="硬件"><a href="#硬件" class="headerlink" title="硬件"></a>硬件</h3><ul><li><strong>ESP8266开发板</strong> 这里使用基于 ESP8266-12F 的 D1 WiFi UNO R3 开发板。</li><li><strong>数据线</strong> 普通安卓的数据线就可以，D1 开发板集成了 CH340 USB转TTL芯片。</li></ul><p>如果是其他系统的话，需要确保 CH340 的驱动有安装。</p><p><strong>D1 WiFi UNO R3</strong> 开发板：<br><img src="/uploads/2018/esp8266/kl8hd3a.jpg" alt=""></p><h3 id="软件"><a href="#软件" class="headerlink" title="软件"></a>软件</h3><ul><li><strong>esptool</strong> 固件烧录工具</li><li><strong>PuTTY</strong> 串口连接工具</li><li><strong>esp8266 MicroPython固件</strong> <a href="http://micropython.org/resources/firmware/esp8266-20171101-v1.9.3.bin" target="_blank" rel="noopener">点此下载</a></li></ul><h3 id="烧录固件"><a href="#烧录固件" class="headerlink" title="烧录固件"></a>烧录固件</h3><p>esptool 需要Python运行环境的支持，所以需要提前安装 Python 然后配置好环境变量，或者也可以下载其他的固件烧写工具。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install esptool</span><br></pre></td></tr></table></figure><p>装好之后从设备管理器中查看端口，如果是linux环境，应该是 <code>/dev/ttyUSB*</code>，然后先使用 <code>esptool.py</code> 命令擦除固件数据。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">esptool.py --port COM4 erase_flash</span><br></pre></td></tr></table></figure><pre><code>esptool.py v2.3.1
+Connecting....
+Detecting chip type... ESP8266
+Chip is ESP8266EX
+Features: WiFi
+Uploading stub...
+Running stub...
+Stub running...
+Erasing flash (this may take a while)...
+Chip erase completed successfully in 9.7s
+Hard resetting via RTS pin...
+</code></pre><p>接着就可以将下载好的固件文件烧录到板子里了，固件的bin文件要选择实际的文件。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">esptool.py --port COM4 --baud 460800 write_flash --flash_size=detect 0 esp8266.bin</span><br></pre></td></tr></table></figure><pre><code>esptool.py v2.3.1
+Connecting....
+Detecting chip type... ESP8266
+Chip is ESP8266EX
+Features: WiFi
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Auto-detected Flash size: 4MB
+Flash params set to 0x0040
+Compressed 600888 bytes to 392073...
+Wrote 600888 bytes (392073 compressed) at 0x00000000 in 8.8 seconds (effective 546.1 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...
+</code></pre><p>烧录成功后就可以打开PuTTY，设置好COM口，波特率 115200 然后连接了。</p><pre><code>[开头这里乱码正常]#4 ets_task(40100130, 3, 3fff837c, 4)
+OSError: [Errno 2] ENOENT
+
+MicroPython v1.9.3-8-g63826ac5c on 2017-11-01; ESP module with ESP8266
+Type &quot;help()&quot; for more information.
+&gt;&gt;&gt;
+</code></pre><h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="MicroPython"><a href="#MicroPython" class="headerlink" title="MicroPython"></a>MicroPython</h3><blockquote><p>通过 MicroPython 的使用一些代码来认识下 ESP8266 的硬件</p></blockquote><h4 id="MicroPython-简单认识"><a href="#MicroPython-简单认识" class="headerlink" title="MicroPython 简单认识"></a>MicroPython 简单认识</h4><p>MicroPython 使用Python3的语法，使用 <code>help(&#39;modules&#39;)</code> 命令可以看到支持的所有模块，</p><pre><code>&gt;&gt;&gt; help(&apos;modules&apos;)
+__main__          http_client_ssl   sys               urandom
+_boot             http_server       time              ure
+_onewire          http_server_ssl   uasyncio/__init__ urequests
+_webrepl          inisetup          uasyncio/core     urllib/urequest
+apa102            json              ubinascii         uselect
+array             lwip              ucollections      usocket
+btree             machine           uctypes           ussl
+builtins          math              uerrno            ustruct
+dht               micropython       uhashlib          utime
+ds18x20           neopixel          uheapq            utimeq
+errno             network           uio               uzlib
+esp               ntptime           ujson             webrepl
+example_pub_button                  onewire           umqtt/robust      webrepl_setup
+example_sub_led   os                umqtt/simple      websocket
+flashbdev         port_diag         uos               websocket_helper
+framebuf          select            upip
+gc                socket            upip_utarfile
+http_client       ssd1306           upysh
+Plus any modules on the filesystem
+&gt;&gt;&gt;
+</code></pre><p>其中跟板子硬件相关的模块主要是 <code>esp</code> 和 <code>machine</code>，其他大多就是与网络有关的模块了，可以看出来还是比较丰富的。<br>简单的测试了下，对Python3的语法支持还是比较完善的，除了基本的数据类型和语法甚至 lambda表达式、列表解析、装饰器、生成器也都支持。</p><p>具体使用查看 <a href="http://docs.micropython.org/en/latest/pyboard/index.html" target="_blank" rel="noopener">MicroPython官方文档</a></p><h4 id="查看资源信息"><a href="#查看资源信息" class="headerlink" title="查看资源信息"></a>查看资源信息</h4><p>内存信息可以使用 <code>micropython.mem_info()</code> 获取</p><pre><code>&gt;&gt;&gt; import micropython
+&gt;&gt;&gt; micropython.mem_info()
+stack: 2112 out of 8192
+GC: total: 35968, used: 9744, free: 26224
+No. of 1-blocks: 48, 2-blocks: 24, max blk sz: 264, max free sz: 1132
+</code></pre><p>8K的栈，35K的堆。。。不过这资源对于它也是够了。</p><p>Flash大小可以使用 <code>esp.flash_size()</code> 获取</p><pre><code>&gt;&gt;&gt; import esp
+&gt;&gt;&gt; str(esp.flash_size()/1024/1024) + &apos; MB&apos;
+&apos;4.0 MB&apos;
+</code></pre><p>4MB的存储空间，除去系统占用的只是存放一些简单的程序脚本也完全够用了。</p><h4 id="测试MCU的速度"><a href="#测试MCU的速度" class="headerlink" title="测试MCU的速度"></a>测试MCU的速度</h4><p>ESP8266内置的MCU主频支持80MHz和160MHz，那么测试下这样的速度到底有多快呢。</p><p>在终端使用 <code>Ctrl + e</code> 进入代码粘贴模式，然后 <code>Ctrl + d</code> 提交或者 <code>Ctrl + c</code> 取消，然后键入以下代码。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> machine</span><br><span class="line"><span class="keyword">import</span> micropython</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">toTime</span><span class="params">(tus)</span>:</span></span><br><span class="line">    ts = [<span class="string">' us'</span>, <span class="string">' ms'</span>, <span class="string">' s'</span>]</span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> ts:</span><br><span class="line">        <span class="keyword">if</span> tus &lt; <span class="number">1000</span>:<span class="keyword">return</span> str(tus)+t</span><br><span class="line">        tus = tus / <span class="number">1000</span></span><br><span class="line">    </span><br><span class="line"><span class="meta">@micropython.native</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loop</span><span class="params">(count)</span>:</span></span><br><span class="line">    t1 = time.ticks_us()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(count):</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">    t2 = time.ticks_us()-t1</span><br><span class="line">    print(<span class="string">'Loop %s times for %s'</span>%(count, toTime(t2)))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loop_start</span><span class="params">(count=<span class="number">10000</span>)</span>:</span></span><br><span class="line">    cur_freq = machine.freq()</span><br><span class="line">    machine.freq(<span class="number">80000000</span>)</span><br><span class="line">    freq = <span class="keyword">lambda</span> :str(int(machine.freq()/<span class="number">1000000</span>))</span><br><span class="line">    print(<span class="string">'Present freq: %sMHz'</span> % freq())</span><br><span class="line">    loop(count)</span><br><span class="line">    machine.freq(<span class="number">160000000</span>)</span><br><span class="line">    print(<span class="string">'Present freq: %sMHz'</span> % freq())</span><br><span class="line">    loop(count)</span><br><span class="line">    machine.freq(cur_freq)</span><br></pre></td></tr></table></figure><pre><code>&gt;&gt;&gt; loop_start()
+Present freq: 80MHz
+Loop 10000 times for 30.567 ms
+Present freq: 160MHz
+Loop 10000 times for 15.299 ms
+&gt;&gt;&gt;
+</code></pre><p>代码提交后调用 <code>loop_start()</code> 方法，可以看到在默认的 80MHz 下和调节到 160MHz 下的空循环10000次需要多长时间，差不多每次循环使用不到16微妙。其中 <code>micropython.native</code> 装饰器能让代码以机器码的速度运行，如果好奇的话可以试试没有这个装饰器的执行速度。</p><p>将板子重启后，修改代码去掉那个加速的装饰器，然后重新提交代码执行测试（重启后可能得退出PuTTY后重连才能操作），可以看到速度慢了十几倍。</p><pre><code>&gt;&gt;&gt; loop_start()
+Present freq: 80MHz
+Loop 10000 times for 460.035 ms
+Present freq: 160MHz
+Loop 10000 times for 230.091 ms
+&gt;&gt;&gt;
+</code></pre><h3 id="网络功能"><a href="#网络功能" class="headerlink" title="网络功能"></a>网络功能</h3><blockquote><p>既然它是WiFi开发板，那么最大的特点应该是可以接入WiFi网络，并且通过网络和其他设备交换数据。</p></blockquote><h4 id="连接WiFi"><a href="#连接WiFi" class="headerlink" title="连接WiFi"></a>连接WiFi</h4><p>终端执行 <code>help()</code> 函数会显示一个基础的连接WiFi的方法，现在就来连接到一个WiFi试试。这里为了测试方便，用笔记本开了个热点给开发板用。</p><p>ESP8266跟连接WiFi相关的库是 <code>network</code> 库，先来看看这个库的使用</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> network</span><br><span class="line"></span><br><span class="line">wlan = network.WLAN(network.STA_IF) <span class="comment"># 创建一个WiFi对象</span></span><br><span class="line">wlan.active(<span class="keyword">True</span>)       <span class="comment"># 激活接口</span></span><br><span class="line">wlan.scan()             <span class="comment"># 扫描目标</span></span><br><span class="line">wlan.isconnected()      <span class="comment"># 检查是否已经连接</span></span><br><span class="line">wlan.connect(<span class="string">'zhzz'</span>, <span class="string">'12365470'</span>) <span class="comment"># 连接到WiFi</span></span><br><span class="line">wlan.config(<span class="string">'mac'</span>)      <span class="comment"># 获取接口的mac地址</span></span><br><span class="line">wlan.ifconfig()         <span class="comment"># 获取接口的IP/掩码/网关/DNS信息</span></span><br></pre></td></tr></table></figure><p>ESP8266如果断线会自动重连，<code>ifconfig()</code> 方法不仅可以查看当前IP，还可以配置静态IP，只需要将 <code>IP/netmask/gw/DNS</code> 作为一个元组或列表传入即可。比如:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wlan.ifconfig((&apos;192.168.137.2&apos;,&apos;255.255.255.0&apos;,&apos;192.168.137.1&apos;,&apos;119.29.29.29&apos;))</span><br></pre></td></tr></table></figure><p>修改后会立即生效，如果在 <code>wlan.connect()</code> 之前就配置好了静态IP，这样就不会再向路由器发起DHCP请求了。</p><pre><code>C:\Users\yunfwe\Desktop&gt;ping 192.168.137.2
+
+正在 Ping 192.168.137.2 具有 32 字节的数据:
+来自 192.168.137.2 的回复: 字节=32 时间=1ms TTL=255
+来自 192.168.137.2 的回复: 字节=32 时间=3ms TTL=255
+来自 192.168.137.2 的回复: 字节=32 时间=1ms TTL=255
+来自 192.168.137.2 的回复: 字节=32 时间=1ms TTL=255
+
+192.168.137.2 的 Ping 统计信息:
+    数据包: 已发送 = 4，已接收 = 4，丢失 = 0 (0% 丢失)，
+往返行程的估计时间(以毫秒为单位):
+    最短 = 1ms，最长 = 3ms，平均 = 1ms
+</code></pre><p>只要连接WiFi成功后，再次重启开发板也会自动连接，不过配置的静态IP就丢失了，需要重新配置。如果不想让开发板在启动的时候自动连接WiFi，可以在使用后执行 <code>wlan.active(False)</code>。但是开发板还是保存了WiFi的连接信息，想彻底清除这个连接信息可以执行 <code>wlan.connect(&#39;&#39;,&#39;&#39;)</code>。</p><p>如果想看到更多的连接细节，可以启用系统的调式功能</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> esp</span><br><span class="line">esp.osdebug(<span class="number">0</span>)      <span class="comment"># 将调试信息重定向到UART(0)</span></span><br><span class="line">esp.osdebug(<span class="keyword">None</span>)   <span class="comment"># 关闭调试信息</span></span><br></pre></td></tr></table></figure><h4 id="AP模式"><a href="#AP模式" class="headerlink" title="AP模式"></a>AP模式</h4><p>ESP8266除了可以连接WiFi外，还可以作为一个AP来使用</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">wlan.disconnect()   <span class="comment"># 先断开先前的连接</span></span><br><span class="line">wlan.active(<span class="keyword">False</span>)  <span class="comment"># 取消激活接口</span></span><br><span class="line">ap = network.WLAN(network.AP_IF)    <span class="comment"># 创建AP对象</span></span><br><span class="line">ap.active(<span class="keyword">True</span>)     <span class="comment"># 激活AP</span></span><br><span class="line">ap.config(essid=<span class="string">'esp8266'</span>,password=<span class="string">'12345678'</span>, </span><br><span class="line">    authmode=network.AUTH_WPA2_PSK)          <span class="comment"># AP的SSID和密码，认证方式使用wpa2</span></span><br><span class="line"><span class="comment"># ap.config(essid='esp8266',authmode=network.AUTH_OPEN)   # 或者创建没有密码的WiFi</span></span><br></pre></td></tr></table></figure><p>如果想更改AP模式分配的网段，也可以使用 <code>ap.ifconfig()</code> 来设置。这个时候用手机或者电脑就可以连接到此设备了。</p><p>同时，ESP8266还支持 AP+STA 模式，这样就可以充当一个无线中继器了。还有 <code>SmartConfig</code> 技术，可以实现不连接开发板的情况下自动配置开发板连接WiFi，可惜比较遗憾的是，MicroPython 上并没有实现或者找到如何实现这样的功能。。。</p><h4 id="WebREPL"><a href="#WebREPL" class="headerlink" title="WebREPL"></a>WebREPL</h4><p>ESP8266 还提供了一个在浏览器上远程打开 MicroPython 提示符的功能就是 WebREPL，而且在这个页面上还可以实现上传文件等功能，把自己写好的代码上传到开发板，然后让它开机运行。</p><p>打开这个功能非常简单，首先配置这个服务</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> webrepl_setup</span><br></pre></td></tr></table></figure><p>执行后会询问你是否开机自启，输入 E 允许开机自启后需要配置一个连接密码来提高安全性，之后问你是否重启，输入 y 重启后可以看到提示符多了一行信息</p><pre><code>WebREPL daemon started on ws://0.0.0.0:8266
+Started webrepl in normal mode
+OSError: [Errno 2] ENOENT
+
+MicroPython v1.9.3-8-g63826ac5c on 2017-11-01; ESP module with ESP8266
+Type &quot;help()&quot; for more information.
+&gt;&gt;&gt;
+</code></pre><p>这个时候 可以打开官方提供的连接页面：<a href="http://micropython.org/webrepl/" target="_blank" rel="noopener">点此打开</a>，输入IP和端口，连接成功后如下<br><img src="/uploads/2018/esp8266/hcn0xg6d537fqkzv.jpg" alt=""></p><p>还记得刚才写的测试MCU速度的脚本吗，现在把这个脚本也加入到系统里吧，这样每次开机后都可以使用这个测试的功能了。</p><p>把刚才的程序代码写入到一个名叫 <code>mcu.py</code> 的文件，在终端执行如下代码<br></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line">os.listdir(<span class="string">'/'</span>)</span><br></pre></td></tr></table></figure><p></p><p>可以看到，一共有两个文件，一个是 <code>boot.py</code>，一个是 <code>webrepl.cfg.py</code>，其中 <code>boot.py</code> 会在开机的时候自动运行，<code>webrepl.cfg.py</code> 里面记录的就是Web上连接的时候需要的密码了。现在将 <code>boot.py</code> 下载下来，然后修改这个文件，在最后一行添加 <code>from mcu import loop_start</code>，然后将 <code>mcu.py</code> 和 <code>boot.py</code> 上传回去，然后重启板子。</p><pre><code>&gt;&gt;&gt; os.listdir(&apos;/&apos;)
+[&apos;boot.py&apos;, &apos;webrepl_cfg.py&apos;, &apos;mcu.py&apos;]
+&gt;&gt;&gt; loop_start()
+Present freq: 80MHz
+Loop 10000 times for 30.56 ms
+Present freq: 160MHz
+Loop 10000 times for 15.296 ms
+&gt;&gt;&gt;
+</code></pre><p>可以看到，<code>loop_start()</code> 函数在启动的时候就会自动导入了，也就是说 <code>mcu.py</code> 被自动运行了，利用 <code>boot.py</code> 这样就可以实现开机的时候自动为WiFi配置静态IP了。</p><h4 id="UDP-TCP"><a href="#UDP-TCP" class="headerlink" title="UDP/TCP"></a>UDP/TCP</h4><p>能使用UDP/TCP进行通讯，这才是物联网的第一步，MicroPython 上的 <code>socket</code> 模块提供了对网络套接字的支持。下面用几个例子来看看如何使用。</p><h5 id="广播自己的IP地址"><a href="#广播自己的IP地址" class="headerlink" title="广播自己的IP地址"></a>广播自己的IP地址</h5><p>开发板连接上WiFi了，但是你并不知道板子的IP怎么办，除了登陆路由器来查看它的IP，还可以让它主动告诉你啊。</p><p>下面看代码：<br></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> network</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">broadcast_ip</span><span class="params">()</span>:</span></span><br><span class="line">    wlan = network.WLAN(network.STA_IF)</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> wlan.isconnected():</span><br><span class="line">        time.sleep(<span class="number">1</span>)</span><br><span class="line">    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">3</span>):</span><br><span class="line">        s.sendto(<span class="string">b'Hi! i am ESP8266!'</span>, (<span class="string">'255.255.255.255'</span>,<span class="number">2001</span>))</span><br><span class="line">        time.sleep(<span class="number">1</span>)</span><br></pre></td></tr></table></figure><p></p><p>将此代码保存为 <code>ip.py</code> 然后修改 <code>boot.py</code> 文件末尾添加：<br></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> ip <span class="keyword">import</span> broadcast_ip</span><br><span class="line">broadcast_ip()</span><br></pre></td></tr></table></figure><p></p><p>这里选择了向整个局域网内的2001端口发送UDP广播，也可以定点向某台主机发送，但是如果自己的IP也是DHCP获取的，那么可能下一次就又得该代码了。</p><p>然后编写接收端的代码，接收端的代码在自己的电脑上运行。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line">s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</span><br><span class="line">s.bind((<span class="string">''</span>,<span class="number">2001</span>))</span><br><span class="line">print(<span class="string">'Start listen on: 0.0.0.0:2001'</span>)</span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">    d, a = s.recvfrom(<span class="number">1024</span>)</span><br><span class="line">    print(<span class="string">"From: %s:%s\tMessage: %s"</span> % (a[<span class="number">0</span>], a[<span class="number">1</span>], d.decode()))</span><br></pre></td></tr></table></figure><p>然后保存为 <code>find_esp8266.py</code> 并启动脚本，接着重启开发板，几秒钟后可以看到收到开发板发来的消息了。</p><pre><code>C:\Users\yunfwe\Desktop&gt;python find_esp8266.py
+Start listen on: 0.0.0.0:2001
+From: 192.168.137.197:4097      Message: Hi! i am ESP8266!
+From: 192.168.137.197:4097      Message: Hi! i am ESP8266!
+From: 192.168.137.197:4097      Message: Hi! i am ESP8266!
+</code></pre><h5 id="获取NAT出口的公网IP"><a href="#获取NAT出口的公网IP" class="headerlink" title="获取NAT出口的公网IP"></a>获取NAT出口的公网IP</h5><p>局域网内的主机都是通过NAT方式共享一个公网IP来访问互联网的，那么怎么获取自己出口的这个IP呢？如果自己有台公网上的服务器，让ESP8266向它发个包就知道了，可是大多数人都是没有公网上的服务器的，这样还可以利用第三方提供的查询服务。</p><p>这里使用搜狐的查询接口: <a href="http://pv.sohu.com/cityjson?ie=utf-8" target="_blank" rel="noopener">点此打开</a>，通过原始TCP套接字手动构建一个 HTTP 请求来访问数据</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_nat_ip</span><span class="params">()</span>:</span></span><br><span class="line">    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">    ip = socket.getaddrinfo(<span class="string">'pv.sohu.com'</span>,<span class="number">0</span>)[<span class="number">0</span>][<span class="number">-1</span>][<span class="number">0</span>]</span><br><span class="line">    s.connect((ip,<span class="number">80</span>))</span><br><span class="line">    request  = <span class="string">b'GET /cityjson?ie=utf-8 HTTP/1.1\r\n'</span></span><br><span class="line">    request += <span class="string">b'Host: pv.sohu.com\r\n\r\n'</span></span><br><span class="line">    size = s.send(request)</span><br><span class="line">    header, data = s.recv(<span class="number">1024</span>).decode().split(<span class="string">'\r\n\r\n'</span>)</span><br><span class="line">    data = data.split(<span class="string">'='</span>)[<span class="number">1</span>][<span class="number">1</span>:<span class="number">-1</span>]</span><br><span class="line">    data = json.loads(data)</span><br><span class="line">    s.close()</span><br><span class="line">    print(<span class="string">'NAT IP: %s'</span> % data[<span class="string">'cip'</span>])</span><br><span class="line"></span><br><span class="line">get_nat_ip()</span><br></pre></td></tr></table></figure><p>在板子上执行看看吧！</p><h3 id="硬件IO"><a href="#硬件IO" class="headerlink" title="硬件IO"></a>硬件IO</h3><p>通过网络来控制硬件，这样才能构建出各种智能硬件，先看看这块板子的引脚说明</p><table><thead><tr><th width="25%">引脚</th><th>说明</th><th width="25%">IC 内部引脚</th></tr></thead><tbody><tr><td>D0(RX)</td><td>串口接收</td><td>GPIO3</td></tr><tr><td>D1(TX)</td><td>串口发送</td><td>GPIO1</td></tr><tr><td>D2</td><td>I/O，不支持中断、PWM、I2C、以及1-wire</td><td>GPIO16</td></tr><tr><td>D3/SCL/D15</td><td>I/O，默认模式下I2C的SCL</td><td>GPIO5</td></tr><tr><td>D4/SDA/D14</td><td>I/O，默认模式下I2C的SDA</td><td>GPIO4</td></tr><tr><td>D5/SCK/D13</td><td>I/O，SPI的时钟</td><td>GPIO14</td></tr><tr><td>D6/MISO/D11</td><td>I/O，SPI的MISO</td><td>GPIO12</td></tr><tr><td>D7/MOSI/D11</td><td>I/O，SPI的MOSI</td><td>GPIO13</td></tr><tr><td>D8</td><td>I/O，上拉，低电平时进入FLASH模式</td><td>GPIO0</td></tr><tr><td>D9/TX1</td><td>I/O，上拉</td><td>GPIO2</td></tr><tr><td>D10/SS</td><td>I/O，下拉，SPI时默认的片选(SS)</td><td>GPIO15</td></tr><tr><td>A0</td><td>AD输入，0-3.3V</td><td>ADC</td></tr></tbody></table><ul><li>所有的IO工作电平为 <strong>3.3V</strong>，可瞬间承受 5V</li><li>除D2外，所有 I/O 都支持中断，PWM，I2C，和 1-wire</li></ul><h4 id="GPIO"><a href="#GPIO" class="headerlink" title="GPIO"></a>GPIO</h4><p>ESP8266-12F 板载了一颗蓝光的LED灯，就试试用代码控制这个灯吧。这颗灯会在 GPIO2 输出为高电平的时候灭掉，输出为低电平的时候亮起来，这样通过控制 GPIO2 口的电平高低就可以控制这颗LED的亮灭了。</p><p>ESP8266 跟硬件控制相关的库是 <code>machine</code>，下面看看用 MicroPython 如何控制 GPIO</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> machine <span class="keyword">import</span> Pin</span><br><span class="line"></span><br><span class="line">led = Pin(<span class="number">2</span>, Pin.OUT)   <span class="comment"># 将GPIO的2号引脚设置为输出</span></span><br><span class="line">led.value(<span class="number">1</span>)            <span class="comment"># 将这个引脚设置为输出高电平</span></span><br><span class="line">led.value(<span class="number">0</span>)            <span class="comment"># 将这个引脚设置为输出低电平</span></span><br><span class="line">led.on()                <span class="comment"># 相当于led.value(1)</span></span><br><span class="line">led.off()               <span class="comment"># 相当于led.value(0)</span></span><br><span class="line">led.value()             <span class="comment"># 获取当前的电平值</span></span><br></pre></td></tr></table></figure><p>可以看到，执行 <code>led = Pin(2, Pin.OUT)</code> 的时候，本来灭着的LED灯突然亮了，接着执行 <code>led.value(1)</code> 的时候，LED灯灭了，这个时候 GPIO2 引脚输出的是高电平，如果在这个引脚上接一个LED灯或者其他设备，这个设备就开始工作了。</p><p><strong>D1 WiFi UNO R3</strong> 这块板子上还板载了一颗接在 GPIO 14号引脚的LED灯，也可以通过 GPIO 直接控制这颗灯的亮灭，利用这个灯做一个 Blink LED 吧。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> machine <span class="keyword">import</span> Pin</span><br><span class="line"></span><br><span class="line">led = Pin(<span class="number">14</span>,Pin.OUT, value=<span class="number">1</span>)  <span class="comment"># 创建时初始值为1</span></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">    led.on()</span><br><span class="line">    time.sleep(<span class="number">0.5</span>)</span><br><span class="line">    led.off()</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br></pre></td></tr></table></figure><p>这颗LED灯已经开始以亮 0.5 秒，灭 1 秒的频率无限的闪下去了。</p><h4 id="PWM"><a href="#PWM" class="headerlink" title="PWM"></a>PWM</h4><p>通过设置 GPIO 口的输出电平，只能控制灯的亮灭，那有没有什么办法可以调节灯的亮度呢，那就是 PWM。<br>那什么是 PWM 呢？还记得刚才让 LED 灯闪烁的例子吗，亮 0.5 秒，灭 1 秒，这样的频率肉眼很容易就观察出来了。那么如果减少这个休眠的时间，亮 1 毫秒，灭 2 毫秒，这样的频率，人的肉眼几乎就观察不出来了，而且看到的就是LED只有原来的 1/3 的亮度了。这里就引出了一个概念：占空比 通电时间占总时间的比例。而 PWM 就是调节这个的。</p><p>下面使用PWM测试下 GPIO14 上的这颗LED灯</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> machine <span class="keyword">import</span> Pin, PWM</span><br><span class="line"></span><br><span class="line">led = PWM(Pin(<span class="number">14</span>))      <span class="comment"># 对 GPIO14 进行PWM控制</span></span><br><span class="line">led.freq()              <span class="comment"># 获取当前的频率</span></span><br><span class="line">led.freq(<span class="number">1000</span>)          <span class="comment"># 调整当前的频率</span></span><br><span class="line">led.duty()              <span class="comment"># 获取当前的占空比</span></span><br><span class="line">led.duty(<span class="number">1000</span>)          <span class="comment"># 现在LED应该是满亮</span></span><br><span class="line">led.duty(<span class="number">500</span>)           <span class="comment"># 现在LED应该是半亮</span></span><br><span class="line">led.duty(<span class="number">10</span>)            <span class="comment"># 现在LED应该是微亮</span></span><br><span class="line">led.deinit()            <span class="comment"># 关闭对 GPIO14 的PWM控制</span></span><br></pre></td></tr></table></figure><p>利用这个性质可以做出一个好看的呼吸灯特效，下面看代码</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep_ms</span><br><span class="line"><span class="keyword">from</span> machine <span class="keyword">import</span> Pin, PWM</span><br><span class="line"></span><br><span class="line">led = PWM(Pin(<span class="number">2</span>), freq=<span class="number">1000</span>, duty=<span class="number">0</span>)</span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">1001</span>,<span class="number">10</span>):</span><br><span class="line">        led.duty(i)</span><br><span class="line">        sleep_ms(<span class="number">20</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>,<span class="number">0</span>,<span class="number">-10</span>):</span><br><span class="line">        led.duty(i)</span><br><span class="line">        sleep_ms(<span class="number">10</span>)</span><br><span class="line">led.deinit()</span><br></pre></td></tr></table></figure><h4 id="Timer"><a href="#Timer" class="headerlink" title="Timer"></a>Timer</h4><p>ESP8266的内存实在太小了，因此 MicroPython 并没有为ESP8266实现多线程的功能，那么如果想通过网络来控制呼吸灯应该怎么做到呢？可以试试用定时器。</p><p>定时器类似于 JavaScript 的 <code>setTimeout</code> 和 <code>setInterval</code>，因为它们实现的功能是一摸一样的。MicroPython 的 <code>machine.Timer()</code> 会在给定的时间段执行一次或者周期性的执行这个回掉函数，下面看看具体是如何使用的。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> machine <span class="keyword">import</span> Timer</span><br><span class="line">t1 = Timer(<span class="number">-1</span>)      <span class="comment"># 传给构造器一个ID，如果这个ID是-1，会初始化一个虚拟定时器</span></span><br><span class="line">t1.init(period=<span class="number">5000</span>, mode=Timer.ONE_SHOT, callback=<span class="keyword">lambda</span> t:print(<span class="number">1</span>))</span><br><span class="line">t2 = Timer(<span class="number">0</span>)</span><br><span class="line">t2.init(period=<span class="number">2000</span>, mode=Timer.PERIODIC, callback=<span class="keyword">lambda</span> t:print(<span class="number">2</span>))</span><br><span class="line">t2.deinit()         <span class="comment"># 取消定时器。</span></span><br></pre></td></tr></table></figure><p>参数 <code>period</code> 是每个周期的时间，单位是毫秒。<code>mode</code> 是运行模式，是只运行一次还是周期性运行。<code>callback</code> 则是到了这个时间周期然后执行的函数。如果这个 <code>period</code> 时间非常短的话，而且周期性的运行一个函数，这个函数将自己的数据保存在全局环境中，等到下个运行周期到了再继续处理数据，如果存在多个不同回掉函数的定时器，切换速度非常快的情况下，不就相当于多个函数在同时运行了吗。定时器每次调用回掉函数的时候，还会将自己本身作为参数传给回掉函数。</p><p>下面看代码，运用上面所学的网络套接字，呼吸灯，还有定时器的知识来完成一个可以在局域网甚至公网来控制的呼吸灯。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> machine</span><br><span class="line"><span class="keyword">import</span> network</span><br><span class="line"></span><br><span class="line">wlan = network.WLAN(network.STA_IF)</span><br><span class="line">wlan.active(<span class="keyword">True</span>)</span><br><span class="line">wlan.ifconfig((<span class="string">'192.168.1.10'</span>, <span class="string">'255.255.255.0'</span>, <span class="string">'192.168.1.1'</span>, <span class="string">'119.29.29.29'</span>))</span><br><span class="line">wlan.connect(<span class="string">'SSID'</span>, <span class="string">'PASSWORD'</span>)</span><br><span class="line"></span><br><span class="line">ap = network.WLAN(network.AP_IF)</span><br><span class="line">ap.active(<span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line">led_timer = machine.Timer(<span class="number">1</span>)</span><br><span class="line">keep_alive_timer = machine.Timer(<span class="number">2</span>)</span><br><span class="line">net_control_timer = machine.Timer(<span class="number">3</span>)</span><br><span class="line">led = machine.PWM(machine.Pin(<span class="number">2</span>), freq=<span class="number">1000</span>, duty=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">up = <span class="number">1</span></span><br><span class="line">count = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">breathing_light</span><span class="params">(t)</span>:</span></span><br><span class="line">    <span class="keyword">global</span> led, up, count</span><br><span class="line">    <span class="keyword">if</span> up == <span class="number">1</span>:</span><br><span class="line">        count += <span class="number">3</span></span><br><span class="line">        led.duty(count)</span><br><span class="line">        <span class="keyword">if</span> count &gt; <span class="number">1000</span>:</span><br><span class="line">            up = <span class="number">0</span></span><br><span class="line">    <span class="keyword">if</span> up == <span class="number">0</span>:</span><br><span class="line">        count -= <span class="number">3</span></span><br><span class="line">        led.duty(count)</span><br><span class="line">        <span class="keyword">if</span> count == <span class="number">3</span>:</span><br><span class="line">            up = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">keep_alive</span><span class="params">(t)</span>:</span></span><br><span class="line">    <span class="keyword">global</span> s</span><br><span class="line">    s.sendto(<span class="string">b'ESP8266-msg: live'</span>,(<span class="string">'1.1.1.1'</span>,<span class="number">2002</span>))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">net_control</span><span class="params">(t)</span>:</span></span><br><span class="line">    <span class="keyword">global</span> s,led_timer,led</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        data,addr = s.recvfrom(<span class="number">5</span>)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    print(<span class="string">'From: %s:%s\tRecv: %s'</span> % (addr[<span class="number">0</span>],addr[<span class="number">1</span>],data.decode()))</span><br><span class="line">    <span class="keyword">if</span> data <span class="keyword">in</span> [<span class="string">b'on'</span>,<span class="string">b'start'</span>]:</span><br><span class="line">        led_timer.init(period=<span class="number">10</span>, mode=machine.Timer.PERIODIC, callback=breathing_light)</span><br><span class="line">    <span class="keyword">elif</span> data == <span class="string">b'stop'</span>:</span><br><span class="line">        led_timer.deinit()</span><br><span class="line">    <span class="keyword">elif</span> data == <span class="string">b'off'</span>:</span><br><span class="line">        led_timer.deinit()</span><br><span class="line">        led.duty(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> wlan.isconnected():</span><br><span class="line">    time.sleep_ms(<span class="number">200</span>)</span><br><span class="line"></span><br><span class="line">s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</span><br><span class="line">s.setblocking(<span class="number">0</span>)</span><br><span class="line">s.bind((<span class="string">'0.0.0.0'</span>,<span class="number">2002</span>))</span><br><span class="line">keep_alive_timer.init(period=<span class="number">10000</span>, mode=machine.Timer.PERIODIC, callback=keep_alive)</span><br><span class="line">net_control_timer.init(period=<span class="number">10</span>, mode=machine.Timer.PERIODIC, callback=net_control)</span><br><span class="line">print(<span class="string">'Running...'</span>)</span><br></pre></td></tr></table></figure><p>将代码中的连接 WiFi 的<code>SSID</code>和<code>PASSWORD</code>换成实际的，<code>keep_alive</code> 函数主要是保持一条与公网主机的UDP通道，如果没有公网主机可以注释掉下面 <code>keep_alive_timer</code> 定时器的语句。程序启动了一个UDP端口，接受来自局域网主机的控制，如果存在公网主机，也可以在公网主机上向开发板发送数据。UDP套接字设置为了非阻塞模式，然后定时器每10毫秒会询问一次是否收到UDP数据，如果收到了 <code>on</code> 或者 <code>start</code> 数据，就启动呼吸灯的定时器，呼吸灯定时器的回掉函数将当前的状态保存在了全局变量中，执行一次更改亮度的操作后就退出了，等待下个10毫秒继续执行。这样多个定时器如果存在互相调用，就不会因为发生阻塞而影响其他定时器的运行了。</p><p>当ESP8266和公网建立通信后，那么可以玩的地方更多了，比如接收温湿度传感器的数据，然后监控环境温度并定期将温度上传到服务器，或者接入微信公众平台用微信来控制单片机，这些就又是一个很大的话题了。</p><h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><p>板子还在继续折腾中。。。等折腾出其他好玩的了继续更新</p> </div><footer class="post-footer"><div class="post-tags"><a href="/tags/esp8266/" rel="tag"><i class="fa fa-tag"></i> esp8266</a></div><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/2018/04/24/2018/玩转树莓派/" rel="next" title="玩转树莓派"><i class="fa fa-chevron-left"></i> 玩转树莓派</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"> <a href="/2018/05/03/2018/OpenVPN 穿越NAT网络/" rel="prev" title="OpenVPN 穿越NAT网络">OpenVPN 穿越NAT网络<i class="fa fa-chevron-right"></i></a></div></div></footer></div></article><div class="post-spread"></div></div></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap"> 文章目录</li><li class="sidebar-nav-overview" data-target="site-overview-wrap"> 站点概览</li></ul><section class="site-overview-wrap sidebar-panel"><div class="site-overview"><div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person"> <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="魏云飞"><p class="site-author-name" itemprop="name">魏云飞</p><p class="site-description motion-element" itemprop="description">帅的人已经醒来 而丑的人还在沉睡</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"> <a href="/archives/"><span class="site-state-item-count">48</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"> <a href="/categories/index.html"><span class="site-state-item-count">26</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"> <a href="/tags/index.html"><span class="site-state-item-count">53</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/yunfwe" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i> GitHub</a></span></div></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#硬件"><span class="nav-number">2.1.</span> <span class="nav-text">硬件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#软件"><span class="nav-number">2.2.</span> <span class="nav-text">软件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#烧录固件"><span class="nav-number">2.3.</span> <span class="nav-text">烧录固件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">3.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MicroPython"><span class="nav-number">3.1.</span> <span class="nav-text">MicroPython</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MicroPython-简单认识"><span class="nav-number">3.1.1.</span> <span class="nav-text">MicroPython 简单认识</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看资源信息"><span class="nav-number">3.1.2.</span> <span class="nav-text">查看资源信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试MCU的速度"><span class="nav-number">3.1.3.</span> <span class="nav-text">测试MCU的速度</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络功能"><span class="nav-number">3.2.</span> <span class="nav-text">网络功能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#连接WiFi"><span class="nav-number">3.2.1.</span> <span class="nav-text">连接WiFi</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AP模式"><span class="nav-number">3.2.2.</span> <span class="nav-text">AP模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#WebREPL"><span class="nav-number">3.2.3.</span> <span class="nav-text">WebREPL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#UDP-TCP"><span class="nav-number">3.2.4.</span> <span class="nav-text">UDP/TCP</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#广播自己的IP地址"><span class="nav-number">3.2.4.1.</span> <span class="nav-text">广播自己的IP地址</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#获取NAT出口的公网IP"><span class="nav-number">3.2.4.2.</span> <span class="nav-text">获取NAT出口的公网IP</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#硬件IO"><span class="nav-number">3.3.</span> <span class="nav-text">硬件IO</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#GPIO"><span class="nav-number">3.3.1.</span> <span class="nav-text">GPIO</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PWM"><span class="nav-number">3.3.2.</span> <span class="nav-text">PWM</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Timer"><span class="nav-number">3.3.3.</span> <span class="nav-text">Timer</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">4.</span> <span class="nav-text">附录</span></a></li></ol></div></div></section></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright">&copy; <span itemprop="copyrightYear">2018</span><span class="with-love"><i class="fa fa-user"></i></span> <span class="author" itemprop="copyrightHolder">魏云飞</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-area-chart"></i></span> <span title="站点总字数">521k</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-coffee"></i></span> <span title="站点总阅读时长">8:41</span></div><div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.0.4</div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i></div></div><script type="text/javascript">"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script><script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script><script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script><script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script></body><script>var titleTime,OriginTitile=document.title;document.addEventListener("visibilitychange",function(){document.hidden?($('[rel="icon"]').attr("href","/img/TEP.ico"),document.title="╭(°A°`)╮ 页面崩溃啦 ~ ",clearTimeout(titleTime)):($('[rel="icon"]').attr("href","/favicon.ico"),document.title="(ฅ>ω<*ฅ) 噫又好了~"+OriginTitile,titleTime=setTimeout(function(){document.title=OriginTitile},2e3))})</script></html>

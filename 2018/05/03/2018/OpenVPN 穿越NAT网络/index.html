@@ -1,0 +1,548 @@
+<!DOCTYPE html><html class="theme-next mist use-motion" lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#222"><script src="/lib/pace/pace.min.js?v=1.0.2"></script><link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"><link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css"><link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css"><link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4"><link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4"><link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4"><link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222"><script type="text/javascript" id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Mist",version:"6.0.4",sidebar:{position:"left",display:"hide",offset:12,b2t:!1,scrollpercent:!1,onmobile:!1},fancybox:!0,fastclick:!1,lazyload:!1,tabs:!0,motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}},algolia:{applicationID:"",apiKey:"",indexName:"",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><meta name="keywords" content="openvpn,"><meta name="description" content="简介 想和朋友联机打局域网游戏，在家需要连接到公司办公，如果是机密信息还要保证数据的加密传输，而且还要简单稳定好用，那么OpenVPN绝对是不二之选，OpenVPN是一个基于OpenSSL库的应用层VPN实现，完全开源免费，而且支持的平台众多，Linux平台，Windows平台，Android和IOS平台也都支持。"><meta name="keywords" content="openvpn"><meta property="og:type" content="article"><meta property="og:title" content="OpenVPN 穿越NAT网络"><meta property="og:url" content="http://www.hinote.ga/2018/05/03/2018/OpenVPN 穿越NAT网络/index.html"><meta property="og:site_name" content="某科学的最后之作"><meta property="og:description" content="简介 想和朋友联机打局域网游戏，在家需要连接到公司办公，如果是机密信息还要保证数据的加密传输，而且还要简单稳定好用，那么OpenVPN绝对是不二之选，OpenVPN是一个基于OpenSSL库的应用层VPN实现，完全开源免费，而且支持的平台众多，Linux平台，Windows平台，Android和IOS平台也都支持。"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="http://www.hinote.ga/uploads/photos/asfhioaefhu.jpg"><meta property="og:updated_time" content="2018-12-05T15:10:29.237Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="OpenVPN 穿越NAT网络"><meta name="twitter:description" content="简介 想和朋友联机打局域网游戏，在家需要连接到公司办公，如果是机密信息还要保证数据的加密传输，而且还要简单稳定好用，那么OpenVPN绝对是不二之选，OpenVPN是一个基于OpenSSL库的应用层VPN实现，完全开源免费，而且支持的平台众多，Linux平台，Windows平台，Android和IOS平台也都支持。"><meta name="twitter:image" content="http://www.hinote.ga/uploads/photos/asfhioaefhu.jpg"><link rel="canonical" href="http://www.hinote.ga/2018/05/03/2018/OpenVPN 穿越NAT网络/"><script type="text/javascript" id="page.configurations">CONFIG.page={sidebar:""}</script><title>OpenVPN 穿越NAT网络 | 某科学的最后之作</title><noscript><style type="text/css">.sidebar-inner,.use-motion .brand,.use-motion .collection-title,.use-motion .comments,.use-motion .menu-item,.use-motion .motion-element,.use-motion .pagination,.use-motion .post-block,.use-motion .post-body,.use-motion .post-header{opacity:initial}.use-motion .logo,.use-motion .site-subtitle,.use-motion .site-title{opacity:initial;top:initial}.logo-line-after i{right:initial}</style></noscript></head><body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div><header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">某科学的最后之作</span><span class="logo-line-after"><i></i></span></a></div><p class="site-subtitle">帅的人已经醒来 而丑的人还在沉睡</p></div><div class="site-nav-toggle"> <button><span class="btn-bar"></span><span class="btn-bar"></span><span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class="menu-item menu-item-search"><a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br>搜索</a></li></ul><div class="site-search"><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i></span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"> <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input"></div></div><div id="local-search-result"></div></div></div></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="http://www.hinote.ga/2018/05/03/2018/OpenVPN 穿越NAT网络/"><span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person"><meta itemprop="name" content="魏云飞"><meta itemprop="description" content=""><meta itemprop="image" content="/uploads/avatar.png"></span><span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization"><meta itemprop="name" content="某科学的最后之作"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">OpenVPN 穿越NAT网络</h1><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">发表于</span> <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-03T10:12:00+08:00">2018-05-03</time> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-calendar-check-o"></i></span> <span class="post-meta-item-text">更新于&#58;</span> <time title="更新于" itemprop="dateModified" datetime="2018-12-05T23:10:29+08:00">2018-12-05</time></span> <span class="post-category"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-folder-o"></i></span> <span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/OpenVPN/" itemprop="url" rel="index"><span itemprop="name">OpenVPN</span></a></span></span><div class="post-symbolscount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span> <span class="post-meta-item-text">字数统计&#58;</span> <span title="字数统计">13k</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-clock-o"></i></span> <span class="post-meta-item-text">阅读时长 &asymp;</span> <span title="阅读时长">0:13</span></div></div></header><div class="post-body" itemprop="articleBody"><div class="post-gallery" itemscope="" itemtype="http://schema.org/ImageGallery"><div class="post-gallery-row"> <a class="post-gallery-img fancybox" href="/uploads/photos/asfhioaefhu.jpg" rel="gallery_cjpgy2uws0078mwe6n0e87jan" itemscope="" itemtype="http://schema.org/ImageObject" itemprop="url"><img src="/uploads/photos/asfhioaefhu.jpg" itemprop="contentUrl"></a></div></div><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote><p>想和朋友联机打局域网游戏，在家需要连接到公司办公，如果是机密信息还要保证数据的加密传输，而且还要简单稳定好用，那么OpenVPN绝对是不二之选，OpenVPN是一个基于OpenSSL库的应用层VPN实现，完全开源免费，而且支持的平台众多，Linux平台，Windows平台，Android和IOS平台也都支持。</p></blockquote><a id="more"></a><h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>想要连通两个NAT后的网络，比如家里的局域网和公司的局域网就必须存在一个公网IP来做数据中转。这里使用阿里云的一台主机来做数据中转。</p><p>系统使用的是 Ubuntu 16.04.03 64位<br>OpenVPN 使用最新的稳定版 2.3.18 <a href="https://swupdate.openvpn.org/community/releases/openvpn-2.3.18.tar.xz" target="_blank" rel="noopener"><strong>点此下载</strong></a></p><p>如果下载不了，可能需要自备梯子或者从其他地方下载。如果使用的 CentOS 系列安装可能需要先关闭 SElinux。</p><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>也可以选择直接从官方仓库中下载安装使用。</p><h3 id="解决依赖"><a href="#解决依赖" class="headerlink" title="解决依赖"></a>解决依赖</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install make gcc g++ libssl-dev liblzo2-dev libpam-dev unzip</span><br></pre></td></tr></table></figure><p>这里只适用于 Ubuntu 系统</p><h3 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tar xf openvpn-2.3.18.tar.xz</span><br><span class="line"><span class="built_in">cd</span> openvpn-2.3.18</span><br><span class="line">./configure --prefix=/usr/<span class="built_in">local</span>/openvpn</span><br><span class="line">make -j4 &amp;&amp; make install</span><br><span class="line">mkdir /etc/openvpn</span><br><span class="line">cp -rf sample/ /etc/openvpn/    <span class="comment"># 拷贝配置文件模块</span></span><br><span class="line">cp /etc/openvpn/sample/sample-config-files/server.conf /etc/openvpn/</span><br></pre></td></tr></table></figure><p>由于系统环境的复杂，配置过程中可能会缺少某些库的头文件，只需要找到这些头文件所在的包然后安装下就好了。</p><h3 id="配置证书"><a href="#配置证书" class="headerlink" title="配置证书"></a>配置证书</h3><h4 id="服务端证书"><a href="#服务端证书" class="headerlink" title="服务端证书"></a>服务端证书</h4><h5 id="配置easy-rsa"><a href="#配置easy-rsa" class="headerlink" title="配置easy-rsa"></a>配置easy-rsa</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/openvpn</span><br><span class="line">git <span class="built_in">clone</span> -b release/2.x https://github.com/OpenVPN/easy-rsa.git</span><br><span class="line"><span class="built_in">cd</span> /etc/openvpn/easy-rsa/easy-rsa/2.0</span><br></pre></td></tr></table></figure><p>然后编辑 <code>vars</code> 文件，修改下列内容的值为随意内容。需要注意的是，值不可以是空的。</p><pre><code>export KEY_COUNTRY=&quot;US&quot;
+export KEY_PROVINCE=&quot;California&quot;
+export KEY_CITY=&quot;SanFrancisco&quot;
+export KEY_ORG=&quot;Fort-Funston&quot;
+export KEY_EMAIL=&quot;me@myhost.mydomain&quot;
+export KEY_OU=&quot;MyOrganizationalUnit&quot;
+</code></pre><p>我这里修改为了如下内容</p><pre><code>export KEY_COUNTRY=&quot;CN&quot;
+export KEY_PROVINCE=&quot;BeiJing&quot;
+export KEY_CITY=&quot;BeiJing&quot;
+export KEY_ORG=&quot;wu&quot;
+export KEY_EMAIL=&quot;admin@localhost.com&quot;
+export KEY_OU=&quot;openvpn&quot;
+</code></pre><p>接着修改 <code>export KEY_NAME=&quot;EasyRSA&quot;</code> 这句话，将 <code>EasyRSA</code> 改为自己喜欢的名字，这里就简单的使用 <code>server</code>，修改后就可以保存退出了。</p><h5 id="创建根证书"><a href="#创建根证书" class="headerlink" title="创建根证书"></a>创建根证书</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> vars</span><br><span class="line">./clean-all</span><br><span class="line">./build-ca</span><br></pre></td></tr></table></figure><p>这一步一路的回车就好，因为已经在 <code>vars</code> 文件中配置过了。</p><pre><code>root@ubuntu:/etc/openvpn/easy-rsa/easy-rsa/2.0# ./build-ca 
+Generating a 2048 bit RSA private key
+............................................................+++
+..........................+++
+writing new private key to &apos;ca.key&apos;
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter &apos;.&apos;, the field will be left blank.
+-----
+Country Name (2 letter code) [CN]:
+State or Province Name (full name) [BeiJing]:
+Locality Name (eg, city) [BeiJing]:
+Organization Name (eg, company) [wu]:
+Organizational Unit Name (eg, section) [openvpn]:
+Common Name (eg, your name or your server&apos;s hostname) [wu CA]:
+Name [server]:
+Email Address [admin@localhost.com]:
+</code></pre><h5 id="颁发服务端证书"><a href="#颁发服务端证书" class="headerlink" title="颁发服务端证书"></a>颁发服务端证书</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./build-key-server server</span><br></pre></td></tr></table></figure><p>这个 <code>server</code> 就是刚才 <code>export KEY_NAME=&quot;EasyRSA&quot;</code> 中指定的名字。之后就是一路的回车，当遇到两个问答的时候都回答 <code>y</code> 就可以了。</p><pre><code>root@ubuntu:/etc/openvpn/easy-rsa/easy-rsa/2.0# ./build-key-server server
+Generating a 2048 bit RSA private key
+.......................+++
+..............+++
+writing new private key to &apos;server.key&apos;
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter &apos;.&apos;, the field will be left blank.
+-----
+Country Name (2 letter code) [CN]:
+State or Province Name (full name) [BeiJing]:
+Locality Name (eg, city) [BeiJing]:
+Organization Name (eg, company) [wu]:
+Organizational Unit Name (eg, section) [openvpn]:
+Common Name (eg, your name or your server&apos;s hostname) [server]:
+Name [server]:
+Email Address [admin@localhost.com]:
+
+Please enter the following &apos;extra&apos; attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+Using configuration from /etc/openvpn/easy-rsa/easy-rsa/2.0/openssl-1.0.0.cnf
+Check that the request matches the signature
+Signature ok
+The Subject&apos;s Distinguished Name is as follows
+countryName           :PRINTABLE:&apos;CN&apos;
+stateOrProvinceName   :PRINTABLE:&apos;BeiJing&apos;
+localityName          :PRINTABLE:&apos;BeiJing&apos;
+organizationName      :PRINTABLE:&apos;wu&apos;
+organizationalUnitName:PRINTABLE:&apos;openvpn&apos;
+commonName            :PRINTABLE:&apos;server&apos;
+name                  :PRINTABLE:&apos;server&apos;
+emailAddress          :IA5STRING:&apos;admin@localhost.com&apos;
+Certificate is to be certified until Apr 30 07:50:21 2028 GMT (3650 days)
+Sign the certificate? [y/n]:y
+
+
+1 out of 1 certificate requests certified, commit? [y/n]y
+Write out database with 1 new entries
+Data Base Updated
+</code></pre><h5 id="生成Diffie-Hellman文件"><a href="#生成Diffie-Hellman文件" class="headerlink" title="生成Diffie-Hellman文件"></a>生成Diffie-Hellman文件</h5><blockquote><p>Diffie-Hellman是一种确保共享KEY安全穿越不安全网络的方法</p></blockquote><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./build-dh</span><br><span class="line">/usr/<span class="built_in">local</span>/openvpn/sbin/openvpn --genkey --secret keys/ta.key</span><br></pre></td></tr></table></figure><p>这一步需要的时间会长一些。</p><h4 id="客户端证书"><a href="#客户端证书" class="headerlink" title="客户端证书"></a>客户端证书</h4><h5 id="颁发客户端证书"><a href="#颁发客户端证书" class="headerlink" title="颁发客户端证书"></a>颁发客户端证书</h5><p>使用 <code>build-key</code> 命令可以颁发一个不带密码的证书，如果需要带密码保护的证书，可以使用 <code>build-key-pass</code> 命令。这里使用不带密码的凭证，证书名为 <code>client1</code></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./build-key client1</span><br></pre></td></tr></table></figure><p>同理 一路回车后最后两个问答输入 <code>y</code></p><pre><code>root@ubuntu:/etc/openvpn/easy-rsa/easy-rsa/2.0# ./build-key client1
+Generating a 2048 bit RSA private key
+....................+++
+..............................+++
+writing new private key to &apos;client1.key&apos;
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter &apos;.&apos;, the field will be left blank.
+-----
+Country Name (2 letter code) [CN]:
+State or Province Name (full name) [BeiJing]:
+Locality Name (eg, city) [BeiJing]:
+Organization Name (eg, company) [wu]:
+Organizational Unit Name (eg, section) [openvpn]:
+Common Name (eg, your name or your server&apos;s hostname) [client1]:
+Name [server]:
+Email Address [admin@localhost.com]:
+
+Please enter the following &apos;extra&apos; attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+Using configuration from /etc/openvpn/easy-rsa/easy-rsa/2.0/openssl-1.0.0.cnf
+Check that the request matches the signature
+Signature ok
+The Subject&apos;s Distinguished Name is as follows
+countryName           :PRINTABLE:&apos;CN&apos;
+stateOrProvinceName   :PRINTABLE:&apos;BeiJing&apos;
+localityName          :PRINTABLE:&apos;BeiJing&apos;
+organizationName      :PRINTABLE:&apos;wu&apos;
+organizationalUnitName:PRINTABLE:&apos;openvpn&apos;
+commonName            :PRINTABLE:&apos;client1&apos;
+name                  :PRINTABLE:&apos;server&apos;
+emailAddress          :IA5STRING:&apos;admin@localhost.com&apos;
+Certificate is to be certified until Apr 30 07:58:09 2028 GMT (3650 days)
+Sign the certificate? [y/n]:y
+
+
+1 out of 1 certificate requests certified, commit? [y/n]y
+Write out database with 1 new entries
+Data Base Updated
+</code></pre><h4 id="安置证书"><a href="#安置证书" class="headerlink" title="安置证书"></a>安置证书</h4><p>现在所有的证书都在 <code>keys</code> 目录中，为了方便使用，将 <code>keys</code> 目录直接软链到 <code>/etc/openvpn/</code> 下</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /etc/openvpn/easy-rsa/easy-rsa/2.0/keys/ /etc/openvpn/keys</span><br></pre></td></tr></table></figure><p>到这里，安装的部分就结束了。</p><h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="服务端配置"><a href="#服务端配置" class="headerlink" title="服务端配置"></a>服务端配置</h3><h4 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h4><p>编辑服务端配置文件：<code>/etc/openvpn/server.conf</code> 修改内容如下：</p><pre><code>port 2001
+proto udp
+dev tun
+ca keys/ca.crt
+cert keys/server.crt
+key keys/server.key  
+dh keys/dh2048.pem
+server 10.0.0.0 255.255.255.0
+ifconfig-pool-persist ipp.txt
+push &quot;route 10.0.0.0 255.255.255.0&quot;
+client-to-client
+keepalive 10 120
+tls-auth keys/ta.key 0 
+cipher AES-256-CBC
+auth SHA256
+key-direction 0
+user nobody
+group nogroup
+persist-key
+persist-tun
+status openvpn-status.log
+verb 3
+</code></pre><p>需要注意的是，这里使用 udp 的 2001 端口，在阿里云等环境，还需要配置相应的安全组策略来开放这个端口的流量。</p><h4 id="Linux配置"><a href="#Linux配置" class="headerlink" title="Linux配置"></a>Linux配置</h4><p>开启 Linux 的内核转发功能，编辑 <code>/etc/sysctl.conf</code> 文件，取消掉 <code>#net.ipv4.ip_forward=1</code> 之前的注释。然后执行 <code>sysctl -p</code> 命令。</p><pre><code>root@ubuntu:/etc/openvpn# sysctl -p
+net.ipv4.ip_forward = 1
+vm.swappiness = 0
+net.ipv4.neigh.default.gc_stale_time = 120
+net.ipv4.conf.all.rp_filter = 0
+net.ipv4.conf.default.rp_filter = 0
+net.ipv4.conf.default.arp_announce = 2
+net.ipv4.conf.lo.arp_announce = 2
+net.ipv4.conf.all.arp_announce = 2
+net.ipv4.tcp_max_tw_buckets = 5000
+net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_max_syn_backlog = 1024
+net.ipv4.tcp_synack_retries = 2
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+net.ipv6.conf.lo.disable_ipv6 = 1
+</code></pre><p>还需要确保 iptable 的 <code>FORWARD</code> 链允许数据转发</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -P FORWARD ACCEPT</span><br></pre></td></tr></table></figure><h4 id="启动OpenVPN"><a href="#启动OpenVPN" class="headerlink" title="启动OpenVPN"></a>启动OpenVPN</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/<span class="built_in">local</span>/openvpn/sbin/openvpn --<span class="built_in">cd</span> /etc/openvpn/ --config /etc/openvpn/server.conf</span><br></pre></td></tr></table></figure><p>以调试模式启动 OpenVPN，如果启动过程中有什么错误的话会显示在输出里，确定没有问题了，可以添加 <code>--daemon</code> 参数在后台运行 OpenVPN</p><pre><code>root@ubuntu:/etc/openvpn# /usr/local/openvpn/sbin/openvpn --cd /etc/openvpn/ --config /etc/openvpn/server.conf 
+Thu May  3 16:32:55 2018 OpenVPN 2.3.18 x86_64-unknown-linux-gnu [SSL (OpenSSL)] [LZO] [EPOLL] [MH] [IPv6] built on May  3 2018
+Thu May  3 16:32:55 2018 library versions: OpenSSL 1.0.2g  1 Mar 2016, LZO 2.08
+Thu May  3 16:32:55 2018 Diffie-Hellman initialized with 2048 bit key
+Thu May  3 16:32:55 2018 Control Channel Authentication: using &apos;keys/ta.key&apos; as a OpenVPN static key file
+Thu May  3 16:32:55 2018 Outgoing Control Channel Authentication: Using 160 bit message hash &apos;SHA1&apos; for HMAC authentication
+Thu May  3 16:32:55 2018 Incoming Control Channel Authentication: Using 160 bit message hash &apos;SHA1&apos; for HMAC authentication
+Thu May  3 16:32:55 2018 Socket Buffers: R=[212992-&gt;212992] S=[212992-&gt;212992]
+Thu May  3 16:32:55 2018 ROUTE_GATEWAY 172.31.143.253/255.255.240.0 IFACE=eth0 HWADDR=00:16:3e:08:fb:5f
+Thu May  3 16:32:55 2018 TUN/TAP device tun0 opened
+Thu May  3 16:32:55 2018 TUN/TAP TX queue length set to 100
+Thu May  3 16:32:55 2018 do_ifconfig, tt-&gt;ipv6=0, tt-&gt;did_ifconfig_ipv6_setup=0
+Thu May  3 16:32:55 2018 /sbin/ifconfig tun0 10.0.0.1 pointopoint 10.0.0.2 mtu 1500
+Thu May  3 16:32:55 2018 /sbin/route add -net 10.0.0.0 netmask 255.255.255.0 gw 10.0.0.2
+Thu May  3 16:32:55 2018 GID set to nogroup
+Thu May  3 16:32:55 2018 UID set to nobody
+Thu May  3 16:32:55 2018 UDPv4 link local (bound): [undef]
+Thu May  3 16:32:55 2018 UDPv4 link remote: [undef]
+Thu May  3 16:32:55 2018 MULTI: multi_init called, r=256 v=256
+Thu May  3 16:32:55 2018 IFCONFIG POOL: base=10.0.0.4 size=62, ipv6=0
+Thu May  3 16:32:55 2018 IFCONFIG POOL LIST
+Thu May  3 16:32:55 2018 Initialization Sequence Completed
+</code></pre><p>使用 <code>ifconfig</code> 命令，应该可以看到多出来了一块 <code>tun0</code> 的网卡。</p><h4 id="制作客户端ovpn文件"><a href="#制作客户端ovpn文件" class="headerlink" title="制作客户端ovpn文件"></a>制作客户端ovpn文件</h4><p>为了方便客户端的连接，可以在服务端制作好客户端的配置文件，只需将文件下发给客户端，就可以直接使用了。这个文件的拓展名是 ovpn</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/openvpn/</span><br><span class="line">mkdir make_clients</span><br><span class="line">cp sample/sample-config-files/client.conf make_clients/</span><br><span class="line">cd make_clients</span><br></pre></td></tr></table></figure><p>然后编辑 <code>client.conf</code> 为以下内容，其中连接服务器的 IP 需要修改为自己的。</p><pre><code>client
+dev tun
+proto udp
+remote 47.xxx.xxx.155 2001
+resolv-retry infinite
+nobind
+user nobody
+group nogroup
+persist-key
+persist-tun
+remote-cert-tls server
+cipher AES-256-CBC
+auth SHA256
+key-direction 1
+verb 3
+explicit-exit-notify 1
+</code></pre><p>还记得刚才颁发的客户端证书 <code>client1</code> 吧，先为这个证书生成一份配置文件。使用一个自动化脚本来完成配置文件的创建。新建 <code>make_config.sh</code> 脚本，然后写入如下内容</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># First argument: Client identifier</span></span><br><span class="line"></span><br><span class="line">KEY_DIR=/etc/openvpn/keys</span><br><span class="line">OUTPUT_DIR=./files</span><br><span class="line">BASE_CONFIG=./client.conf</span><br><span class="line"></span><br><span class="line">cat <span class="variable">$&#123;BASE_CONFIG&#125;</span> \</span><br><span class="line">    &lt;(<span class="built_in">echo</span> -e <span class="string">'&lt;ca&gt;'</span>) \</span><br><span class="line">    <span class="variable">$&#123;KEY_DIR&#125;</span>/ca.crt \</span><br><span class="line">    &lt;(<span class="built_in">echo</span> -e <span class="string">'&lt;/ca&gt;\n&lt;cert&gt;'</span>) \</span><br><span class="line">    <span class="variable">$&#123;KEY_DIR&#125;</span>/<span class="variable">$&#123;1&#125;</span>.crt \</span><br><span class="line">    &lt;(<span class="built_in">echo</span> -e <span class="string">'&lt;/cert&gt;\n&lt;key&gt;'</span>) \</span><br><span class="line">    <span class="variable">$&#123;KEY_DIR&#125;</span>/<span class="variable">$&#123;1&#125;</span>.key \</span><br><span class="line">    &lt;(<span class="built_in">echo</span> -e <span class="string">'&lt;/key&gt;\n&lt;tls-auth&gt;'</span>) \</span><br><span class="line">    <span class="variable">$&#123;KEY_DIR&#125;</span>/ta.key \</span><br><span class="line">    &lt;(<span class="built_in">echo</span> -e <span class="string">'&lt;/tls-auth&gt;'</span>) \</span><br><span class="line">    &gt; <span class="variable">$&#123;OUTPUT_DIR&#125;</span>/<span class="variable">$&#123;1&#125;</span>.ovpn</span><br></pre></td></tr></table></figure><p>开始创建</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chmod +x make_config.sh</span><br><span class="line">mkdir files</span><br><span class="line">./make_config.sh client1</span><br></pre></td></tr></table></figure><p>这个 <code>client1</code> 就是用户证书的名字，也只有存在才可以创建成功。脚本正常执行后可以在 <code>files</code> 目录中看到 <code>client1.ovpn</code> 文件，这个文件中已经包含了客户端所需要的密钥以及连接信息，所以只需要将这个文件发给用户，然后在客户端上导入就可以直接连接了。不过要注意，基于密钥的认证方式，每个密钥只允许同时一台机器连接使用。</p><h3 id="客户端连接"><a href="#客户端连接" class="headerlink" title="客户端连接"></a>客户端连接</h3><p>首先需要将生成的 ovpn 文件发送给用户的机器上，然后还需要安装适合当前平台的客户端。</p><h4 id="在-Linux-上登陆-OpenVPN"><a href="#在-Linux-上登陆-OpenVPN" class="headerlink" title="在 Linux 上登陆 OpenVPN"></a>在 Linux 上登陆 OpenVPN</h4><p>Linux上编译出的 <code>openvpn</code> 程序既可以是服务端，也可以是客户端，所以只需要再下载下来源码包编译一次就可以了。连接也非常方便，直接使用 <code>openvpn --config client1.ovpn</code> 即可。如果想后台运行，也只需要添加 <code>--daemon</code> 参数。</p><p>当连接成功后，可以看到多出来一块 <code>tun0</code> 的网卡</p><pre><code>tun0: flags=4305&lt;UP,POINTOPOINT,RUNNING,NOARP,MULTICAST&gt;  mtu 1500
+        inet 10.0.0.6  netmask 255.255.255.255  destination 10.0.0.5
+        inet6 fe80::bf9f:2316:1d8c:83d1  prefixlen 64  scopeid 0x20&lt;link&gt;
+        unspec 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00  txqueuelen 100  (UNSPEC)
+        RX packets 1  bytes 84 (84.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 5  bytes 276 (276.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+</code></pre><p>服务端IP为 <code>10.0.0.1</code>，可以看看能不能PING通</p><pre><code>root@raspberrypi:~# ping 10.0.0.1 -c 4
+PING 10.0.0.1 (10.0.0.1) 56(84) bytes of data.
+64 bytes from 10.0.0.1: icmp_seq=1 ttl=64 time=62.2 ms
+64 bytes from 10.0.0.1: icmp_seq=2 ttl=64 time=61.7 ms
+64 bytes from 10.0.0.1: icmp_seq=3 ttl=64 time=68.1 ms
+64 bytes from 10.0.0.1: icmp_seq=4 ttl=64 time=68.1 ms
+
+--- 10.0.0.1 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3005ms
+rtt min/avg/max/mdev = 61.782/65.097/68.185/3.103 ms
+</code></pre><h4 id="在-Windows-上登陆-OpenVPN"><a href="#在-Windows-上登陆-OpenVPN" class="headerlink" title="在 Windows 上登陆 OpenVPN"></a>在 Windows 上登陆 OpenVPN</h4><p>Windows 客户端需要在官方下载，下载时可能需要自备梯子，下载地址：<a href="https://openvpn.net/index.php/open-source/downloads.html" target="_blank" rel="noopener">点此打开</a></p><p>下载安装成功后，第一次打开会弹出一个窗口，说没有可以读取的配置文件，这时候只需右击系统状态栏里OpenVPN的小图标，然后选择 <code>Import file...</code> 打开刚才生成的 <code>client1.ovpn</code> 就可以了。然后再次右击小图标，点击 <code>Connect</code>，等弹出的窗口自动退出口，系统也会通知 OpenVPN 是否连接成功。</p><p>在 Windows 上也是可以PING通服务器的</p><pre><code>C:\Users\yunfwe\Desktop&gt;ping 10.0.0.1
+
+正在 Ping 10.0.0.1 具有 32 字节的数据:
+来自 10.0.0.1 的回复: 字节=32 时间=68ms TTL=64
+来自 10.0.0.1 的回复: 字节=32 时间=71ms TTL=64
+来自 10.0.0.1 的回复: 字节=32 时间=62ms TTL=64
+来自 10.0.0.1 的回复: 字节=32 时间=60ms TTL=64
+
+10.0.0.1 的 Ping 统计信息:
+    数据包: 已发送 = 4，已接收 = 4，丢失 = 0 (0% 丢失)，
+往返行程的估计时间(以毫秒为单位):
+    最短 = 60ms，最长 = 71ms，平均 = 65ms
+</code></pre><h4 id="在-Android-上登陆-OpenVPN"><a href="#在-Android-上登陆-OpenVPN" class="headerlink" title="在 Android 上登陆 OpenVPN"></a>在 Android 上登陆 OpenVPN</h4><p>在谷歌应用商店里可以找到一款名为 <code>openvpn-connect</code> 的apk，使用这个软件也可以通过导入ovpn文件的方式连接到服务器。</p><h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2></div><footer class="post-footer"><div class="post-tags"><a href="/tags/openvpn/" rel="tag"><i class="fa fa-tag"></i> openvpn</a></div><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/2018/04/29/2018/ESP8266 WiFi开发板/" rel="next" title="ESP8266 WiFi开发板"><i class="fa fa-chevron-left"></i> ESP8266 WiFi开发板</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"> <a href="/2018/05/11/2018/愉快的用Vim写代码/" rel="prev" title="愉快的用 Vim 写代码">愉快的用 Vim 写代码<i class="fa fa-chevron-right"></i></a></div></div></footer></div></article><div class="post-spread"></div></div></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap"> 文章目录</li><li class="sidebar-nav-overview" data-target="site-overview-wrap"> 站点概览</li></ul><section class="site-overview-wrap sidebar-panel"><div class="site-overview"><div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person"> <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="魏云飞"><p class="site-author-name" itemprop="name">魏云飞</p><p class="site-description motion-element" itemprop="description">帅的人已经醒来 而丑的人还在沉睡</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"> <a href="/archives/"><span class="site-state-item-count">48</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"> <a href="/categories/index.html"><span class="site-state-item-count">26</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"> <a href="/tags/index.html"><span class="site-state-item-count">53</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/yunfwe" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i> GitHub</a></span></div></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">3.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#解决依赖"><span class="nav-number">3.1.</span> <span class="nav-text">解决依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译安装"><span class="nav-number">3.2.</span> <span class="nav-text">编译安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置证书"><span class="nav-number">3.3.</span> <span class="nav-text">配置证书</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#服务端证书"><span class="nav-number">3.3.1.</span> <span class="nav-text">服务端证书</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#配置easy-rsa"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">配置easy-rsa</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#创建根证书"><span class="nav-number">3.3.1.2.</span> <span class="nav-text">创建根证书</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#颁发服务端证书"><span class="nav-number">3.3.1.3.</span> <span class="nav-text">颁发服务端证书</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#生成Diffie-Hellman文件"><span class="nav-number">3.3.1.4.</span> <span class="nav-text">生成Diffie-Hellman文件</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端证书"><span class="nav-number">3.3.2.</span> <span class="nav-text">客户端证书</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#颁发客户端证书"><span class="nav-number">3.3.2.1.</span> <span class="nav-text">颁发客户端证书</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安置证书"><span class="nav-number">3.3.3.</span> <span class="nav-text">安置证书</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">4.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#服务端配置"><span class="nav-number">4.1.</span> <span class="nav-text">服务端配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#配置文件"><span class="nav-number">4.1.1.</span> <span class="nav-text">配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Linux配置"><span class="nav-number">4.1.2.</span> <span class="nav-text">Linux配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#启动OpenVPN"><span class="nav-number">4.1.3.</span> <span class="nav-text">启动OpenVPN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#制作客户端ovpn文件"><span class="nav-number">4.1.4.</span> <span class="nav-text">制作客户端ovpn文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#客户端连接"><span class="nav-number">4.2.</span> <span class="nav-text">客户端连接</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#在-Linux-上登陆-OpenVPN"><span class="nav-number">4.2.1.</span> <span class="nav-text">在 Linux 上登陆 OpenVPN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在-Windows-上登陆-OpenVPN"><span class="nav-number">4.2.2.</span> <span class="nav-text">在 Windows 上登陆 OpenVPN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在-Android-上登陆-OpenVPN"><span class="nav-number">4.2.3.</span> <span class="nav-text">在 Android 上登陆 OpenVPN</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">5.</span> <span class="nav-text">附录</span></a></li></ol></div></div></section></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright">&copy; <span itemprop="copyrightYear">2018</span><span class="with-love"><i class="fa fa-user"></i></span> <span class="author" itemprop="copyrightHolder">魏云飞</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-area-chart"></i></span> <span title="站点总字数">521k</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-coffee"></i></span> <span title="站点总阅读时长">8:41</span></div><div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.0.4</div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i></div></div><script type="text/javascript">"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script><script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script><script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script><script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script></body><script>var titleTime,OriginTitile=document.title;document.addEventListener("visibilitychange",function(){document.hidden?($('[rel="icon"]').attr("href","/img/TEP.ico"),document.title="╭(°A°`)╮ 页面崩溃啦 ~ ",clearTimeout(titleTime)):($('[rel="icon"]').attr("href","/favicon.ico"),document.title="(ฅ>ω<*ฅ) 噫又好了~"+OriginTitile,titleTime=setTimeout(function(){document.title=OriginTitile},2e3))})</script></html>

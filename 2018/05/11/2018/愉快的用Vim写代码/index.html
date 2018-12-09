@@ -1,0 +1,573 @@
+<!DOCTYPE html><html class="theme-next mist use-motion" lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#222"><script src="/lib/pace/pace.min.js?v=1.0.2"></script><link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"><link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css"><link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css"><link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4"><link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4"><link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4"><link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222"><script type="text/javascript" id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Mist",version:"6.0.4",sidebar:{position:"left",display:"hide",offset:12,b2t:!1,scrollpercent:!1,onmobile:!1},fancybox:!0,fastclick:!1,lazyload:!1,tabs:!0,motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}},algolia:{applicationID:"",apiKey:"",indexName:"",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><meta name="keywords" content="vim,linux,"><meta name="description" content="简介 Vim 是一款高可定制的文本编辑器软件，而大多数人使用 vim 应该是从 Linux 的教科书里得知的吧。vim 来自于 vi 编辑器，而 vi 在1976年就发布了，经过如此多年的进化，可以说是非常成熟和强大了。但是 vim 的学习曲线比较陡，但是对 vim 学习的越深入，使用 vim 提升的效率就越高。这里是这几天对 vim 的学习，打造出的一款比较得心应手的编程工具。"><meta name="keywords" content="vim,linux"><meta property="og:type" content="article"><meta property="og:title" content="愉快的用 Vim 写代码"><meta property="og:url" content="http://www.hinote.ga/2018/05/11/2018/愉快的用Vim写代码/index.html"><meta property="og:site_name" content="某科学的最后之作"><meta property="og:description" content="简介 Vim 是一款高可定制的文本编辑器软件，而大多数人使用 vim 应该是从 Linux 的教科书里得知的吧。vim 来自于 vi 编辑器，而 vi 在1976年就发布了，经过如此多年的进化，可以说是非常成熟和强大了。但是 vim 的学习曲线比较陡，但是对 vim 学习的越深入，使用 vim 提升的效率就越高。这里是这几天对 vim 的学习，打造出的一款比较得心应手的编程工具。"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="http://www.hinote.ga/uploads/photos/104fe851474.png"><meta property="og:updated_time" content="2018-12-05T15:10:29.255Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="愉快的用 Vim 写代码"><meta name="twitter:description" content="简介 Vim 是一款高可定制的文本编辑器软件，而大多数人使用 vim 应该是从 Linux 的教科书里得知的吧。vim 来自于 vi 编辑器，而 vi 在1976年就发布了，经过如此多年的进化，可以说是非常成熟和强大了。但是 vim 的学习曲线比较陡，但是对 vim 学习的越深入，使用 vim 提升的效率就越高。这里是这几天对 vim 的学习，打造出的一款比较得心应手的编程工具。"><meta name="twitter:image" content="http://www.hinote.ga/uploads/photos/104fe851474.png"><link rel="canonical" href="http://www.hinote.ga/2018/05/11/2018/愉快的用Vim写代码/"><script type="text/javascript" id="page.configurations">CONFIG.page={sidebar:""}</script><title>愉快的用 Vim 写代码 | 某科学的最后之作</title><noscript><style type="text/css">.sidebar-inner,.use-motion .brand,.use-motion .collection-title,.use-motion .comments,.use-motion .menu-item,.use-motion .motion-element,.use-motion .pagination,.use-motion .post-block,.use-motion .post-body,.use-motion .post-header{opacity:initial}.use-motion .logo,.use-motion .site-subtitle,.use-motion .site-title{opacity:initial;top:initial}.logo-line-after i{right:initial}</style></noscript></head><body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div><header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">某科学的最后之作</span><span class="logo-line-after"><i></i></span></a></div><p class="site-subtitle">帅的人已经醒来 而丑的人还在沉睡</p></div><div class="site-nav-toggle"> <button><span class="btn-bar"></span><span class="btn-bar"></span><span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class="menu-item menu-item-search"><a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br>搜索</a></li></ul><div class="site-search"><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i></span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"> <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input"></div></div><div id="local-search-result"></div></div></div></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="http://www.hinote.ga/2018/05/11/2018/愉快的用Vim写代码/"><span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person"><meta itemprop="name" content="魏云飞"><meta itemprop="description" content=""><meta itemprop="image" content="/uploads/avatar.png"></span><span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization"><meta itemprop="name" content="某科学的最后之作"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">愉快的用 Vim 写代码</h1><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">发表于</span> <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-11T10:12:00+08:00">2018-05-11</time> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-calendar-check-o"></i></span> <span class="post-meta-item-text">更新于&#58;</span> <time title="更新于" itemprop="dateModified" datetime="2018-12-05T23:10:29+08:00">2018-12-05</time></span> <span class="post-category"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-folder-o"></i></span> <span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Vim/" itemprop="url" rel="index"><span itemprop="name">Vim</span></a></span></span><div class="post-symbolscount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span> <span class="post-meta-item-text">字数统计&#58;</span> <span title="字数统计">25k</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-clock-o"></i></span> <span class="post-meta-item-text">阅读时长 &asymp;</span> <span title="阅读时长">0:25</span></div></div></header><div class="post-body" itemprop="articleBody"><div class="post-gallery" itemscope="" itemtype="http://schema.org/ImageGallery"><div class="post-gallery-row"> <a class="post-gallery-img fancybox" href="/uploads/photos/104fe851474.png" rel="gallery_cjpgy2uwu007cmwe62314plr5" itemscope="" itemtype="http://schema.org/ImageObject" itemprop="url"><img src="/uploads/photos/104fe851474.png" itemprop="contentUrl"></a></div></div><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote><p>Vim 是一款高可定制的文本编辑器软件，而大多数人使用 vim 应该是从 Linux 的教科书里得知的吧。vim 来自于 vi 编辑器，而 vi 在1976年就发布了，经过如此多年的进化，可以说是非常成熟和强大了。但是 vim 的学习曲线比较陡，但是对 vim 学习的越深入，使用 vim 提升的效率就越高。这里是这几天对 vim 的学习，打造出的一款比较得心应手的编程工具。</p></blockquote><a id="more"></a><h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>在 Ubuntu 16.04 和 Ubuntu 18.04 上测试成功，理论上比较高的 Vim 版本都可以。Mac 没测试环境 ╮(╯▽╰)╭ ，Windows 就用 IDE 了，不想用 IDE 还可以使用 Notepad++ 或者 VScode。Vim 胜在是安装在服务器上的，这样需要远程连接服务器来写代码调试的话就非常方便了。先秀几张效果截图。</p><p><strong>代码补全</strong><br><img src="/uploads/2018/vim/1fsp4b39a33kd72v.jpeg" alt=""></p><p><strong>文件分屏</strong><br><img src="/uploads/2018/vim/r5utf7qitfk2o807.jpeg" alt=""></p><p><strong>文件操作</strong><br><img src="/uploads/2018/vim/15t4t2ae954qzzc7.jpeg" alt=""></p><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>自己写的配置已经开源在了 Github 上 <a href="https://github.com/yunfwe/vimconf" target="_blank" rel="noopener">点击浏览</a></p><p>因为安装过程中需要联网安装插件，所以务必保证网络正常，并且已经安装 git 命令行工具。</p><p>输入以下命令安装：<br></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source &lt;(curl -s https://raw.githubusercontent.com/yunfwe/vimconf/master/install.sh)</span><br></pre></td></tr></table></figure><p></p><p>Vim 的配置被安装到了家目录下的 <code>.vimrc</code> 文件和 <code>.vim</code> 目录，如果安装之前存在着两个目录，脚本将自动备份。如果想卸载也非常简单，手动删除家目录下的 <code>.vimrc</code> 和 <code>.vim</code> 即可，或者执行提供好的卸载脚本也可以：<br></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source &lt;(curl -s https://raw.githubusercontent.com/yunfwe/vimconf/master/uninstall.sh)</span><br></pre></td></tr></table></figure><p></p><h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>Vim 的配置文件非常强大，是一种专门的 <code>Vim Script</code> 的语言编写，大部分的 Vim 插件也都是用这个语言写的</p><p>这里看看配置文件的内容，以及各内容的说明</p><pre><code>&quot; curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+&quot; vim -c &quot;PlugInstall&quot; -c &quot;q&quot; -c &quot;q&quot;
+
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+&quot; 使用plug
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+call plug#begin(&apos;~/.vim/plugged&apos;)
+Plug &apos;scrooloose/nerdtree&apos;      &quot; 目录树插件
+Plug &apos;vim-airline/vim-airline&apos;  &quot; 状态栏插件
+Plug &apos;vim-airline/vim-airline-themes&apos; &quot; 状态栏主题插件
+Plug &apos;joshdick/onedark.vim&apos;     &quot; 状态栏主题使用的颜色
+Plug &apos;jiangmiao/auto-pairs&apos;     &quot; 自动补全引号括号
+Plug &apos;vim-scripts/SuperTab&apos;     &quot; 提高Tab键能力的插件
+&quot;Plug &apos;vim-scripts/c.vim&apos;        &quot; 官方C语言插件
+Plug &apos;rkulla/pydiction&apos;         &quot; 轻量级的Python补全插件
+Plug &apos;luochen1990/rainbow&apos;      &quot; 为不同的括号添加颜色的插件
+call plug#end()
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+</code></pre><p>Vim 的配置文件中，用双引号开头表示注释，是被 Vim 忽略的，Vim 安装插件最简单的方法就是使用插件管理器，但是插件管理器也是 Vim 的一个插件，所以这个插件就需要手动安装了，因此安装脚本的开头就是从 Github 上获取这个插件管理器，然后放到相应的目录中后 先用一个简单的只包含需要安装其他插件指令的配置文件启动 Vim 并安装其他插件。</p><p>插件大多数人都选择直接从 github 上获取，所以插件名就可以不用写 github 的全路径，只需要用户名和仓库名就可以了，Vim 的插件管理器还有非常多的种类，但是 <code>vim-plug</code> 可以并发下载安装插件，比其他种类的更轻，更快。</p><pre><code>&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+&quot; 实用设置
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+&quot;当打开vim且没有文件时自动打开NERDTree
+autocmd vimenter * if !argc() | NERDTree | endif
+&quot; 只剩 NERDTree时自动关闭
+autocmd bufenter * if (winnr(&quot;$&quot;) == 1 &amp;&amp; exists(&quot;b:NERDTreeType&quot;) &amp;&amp; b:NERDTreeType == &quot;primary&quot;) | q | endif
+set autoread        &quot; 设置当文件被改动时自动载入
+if has(&quot;autocmd&quot;)
+    au BufReadPost * if line(&quot;&apos;\&quot;&quot;) &gt; 1 &amp;&amp; line(&quot;&apos;\&quot;&quot;) &lt;= line(&quot;$&quot;) | exe &quot;normal! g&apos;\&quot;&quot; | endif
+endif
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+&quot; 编码设置
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+set langmenu=zh_CN.UTF-8
+set helplang=cn
+set termencoding=utf-8
+set encoding=utf8
+set fileencodings=utf8,ucs-bom,gbk,cp936,gb2312,gb18030
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+&quot; 通用设置
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+let mapleader = &quot;,&quot;      &quot; 定义&lt;leader&gt;键
+set nocompatible         &quot; 设置不兼容原始vi模式
+filetype on              &quot; 设置开启文件类型侦测
+filetype plugin on       &quot; 设置加载对应文件类型的插件
+set noeb                 &quot; 关闭错误的提示
+syntax enable            &quot; 开启语法高亮功能
+syntax on                &quot; 自动语法高亮
+set t_Co=256             &quot; 开启256色支持
+set cmdheight=1          &quot; 设置命令行的高度
+set showcmd              &quot; select模式下显示选中的行数
+set scrolloff=3          &quot; 光标移动到buffer的顶部和底部时保持3行距离 
+set ruler                &quot; 总是显示光标位置
+set laststatus=2         &quot; 总是显示状态栏
+set number               &quot; 开启行号显示
+set cursorline           &quot; 高亮显示当前行
+set whichwrap+=&lt;,&gt;,h,l   &quot; 设置光标键跨行
+set virtualedit=block,onemore   &quot; 允许光标出现在最后一个字符的后面
+set incsearch            &quot; 实时搜索
+set mouse-=a             &quot; 不允许使用鼠标操作
+set noeb vb t_vb=        &quot; 关闭终端响铃
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+&quot; 代码缩进和排版
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+set autoindent           &quot; 设置自动缩进
+set cindent              &quot; 设置使用C/C++语言的自动缩进方式
+set cinoptions=g0,:0,N-s,(0    &quot; 设置C/C++语言的具体缩进方式
+set smartindent          &quot; 智能的选择对其方式
+filetype indent on       &quot; 自适应不同语言的智能缩进
+set expandtab            &quot; 将制表符扩展为空格
+set tabstop=4            &quot; 设置编辑时制表符占用空格数
+set shiftwidth=4         &quot; 设置格式化时制表符占用空格数
+set softtabstop=4        &quot; 设置4个空格为制表符
+set smarttab             &quot; 在行和段开始处使用制表符
+&quot;set nowrap               &quot; 禁止折行
+set wrap                 &quot; 自动折行
+set iskeyword+=_,$,@,%,#,-  &quot; 带有如下符号的单词不要被换行分割
+set backspace=2          &quot; 使用回车键正常处理indent,eol,start等
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+&quot; 代码补全
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+set wildmenu             &quot; vim自身命名行模式智能补全
+set completeopt-=preview &quot; 补全时不显示窗口，只显示补全列表
+set matchtime=1          &quot; 匹配括号高亮的时间（单位是十分之一秒）
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+&quot; 代码折叠
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+set foldmethod=syntax   &quot; 设置基于语法进行代码折叠
+set nofoldenable        &quot; 关闭折叠代码
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+&quot; 缓存设置
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+set nobackup            &quot; 设置不备份
+set noswapfile          &quot; 禁止生成临时文件
+set autoread            &quot; 文件在vim之外修改过，自动重新读入
+set autowrite           &quot; 设置自动保存
+set confirm             &quot; 在处理未保存或只读文件的时候，弹出确认
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+</code></pre><p>正如每个配置项的注释所言，这个是对 Vim 编辑器的一些配置。</p><pre><code>&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+&quot; 新文件标题
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+&quot;新建.c,.h,.sh,.java文件，自动插入文件头 
+autocmd BufNewFile *.cpp,*.[ch],*.sh,*.rb,*.java,*.py exec &quot;:call SetTitle()&quot; 
+&quot;&quot;定义函数SetTitle，自动插入文件头 
+func SetTitle() 
+    &quot;如果文件类型为.sh文件 
+    if &amp;filetype == &apos;sh&apos; 
+        call setline(1,&quot;\#!/bin/bash&quot;) 
+        call append(line(&quot;.&quot;), &quot;&quot;) 
+    elseif &amp;filetype == &apos;python&apos;
+        call setline(1,&quot;#!/usr/bin/env python&quot;)
+        call append(line(&quot;.&quot;),&quot;# -*- coding:utf-8 -*-&quot;)
+        call append(line(&quot;.&quot;)+1,&quot;# Author: root  date: &quot;.strftime(&quot;%Y-%m-%d&quot;))
+        call append(line(&quot;.&quot;)+2, &quot;&quot;) 
+        call append(line(&quot;.&quot;)+3, &quot;&quot;) 
+
+    elseif &amp;filetype == &apos;ruby&apos;
+        call setline(1,&quot;#!/usr/bin/env ruby&quot;)
+        call append(line(&quot;.&quot;),&quot;# encoding: utf-8&quot;)
+        call append(line(&quot;.&quot;)+1, &quot;&quot;)
+        call append(line(&quot;.&quot;)+2, &quot;&quot;)
+
+        &quot;    elseif &amp;filetype == &apos;mkd&apos;
+        &quot;        call setline(1,&quot;&lt;head&gt;&lt;meta charset=\&quot;UTF-8\&quot;&gt;&lt;/head&gt;&quot;)
+    else 
+        call setline(1, &quot;/*************************************************************************&quot;) 
+        call append(line(&quot;.&quot;), &quot;    &gt; File Name: &quot;.expand(&quot;%&quot;)) 
+        call append(line(&quot;.&quot;)+1, &quot;    &gt; Author: root&quot;) 
+        call append(line(&quot;.&quot;)+2, &quot;    &gt; Mail: root@localhost.com&quot;) 
+        call append(line(&quot;.&quot;)+3, &quot;    &gt; Created Time: &quot;.strftime(&quot;%Y-%m-%d&quot;)) 
+        call append(line(&quot;.&quot;)+4, &quot; ************************************************************************/&quot;) 
+        call append(line(&quot;.&quot;)+5, &quot;&quot;)
+    endif
+    if expand(&quot;%:e&quot;) == &apos;cpp&apos;
+        call append(line(&quot;.&quot;)+6, &quot;#include &lt;iostream&gt;&quot;)
+        call append(line(&quot;.&quot;)+7, &quot;using namespace std;&quot;)
+        call append(line(&quot;.&quot;)+8, &quot;&quot;)
+        call append(line(&quot;.&quot;)+9, &quot;&quot;)
+    endif
+    if &amp;filetype == &apos;c&apos;
+        call append(line(&quot;.&quot;)+6, &quot;#include &lt;stdio.h&gt;&quot;)
+        call append(line(&quot;.&quot;)+7, &quot;&quot;)
+        call append(line(&quot;.&quot;)+8, &quot;&quot;)
+    endif
+    if expand(&quot;%:e&quot;) == &apos;h&apos;
+        call append(line(&quot;.&quot;)+6, &quot;#ifndef _&quot;.toupper(expand(&quot;%:r&quot;)).&quot;_H&quot;)
+        call append(line(&quot;.&quot;)+7, &quot;#define _&quot;.toupper(expand(&quot;%:r&quot;)).&quot;_H&quot;)
+        call append(line(&quot;.&quot;)+8, &quot;#endif&quot;)
+        call append(line(&quot;.&quot;)+9, &quot;&quot;)
+    endif
+    if &amp;filetype == &apos;java&apos;
+        call append(line(&quot;.&quot;)+6,&quot;public class &quot;.expand(&quot;%:r&quot;))
+        call append(line(&quot;.&quot;)+7,&quot;&quot;)
+    endif
+    &quot;新建文件后，自动定位到文件末尾
+endfunc 
+autocmd BufNewFile * normal G
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+</code></pre><p>这段配置就用到了定义函数，逻辑判断等语法，作用是在 Vim 编辑新文件的时候，根据文件名来自动生成不同的文件头部信息，为了方便，可以把代码中的 <code>Author</code> 和 <code>Mail</code> 配置为自己的信息，这样就不用每次创建了文件之后再修改了。</p><pre><code>&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+&quot; 键盘命令
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+nnoremap &lt;C-N&gt; :bn&lt;CR&gt;
+nnoremap &lt;C-P&gt; :bp&lt;CR&gt;
+nmap &lt;Esc&gt;&lt;Esc&gt;&lt;Esc&gt; :qa!&lt;CR&gt; &quot; 连续三个Esc不保存退出全部
+&quot; 切换NERDTree 
+map &lt;F3&gt; :NERDTreeToggle&lt;CR&gt;
+:autocmd BufRead,BufNewFile *.dot map &lt;F5&gt; :w&lt;CR&gt;:!dot -Tjpg -o %&lt;.jpg % &amp;&amp; eog %&lt;.jpg  &lt;CR&gt;&lt;CR&gt; &amp;&amp; exec &quot;redr!&quot;
+&quot;C，C++ 按F5编译运行
+map &lt;F5&gt; :call CompileRunGcc()&lt;CR&gt;
+func! CompileRunGcc()
+    exec &quot;w&quot;
+    if &amp;filetype == &apos;c&apos;
+        &quot;exec &quot;!g++ % -o %&lt;&quot;
+        &quot;exec &quot;!time ./%&lt;&quot;
+        exec &quot;!g++ % -o %&lt; &amp;&amp; time ./%&lt;&quot;
+    elseif &amp;filetype == &apos;cpp&apos;
+        &quot;exec &quot;!g++ % -std=c++11 -o %&lt;&quot;
+        &quot;exec &quot;!time ./%&lt;&quot;
+        exec &quot;!g++ % -std=c++11 -o %&lt; &amp;&amp; time ./%&lt;&quot;
+    elseif &amp;filetype == &apos;java&apos; 
+        &quot;exec &quot;!javac %&quot; 
+        &quot;exec &quot;!time java %&lt;&quot;
+        exec &quot;!javac % &amp;&amp; time java %&lt;&quot;
+    elseif &amp;filetype == &apos;sh&apos;
+        :!time bash %
+    elseif &amp;filetype == &apos;python&apos;
+        exec &quot;!time python %&quot;
+    elseif &amp;filetype == &apos;html&apos;
+        exec &quot;!firefox % &amp;&quot;
+    elseif &amp;filetype == &apos;go&apos;
+        &quot;        exec &quot;!go build %&lt;&quot;
+        exec &quot;!time go run %&quot;
+    elseif &amp;filetype == &apos;mkd&apos;
+        exec &quot;!~/.vim/markdown.pl % &gt; %.html &amp;&quot;
+        exec &quot;!firefox %.html &amp;&quot;
+    endif
+endfunc
+&quot;代码调试
+map &lt;F8&gt; :call Rungdb()&lt;CR&gt;
+func! Rungdb()
+    exec &quot;w&quot;
+    if &amp;filetype == &apos;cpp&apos;
+        &quot;exec &quot;!g++ % -std=c++11 -g -o %&lt;&quot;
+        &quot;exec &quot;!gdb ./%&lt;&quot;
+        exec &quot;!g++ % -std=c++11 -g -o %&lt; &amp;&amp; gdb ./%&lt;&quot;
+    elseif &amp;filetype == &apos;c&apos;
+        &quot;exec &quot;!gcc % -g -o %&lt;&quot;
+        &quot;exec &quot;!gdb ./%&lt;&quot;
+        exec &quot;!gcc % -g -o %&lt; &amp;&amp; gdb ./%&lt;&quot;
+    elseif &amp;filetype == &apos;python&apos;
+        exec &quot;!python -m pdb %&quot;
+    elseif &amp;filetype == &apos;go&apos;
+        &quot;exec &quot;!go build -o %&lt; %&quot;
+        &quot;exec &quot;!gdb ./%&lt;&quot;
+        exec &quot;!go build -o %&lt; % &amp;&amp; gdb ./%&lt;&quot;
+    endif
+endfunc
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+</code></pre><p>定义了一些快捷键，比如在同时编辑多个文件时 <code>Ctrl + p</code> 和 <code>Ctrl + n</code> 可以切换到上一个或下一个，连击三次 <code>Esc</code> 会不保存退出全部文件， <code>F3</code> 会切换是否显示文件目录树，<code>F5</code> 编译运行和 <code>F8</code> 调试。还有就是插件自己的快捷键，比如使用 <code>Ctrl + w + w</code> 可以切换窗口，使用 <code>s</code> 或者 <code>i</code> 可以分割窗口。使用 <code>m</code> 可以显示文件操作菜单，这些都是 <code>NERDTree</code> 目录树插件的快捷键，还可以自己按照 Vim 的规则定义一些方便的快捷键。</p><pre><code>&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+&quot; 主题
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+set background=dark
+let g:onedark_termcolors=256
+colorscheme onedark
+</code></pre><p>这里就是应用了下载的第一个插件的那个主题，感觉非常养眼，不 是没那么毁眼。其中有几个特殊的字符需要特殊的几种字体才能看到，我喜欢用的 <code>Consolas</code> 字体是没问题的。</p><pre><code>&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+&quot; 插件配置
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+&quot; airline
+let g:airline_theme=&quot;onedark&quot;
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+if !exists(&apos;g:airline_symbols&apos;)
+    let g:airline_symbols = {}
+endif
+let g:airline_left_sep = &apos;&apos;
+let g:airline_left_alt_sep = &apos;&apos;
+let g:airline_right_sep = &apos;&apos;
+let g:airline_right_alt_sep = &apos;&apos;
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+
+&quot; nerdtree
+&quot;let g:NERDTreeFileExtensionHighlightFullName = 1
+&quot;let g:NERDTreeExactMatchHighlightFullName = 1
+&quot;let g:NERDTreePatternMatchHighlightFullName = 1
+&quot;let g:NERDTreeHighlightFolders = 1          
+&quot;let g:NERDTreeHighlightFoldersFullName = 1  
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+
+&quot; pydiction 
+let g:pydiction_location = &apos;~/.vim/plugged/pydiction/complete-dict&apos;
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+
+&quot; rainbow
+let g:rainbow_active = 1 &quot;0 if you want to enable it later via :RainbowToggle
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+</code></pre><p>顾名思义，就是针对安装的插件的配置了，不同的插件会读取其中不同的值来产生不同的行为。</p><h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><p>如果体验了和平常不同的 Vim 后对它产生了浓厚的兴趣，那么对 Vim 的使用进行一次深入的学习那就最好不过了。</p><ul><li><a href="http://vimcdoc.sourceforge.net/doc/help.html" target="_blank" rel="noopener">官方中文文档在线</a></li><li><a href="http://vimcdoc.sourceforge.net/" target="_blank" rel="noopener">官方中文文档下载</a></li></ul></div><footer class="post-footer"><div class="post-tags"><a href="/tags/vim/" rel="tag"><i class="fa fa-tag"></i> vim</a><a href="/tags/linux/" rel="tag"><i class="fa fa-tag"></i> linux</a></div><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/2018/05/03/2018/OpenVPN 穿越NAT网络/" rel="next" title="OpenVPN 穿越NAT网络"><i class="fa fa-chevron-left"></i> OpenVPN 穿越NAT网络</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"> <a href="/2018/05/24/2018/一起动手写一个VPN/" rel="prev" title="一起动手写一个VPN">一起动手写一个VPN<i class="fa fa-chevron-right"></i></a></div></div></footer></div></article><div class="post-spread"></div></div></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap"> 文章目录</li><li class="sidebar-nav-overview" data-target="site-overview-wrap"> 站点概览</li></ul><section class="site-overview-wrap sidebar-panel"><div class="site-overview"><div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person"> <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="魏云飞"><p class="site-author-name" itemprop="name">魏云飞</p><p class="site-description motion-element" itemprop="description">帅的人已经醒来 而丑的人还在沉睡</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"> <a href="/archives/"><span class="site-state-item-count">48</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"> <a href="/categories/index.html"><span class="site-state-item-count">26</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"> <a href="/tags/index.html"><span class="site-state-item-count">53</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/yunfwe" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i> GitHub</a></span></div></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">3.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-number">4.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">5.</span> <span class="nav-text">附录</span></a></li></ol></div></div></section></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright">&copy; <span itemprop="copyrightYear">2018</span><span class="with-love"><i class="fa fa-user"></i></span> <span class="author" itemprop="copyrightHolder">魏云飞</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-area-chart"></i></span> <span title="站点总字数">521k</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-coffee"></i></span> <span title="站点总阅读时长">8:41</span></div><div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.0.4</div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i></div></div><script type="text/javascript">"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script><script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script><script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script><script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script></body><script>var titleTime,OriginTitile=document.title;document.addEventListener("visibilitychange",function(){document.hidden?($('[rel="icon"]').attr("href","/img/TEP.ico"),document.title="╭(°A°`)╮ 页面崩溃啦 ~ ",clearTimeout(titleTime)):($('[rel="icon"]').attr("href","/favicon.ico"),document.title="(ฅ>ω<*ฅ) 噫又好了~"+OriginTitile,titleTime=setTimeout(function(){document.title=OriginTitile},2e3))})</script></html>
