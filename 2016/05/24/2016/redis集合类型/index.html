@@ -1,11 +1,487 @@
-<!DOCTYPE html><html class="theme-next mist use-motion" lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#222"><script src="/lib/pace/pace.min.js?v=1.0.2"></script><link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"><link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css"><link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css"><link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4"><link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4"><link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4"><link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222"><script type="text/javascript" id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Mist",version:"6.0.4",sidebar:{position:"left",display:"hide",offset:12,b2t:!1,scrollpercent:!1,onmobile:!1},fancybox:!0,fastclick:!1,lazyload:!1,tabs:!0,motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}},algolia:{applicationID:"",apiKey:"",indexName:"",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><meta name="keywords" content="Hexo, NexT"><meta name="description" content="简介 集合和列表有很多相似的地方 但是很容易将他们区分开 集合的元素有唯一性 而且元素是无序的。集合类型的常用操作是向集合中加入或删除元素、判断某个元素是否存在等。最方便的是多个集合类型键之间还可以进行并集、交集和差集运算"><meta property="og:type" content="article"><meta property="og:title" content="Redis集合类型"><meta property="og:url" content="http://www.hinote.ga/2016/05/24/2016/redis集合类型/index.html"><meta property="og:site_name" content="某科学的最后之作"><meta property="og:description" content="简介 集合和列表有很多相似的地方 但是很容易将他们区分开 集合的元素有唯一性 而且元素是无序的。集合类型的常用操作是向集合中加入或删除元素、判断某个元素是否存在等。最方便的是多个集合类型键之间还可以进行并集、交集和差集运算"><meta property="og:locale" content="zh-CN"><meta property="og:updated_time" content="2018-12-05T15:10:29.202Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Redis集合类型"><meta name="twitter:description" content="简介 集合和列表有很多相似的地方 但是很容易将他们区分开 集合的元素有唯一性 而且元素是无序的。集合类型的常用操作是向集合中加入或删除元素、判断某个元素是否存在等。最方便的是多个集合类型键之间还可以进行并集、交集和差集运算"><link rel="canonical" href="http://www.hinote.ga/2016/05/24/2016/redis集合类型/"><script type="text/javascript" id="page.configurations">CONFIG.page={sidebar:""}</script><title>Redis集合类型 | 某科学的最后之作</title><noscript><style type="text/css">.sidebar-inner,.use-motion .brand,.use-motion .collection-title,.use-motion .comments,.use-motion .menu-item,.use-motion .motion-element,.use-motion .pagination,.use-motion .post-block,.use-motion .post-body,.use-motion .post-header{opacity:initial}.use-motion .logo,.use-motion .site-subtitle,.use-motion .site-title{opacity:initial;top:initial}.logo-line-after i{right:initial}</style></noscript></head><body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div><header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">某科学的最后之作</span><span class="logo-line-after"><i></i></span></a></div><p class="site-subtitle">帅的人已经醒来 而丑的人还在沉睡</p></div><div class="site-nav-toggle"> <button><span class="btn-bar"></span><span class="btn-bar"></span><span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class="menu-item menu-item-search"><a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br>搜索</a></li></ul><div class="site-search"><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i></span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"> <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input"></div></div><div id="local-search-result"></div></div></div></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="http://www.hinote.ga/2016/05/24/2016/redis集合类型/"><span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person"><meta itemprop="name" content="魏云飞"><meta itemprop="description" content=""><meta itemprop="image" content="/uploads/avatar.png"></span><span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization"><meta itemprop="name" content="某科学的最后之作"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">Redis集合类型</h1><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">发表于</span> <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-24T11:17:41+08:00">2016-05-24</time> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-calendar-check-o"></i></span> <span class="post-meta-item-text">更新于&#58;</span> <time title="更新于" itemprop="dateModified" datetime="2018-12-05T23:10:29+08:00">2018-12-05</time></span> <span class="post-category"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-folder-o"></i></span> <span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a></span></span><div class="post-symbolscount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span> <span class="post-meta-item-text">字数统计&#58;</span> <span title="字数统计">3.8k</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-clock-o"></i></span> <span class="post-meta-item-text">阅读时长 &asymp;</span> <span title="阅读时长">0:04</span></div></div></header><div class="post-body" itemprop="articleBody"><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a><font color="#5CACEE">简介</font></h2><blockquote><p>集合和列表有很多相似的地方 但是很容易将他们区分开 集合的元素有唯一性 而且元素是无序的。集合类型的常用操作是向集合中加入或删除元素、判断某个元素是否存在等。最方便的是多个集合类型键之间还可以进行并集、交集和差集运算<br><a id="more"></a></p></blockquote><h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a><font color="#5CACEE">环境</font></h2><table><thead><tr><th>软件名称</th><th style="text-align:center">版本号</th><th style="text-align:right">下载地址</th></tr></thead><tbody><tr><td>redis</td><td style="text-align:center">3.2.0</td><td style="text-align:right"><a href="http://download.redis.io/releases/redis-3.2.0.tar.gz" target="_blank" rel="noopener"><font color="#AAAAAA">点击下载</font></a></td></tr></tbody></table><h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a><font color="#5CACEE">步骤</font></h2><h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a><font color="#CDAA7D">常用命令</font></h3><blockquote><p>下面将详细说明操作Redis集合类型的相关命令</p></blockquote><h4 id="增加和删除元素"><a href="#增加和删除元素" class="headerlink" title="增加和删除元素"></a><font color="#DDA0DD">增加和删除元素</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SADD key member [member ...]        # 向一个集合添加元素</span><br><span class="line">SREM key member [member ...]        # 从一个集合删除元素</span><br></pre></td></tr></table></figure><pre><code>127.0.0.1:6379&gt; SADD num 1 2 2 3
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="Hexo, NexT">
+
+
+<meta name="description" content="简介 集合和列表有很多相似的地方 但是很容易将他们区分开 集合的元素有唯一性 而且元素是无序的。集合类型的常用操作是向集合中加入或删除元素、判断某个元素是否存在等。最方便的是多个集合类型键之间还可以进行并集、交集和差集运算">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis集合类型">
+<meta property="og:url" content="http://www.hinote.ga/2016/05/24/2016/redis集合类型/index.html">
+<meta property="og:site_name" content="某科学的最后之作">
+<meta property="og:description" content="简介 集合和列表有很多相似的地方 但是很容易将他们区分开 集合的元素有唯一性 而且元素是无序的。集合类型的常用操作是向集合中加入或删除元素、判断某个元素是否存在等。最方便的是多个集合类型键之间还可以进行并集、交集和差集运算">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-12-05T15:10:29.202Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Redis集合类型">
+<meta name="twitter:description" content="简介 集合和列表有很多相似的地方 但是很容易将他们区分开 集合的元素有唯一性 而且元素是无序的。集合类型的常用操作是向集合中加入或删除元素、判断某个元素是否存在等。最方便的是多个集合类型键之间还可以进行并集、交集和差集运算">
+
+
+
+
+
+
+  <link rel="canonical" href="http://www.hinote.ga/2016/05/24/2016/redis集合类型/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>Redis集合类型 | 某科学的最后之作</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">某科学的最后之作</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">帅的人已经醒来 而丑的人还在沉睡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.hinote.ga/2016/05/24/2016/redis集合类型/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="魏云飞">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="某科学的最后之作">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Redis集合类型</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-24T11:17:41+08:00">2016-05-24</time>
+            
+
+            
+            
+              
+                
+              
+            
+
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2018-12-05T23:10:29+08:00">2018-12-05</time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">3.8k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">0:04</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a><font color="#5CACEE">简介</font></h2><blockquote>
+<p>集合和列表有很多相似的地方 但是很容易将他们区分开 集合的元素有唯一性 而且元素是无序的。集合类型的常用操作是向集合中加入或删除元素、判断某个元素是否存在等。最方便的是多个集合类型键之间还可以进行并集、交集和差集运算<br><a id="more"></a></p>
+</blockquote>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a><font color="#5CACEE">环境</font></h2><table>
+<thead>
+<tr>
+<th>软件名称</th>
+<th style="text-align:center">版本号</th>
+<th style="text-align:right">下载地址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>redis</td>
+<td style="text-align:center">3.2.0</td>
+<td style="text-align:right"><a href="http://download.redis.io/releases/redis-3.2.0.tar.gz" target="_blank" rel="noopener"><font color="#AAAAAA">点击下载</font></a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a><font color="#5CACEE">步骤</font></h2><h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a><font color="#CDAA7D">常用命令</font></h3><blockquote>
+<p>下面将详细说明操作Redis集合类型的相关命令</p>
+</blockquote>
+<h4 id="增加和删除元素"><a href="#增加和删除元素" class="headerlink" title="增加和删除元素"></a><font color="#DDA0DD">增加和删除元素</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SADD key member [member ...]        # 向一个集合添加元素</span><br><span class="line">SREM key member [member ...]        # 从一个集合删除元素</span><br></pre></td></tr></table></figure>
+<pre><code>127.0.0.1:6379&gt; SADD num 1 2 2 3
 (integer) 3
 127.0.0.1:6379&gt; SREM num 1 1 2
 (integer) 2
 127.0.0.1:6379&gt;
 
 SADD执行成功会返回添加成功的个数 因为2相同 所以只有一个被添加 SREM也同样 返回被成功删除的个数
-</code></pre><h4 id="获取集合内所有元素"><a href="#获取集合内所有元素" class="headerlink" title="获取集合内所有元素"></a><font color="#DDA0DD">获取集合内所有元素</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SMEMBERS num            # 获取集合内所有元素</span><br></pre></td></tr></table></figure><pre><code>127.0.0.1:6379&gt; SMEMBERS num
+</code></pre><h4 id="获取集合内所有元素"><a href="#获取集合内所有元素" class="headerlink" title="获取集合内所有元素"></a><font color="#DDA0DD">获取集合内所有元素</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SMEMBERS num            # 获取集合内所有元素</span><br></pre></td></tr></table></figure>
+<pre><code>127.0.0.1:6379&gt; SMEMBERS num
 1) &quot;3&quot;
 127.0.0.1:6379&gt; SADD num 2 2
 (integer) 1
@@ -14,14 +490,16 @@ SADD执行成功会返回添加成功的个数 因为2相同 所以只有一个�
 2) &quot;3&quot;
 
 可以看到 num中只剩下3了 而且添加两个元素2 最后num中也只有一个2
-</code></pre><h4 id="判断元素是否在集合中"><a href="#判断元素是否在集合中" class="headerlink" title="判断元素是否在集合中"></a><font color="#DDA0DD">判断元素是否在集合中</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SISMEMBER num 2         # 判断元素是否在集合中</span><br></pre></td></tr></table></figure><pre><code>127.0.0.1:6379&gt; SISMEMBER num 2
+</code></pre><h4 id="判断元素是否在集合中"><a href="#判断元素是否在集合中" class="headerlink" title="判断元素是否在集合中"></a><font color="#DDA0DD">判断元素是否在集合中</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SISMEMBER num 2         # 判断元素是否在集合中</span><br></pre></td></tr></table></figure>
+<pre><code>127.0.0.1:6379&gt; SISMEMBER num 2
 (integer) 1
 127.0.0.1:6379&gt; SISMEMBER num 1
 (integer) 0
 127.0.0.1:6379&gt;
 
 如果命中了 则返回1 否则返回0
-</code></pre><h4 id="集合运算"><a href="#集合运算" class="headerlink" title="集合运算"></a><font color="#DDA0DD">集合运算</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SDIFF key1 [key2 ...]           # 计算差集</span><br><span class="line">SINTER key1 [key2 ...]          # 计算交集</span><br><span class="line">SUNION key1 [key2 ...]          # 计算并集</span><br></pre></td></tr></table></figure><pre><code>SDIFF计算多个集合的差集 会想计算key1与key2的差集 然后将这个结果与key3继续计算 交集并集也同理
+</code></pre><h4 id="集合运算"><a href="#集合运算" class="headerlink" title="集合运算"></a><font color="#DDA0DD">集合运算</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SDIFF key1 [key2 ...]           # 计算差集</span><br><span class="line">SINTER key1 [key2 ...]          # 计算交集</span><br><span class="line">SUNION key1 [key2 ...]          # 计算并集</span><br></pre></td></tr></table></figure>
+<pre><code>SDIFF计算多个集合的差集 会想计算key1与key2的差集 然后将这个结果与key3继续计算 交集并集也同理
 
 127.0.0.1:6379&gt; SADD num1 1 2 3
 (integer) 3
@@ -50,7 +528,8 @@ SINTER 计算num1和num2的交集
 127.0.0.1:6379
 
 SUNION 计算num1和num2的合集
-</code></pre><h4 id="获取集合中元素个数"><a href="#获取集合中元素个数" class="headerlink" title="获取集合中元素个数"></a><font color="#DDA0DD">获取集合中元素个数</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SCARD key               # 获取集合中元素个数</span><br></pre></td></tr></table></figure><pre><code>127.0.0.1:6379&gt; SMEMBERS num1
+</code></pre><h4 id="获取集合中元素个数"><a href="#获取集合中元素个数" class="headerlink" title="获取集合中元素个数"></a><font color="#DDA0DD">获取集合中元素个数</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SCARD key               # 获取集合中元素个数</span><br></pre></td></tr></table></figure>
+<pre><code>127.0.0.1:6379&gt; SMEMBERS num1
 1) &quot;1&quot;
 2) &quot;2&quot;
 3) &quot;3&quot;
@@ -59,7 +538,8 @@ SUNION 计算num1和num2的合集
 127.0.0.1:6379&gt;
 
 SCARD 返回一个集合中元素个数
-</code></pre><h4 id="存储集合运算后的结果"><a href="#存储集合运算后的结果" class="headerlink" title="存储集合运算后的结果"></a><font color="#DDA0DD">存储集合运算后的结果</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SDIFFSTORE dest key [key …]          # 将差集运算的结果保存为dest</span><br><span class="line">SINTERSTORE dest key [key …]         # 将交集运算的结果保存为dest</span><br><span class="line">SUNIONSTORE dest key [key …]         # 将并集运算的结果保存为dest</span><br></pre></td></tr></table></figure><pre><code>127.0.0.1:6379&gt; SUNIONSTORE all num1 num2
+</code></pre><h4 id="存储集合运算后的结果"><a href="#存储集合运算后的结果" class="headerlink" title="存储集合运算后的结果"></a><font color="#DDA0DD">存储集合运算后的结果</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SDIFFSTORE dest key [key …]          # 将差集运算的结果保存为dest</span><br><span class="line">SINTERSTORE dest key [key …]         # 将交集运算的结果保存为dest</span><br><span class="line">SUNIONSTORE dest key [key …]         # 将并集运算的结果保存为dest</span><br></pre></td></tr></table></figure>
+<pre><code>127.0.0.1:6379&gt; SUNIONSTORE all num1 num2
 (integer) 4
 127.0.0.1:6379&gt; SMEMBERS all
 1) &quot;1&quot;
@@ -69,7 +549,8 @@ SCARD 返回一个集合中元素个数
 127.0.0.1:6379&gt;
 
 和SDIFF唯一区别就是不将结果返回 而是将结果保存为新的集合 只返回新集合元素个数 其余两个道理相同
-</code></pre><h4 id="随机获得集合中的元素"><a href="#随机获得集合中的元素" class="headerlink" title="随机获得集合中的元素"></a><font color="#DDA0DD">随机获得集合中的元素</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SRANDMEMBER key [count]         # 随机获得集合中的元素</span><br></pre></td></tr></table></figure><pre><code>count非必选项 用于每次获取多少个随机元素 count的正负体现的意义也不同 
+</code></pre><h4 id="随机获得集合中的元素"><a href="#随机获得集合中的元素" class="headerlink" title="随机获得集合中的元素"></a><font color="#DDA0DD">随机获得集合中的元素</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SRANDMEMBER key [count]         # 随机获得集合中的元素</span><br></pre></td></tr></table></figure>
+<pre><code>count非必选项 用于每次获取多少个随机元素 count的正负体现的意义也不同 
 count &gt; 0 时 随机获取count个元素 但是元素不会出现重复获取的情况 也就是都是唯一的
 count &lt; 0 时 随机获取count的绝对值个元素 元素可能被重复获取 
 如果count的值大于集合中的元素个数 则SRANDMEMBER会返回集合中的全部元素
@@ -91,7 +572,8 @@ count &lt; 0 时 随机获取count的绝对值个元素 元素可能被重复获
 5) &quot;2&quot;
 6) &quot;2&quot;
 127.0.0.1:6379&gt;
-</code></pre><h4 id="从集合中弹出一个元素"><a href="#从集合中弹出一个元素" class="headerlink" title="从集合中弹出一个元素"></a><font color="#DDA0DD">从集合中弹出一个元素</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SPOP key            # 从集合中弹出一个元素</span><br></pre></td></tr></table></figure><pre><code>127.0.0.1:6379&gt; SPOP all
+</code></pre><h4 id="从集合中弹出一个元素"><a href="#从集合中弹出一个元素" class="headerlink" title="从集合中弹出一个元素"></a><font color="#DDA0DD">从集合中弹出一个元素</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SPOP key            # 从集合中弹出一个元素</span><br></pre></td></tr></table></figure>
+<pre><code>127.0.0.1:6379&gt; SPOP all
 &quot;4&quot;
 127.0.0.1:6379&gt; SMEMBERS all
 1) &quot;1&quot;
@@ -105,7 +587,10 @@ count &lt; 0 时 随机获取count的绝对值个元素 元素可能被重复获
 127.0.0.1:6379&gt;
 
 由于集合是无序的 所以SPOP会随机弹出一个值
-</code></pre><h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a><font color="#5CACEE">附录</font></h2><blockquote><p>命令总结</p></blockquote><pre><code>SADD key member [member ...]            向一个集合添加元素
+</code></pre><h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a><font color="#5CACEE">附录</font></h2><blockquote>
+<p>命令总结</p>
+</blockquote>
+<pre><code>SADD key member [member ...]            向一个集合添加元素
 SREM key member [member ...]            从一个集合删除元素
 SMEMBERS num                            获取集合内所有元素
 SISMEMBER num 2                         判断元素是否在集合中
@@ -118,7 +603,576 @@ SINTERSTORE dest key [key …]            将交集运算的结果保存为dest
 SUNIONSTORE dest key [key …]            将并集运算的结果保存为dest
 SRANDMEMBER key [count]                 随机获得集合中的元素
 SPOP key                                从集合中弹出一个元素
-</code></pre></div><footer class="post-footer"><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/2016/05/20/2016/redis字符串类型/" rel="next" title="Redis字符串类型"><i class="fa fa-chevron-left"></i> Redis字符串类型</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"> <a href="/2016/05/24/2016/redis有序集合类型/" rel="prev" title="Redis有序集合类型">Redis有序集合类型<i class="fa fa-chevron-right"></i></a></div></div></footer></div></article><div class="post-spread"></div></div></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap"> 文章目录</li><li class="sidebar-nav-overview" data-target="site-overview-wrap"> 站点概览</li></ul><section class="site-overview-wrap sidebar-panel"><div class="site-overview"><div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person"> <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="魏云飞"><p class="site-author-name" itemprop="name">魏云飞</p><p class="site-description motion-element" itemprop="description">帅的人已经醒来 而丑的人还在沉睡</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"> <a href="/archives/"><span class="site-state-item-count">48</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"> <a href="/categories/index.html"><span class="site-state-item-count">26</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"> <a href="/tags/index.html"><span class="site-state-item-count">53</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/yunfwe" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i> GitHub</a></span></div></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#步骤"><span class="nav-number">3.</span> <span class="nav-text">步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用命令"><span class="nav-number">3.1.</span> <span class="nav-text">常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#增加和删除元素"><span class="nav-number">3.1.1.</span> <span class="nav-text">增加和删除元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取集合内所有元素"><span class="nav-number">3.1.2.</span> <span class="nav-text">获取集合内所有元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#判断元素是否在集合中"><span class="nav-number">3.1.3.</span> <span class="nav-text">判断元素是否在集合中</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#集合运算"><span class="nav-number">3.1.4.</span> <span class="nav-text">集合运算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取集合中元素个数"><span class="nav-number">3.1.5.</span> <span class="nav-text">获取集合中元素个数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#存储集合运算后的结果"><span class="nav-number">3.1.6.</span> <span class="nav-text">存储集合运算后的结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#随机获得集合中的元素"><span class="nav-number">3.1.7.</span> <span class="nav-text">随机获得集合中的元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#从集合中弹出一个元素"><span class="nav-number">3.1.8.</span> <span class="nav-text">从集合中弹出一个元素</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">4.</span> <span class="nav-text">附录</span></a></li></ol></div></div></section></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright">&copy; <span itemprop="copyrightYear">2018</span><span class="with-love"><i class="fa fa-user"></i></span> <span class="author" itemprop="copyrightHolder">魏云飞</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-area-chart"></i></span> <span title="站点总字数">521k</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-coffee"></i></span> <span title="站点总阅读时长">8:41</span></div><div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.0.4</div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i></div></div><script type="text/javascript">"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script><script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script><script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script><script type="text/javascript">
+</code></pre>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/20/2016/redis字符串类型/" rel="next" title="Redis字符串类型">
+                <i class="fa fa-chevron-left"></i> Redis字符串类型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/24/2016/redis有序集合类型/" rel="prev" title="Redis有序集合类型">
+                Redis有序集合类型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="魏云飞">
+            
+              <p class="site-author-name" itemprop="name">魏云飞</p>
+              <p class="site-description motion-element" itemprop="description">帅的人已经醒来 而丑的人还在沉睡</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">49</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">56</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/yunfwe" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#步骤"><span class="nav-number">3.</span> <span class="nav-text">步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用命令"><span class="nav-number">3.1.</span> <span class="nav-text">常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#增加和删除元素"><span class="nav-number">3.1.1.</span> <span class="nav-text">增加和删除元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取集合内所有元素"><span class="nav-number">3.1.2.</span> <span class="nav-text">获取集合内所有元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#判断元素是否在集合中"><span class="nav-number">3.1.3.</span> <span class="nav-text">判断元素是否在集合中</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#集合运算"><span class="nav-number">3.1.4.</span> <span class="nav-text">集合运算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取集合中元素个数"><span class="nav-number">3.1.5.</span> <span class="nav-text">获取集合中元素个数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#存储集合运算后的结果"><span class="nav-number">3.1.6.</span> <span class="nav-text">存储集合运算后的结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#随机获得集合中的元素"><span class="nav-number">3.1.7.</span> <span class="nav-text">随机获得集合中的元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#从集合中弹出一个元素"><span class="nav-number">3.1.8.</span> <span class="nav-text">从集合中弹出一个元素</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">4.</span> <span class="nav-text">附录</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">魏云飞</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">553k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+    <span title="站点总阅读时长">9:13</span>
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.0.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
     // Popup Window;
     var isfetched = false;
     var isXml = true;
@@ -436,4 +1490,48 @@ SPOP key                                从集合中弹出一个元素
         onPopupClose();
       }
     });
-  </script></body><script>var titleTime,OriginTitile=document.title;document.addEventListener("visibilitychange",function(){document.hidden?($('[rel="icon"]').attr("href","/img/TEP.ico"),document.title="╭(°A°`)╮ 页面崩溃啦 ~ ",clearTimeout(titleTime)):($('[rel="icon"]').attr("href","/favicon.ico"),document.title="(ฅ>ω<*ฅ) 噫又好了~"+OriginTitile,titleTime=setTimeout(function(){document.title=OriginTitile},2e3))})</script></html>
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<script>
+var OriginTitile = document.title;
+ var titleTime;
+ document.addEventListener('visibilitychange', function () {
+     if (document.hidden) {
+         $('[rel="icon"]').attr('href', "/img/TEP.ico");
+         document.title = '╭(°A°`)╮ 页面崩溃啦 ~ ';
+         clearTimeout(titleTime);
+     }
+     else {
+         $('[rel="icon"]').attr('href', "/favicon.ico");
+         document.title = '(ฅ>ω<*ฅ) 噫又好了~' + OriginTitile;
+         titleTime = setTimeout(function () {
+             document.title = OriginTitile;
+         }, 2000);
+     }
+ });
+</script>
+</html>

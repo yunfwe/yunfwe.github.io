@@ -1,4 +1,497 @@
-<!DOCTYPE html><html class="theme-next mist use-motion" lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#222"><script src="/lib/pace/pace.min.js?v=1.0.2"></script><link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"><link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css"><link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css"><link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4"><link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4"><link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4"><link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222"><script type="text/javascript" id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Mist",version:"6.0.4",sidebar:{position:"left",display:"hide",offset:12,b2t:!1,scrollpercent:!1,onmobile:!1},fancybox:!0,fastclick:!1,lazyload:!1,tabs:!0,motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}},algolia:{applicationID:"",apiKey:"",indexName:"",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><meta name="keywords" content="ubuntu,raspberry,"><meta name="description" content="简介 Raspberry Pi 中文名为树莓派，原本是为学习计算机编程教育而设计的只有卡片大小的微型电脑，上面可以运行 Linux 甚至 Windows 10 loT 系统。树莓派虽小，却五脏俱全，而且拥有丰富的拓展接口，是学习Linux、嵌入式、物联网的利器。"><meta name="keywords" content="ubuntu,raspberry"><meta property="og:type" content="article"><meta property="og:title" content="玩转树莓派"><meta property="og:url" content="http://www.hinote.ga/2018/04/24/2018/玩转树莓派/index.html"><meta property="og:site_name" content="某科学的最后之作"><meta property="og:description" content="简介 Raspberry Pi 中文名为树莓派，原本是为学习计算机编程教育而设计的只有卡片大小的微型电脑，上面可以运行 Linux 甚至 Windows 10 loT 系统。树莓派虽小，却五脏俱全，而且拥有丰富的拓展接口，是学习Linux、嵌入式、物联网的利器。"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="http://www.hinote.ga/uploads/photos/asfasdasfad.jpg"><meta property="og:updated_time" content="2018-04-25T02:12:00.000Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="玩转树莓派"><meta name="twitter:description" content="简介 Raspberry Pi 中文名为树莓派，原本是为学习计算机编程教育而设计的只有卡片大小的微型电脑，上面可以运行 Linux 甚至 Windows 10 loT 系统。树莓派虽小，却五脏俱全，而且拥有丰富的拓展接口，是学习Linux、嵌入式、物联网的利器。"><meta name="twitter:image" content="http://www.hinote.ga/uploads/photos/asfasdasfad.jpg"><link rel="canonical" href="http://www.hinote.ga/2018/04/24/2018/玩转树莓派/"><script type="text/javascript" id="page.configurations">CONFIG.page={sidebar:""}</script><title>玩转树莓派 | 某科学的最后之作</title><noscript><style type="text/css">.sidebar-inner,.use-motion .brand,.use-motion .collection-title,.use-motion .comments,.use-motion .menu-item,.use-motion .motion-element,.use-motion .pagination,.use-motion .post-block,.use-motion .post-body,.use-motion .post-header{opacity:initial}.use-motion .logo,.use-motion .site-subtitle,.use-motion .site-title{opacity:initial;top:initial}.logo-line-after i{right:initial}</style></noscript></head><body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div><header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">某科学的最后之作</span><span class="logo-line-after"><i></i></span></a></div><p class="site-subtitle">帅的人已经醒来 而丑的人还在沉睡</p></div><div class="site-nav-toggle"> <button><span class="btn-bar"></span><span class="btn-bar"></span><span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class="menu-item menu-item-search"><a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br>搜索</a></li></ul><div class="site-search"><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i></span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"> <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input"></div></div><div id="local-search-result"></div></div></div></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="http://www.hinote.ga/2018/04/24/2018/玩转树莓派/"><span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person"><meta itemprop="name" content="魏云飞"><meta itemprop="description" content=""><meta itemprop="image" content="/uploads/avatar.png"></span><span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization"><meta itemprop="name" content="某科学的最后之作"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">玩转树莓派</h1><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">发表于</span> <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-24T10:12:00+08:00">2018-04-24</time> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-calendar-check-o"></i></span> <span class="post-meta-item-text">更新于&#58;</span> <time title="更新于" itemprop="dateModified" datetime="2018-04-25T10:12:00+08:00">2018-04-25</time></span> <span class="post-category"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-folder-o"></i></span> <span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/IoT/" itemprop="url" rel="index"><span itemprop="name">IoT</span></a></span></span><div class="post-symbolscount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span> <span class="post-meta-item-text">字数统计&#58;</span> <span title="字数统计">10k</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-clock-o"></i></span> <span class="post-meta-item-text">阅读时长 &asymp;</span> <span title="阅读时长">0:10</span></div></div></header><div class="post-body" itemprop="articleBody"><div class="post-gallery" itemscope="" itemtype="http://schema.org/ImageGallery"><div class="post-gallery-row"> <a class="post-gallery-img fancybox" href="/uploads/photos/asfasdasfad.jpg" rel="gallery_cjpgy2uwv007dmwe69k4sknit" itemscope="" itemtype="http://schema.org/ImageObject" itemprop="url"><img src="/uploads/photos/asfasdasfad.jpg" itemprop="contentUrl"></a></div></div><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote><p>Raspberry Pi 中文名为树莓派，原本是为学习计算机编程教育而设计的只有卡片大小的微型电脑，上面可以运行 Linux 甚至 Windows 10 loT 系统。树莓派虽小，却五脏俱全，而且拥有丰富的拓展接口，是学习Linux、嵌入式、物联网的利器。</p></blockquote><a id="more"></a><h2 id="开始使用"><a href="#开始使用" class="headerlink" title="开始使用"></a>开始使用</h2><h3 id="准备工具"><a href="#准备工具" class="headerlink" title="准备工具"></a>准备工具</h3><ul><li>树莓派，当前最新版本是 这里使用的是树莓派3B</li><li>读卡器，给树莓派烧录系统用，因为树莓派的系统安装在内存卡。</li><li>最好 8G 或以上的 Micro SD 卡，但是也不用太大，否则可能不稳定甚至不支持。</li><li>最好 5V 2.5A 电源（普通安卓充电器也可以），如果需要为树莓派扩展硬件的话，电源需要比较给力。</li><li>鼠标、键盘、HDMI转VGA线还有显示器，不过这些并不是必须的，看情况使用。</li></ul><h3 id="安装系统"><a href="#安装系统" class="headerlink" title="安装系统"></a>安装系统</h3><h4 id="下载镜像包"><a href="#下载镜像包" class="headerlink" title="下载镜像包"></a>下载镜像包</h4><p>镜像包可以选择官方的镜像，或者第三方的镜像</p><p>官方下载：<a href="https://www.raspberrypi.org/downloads/" target="_blank" rel="noopener">https://www.raspberrypi.org/downloads/</a><br>Ubuntu：<a href="https://wiki.ubuntu.com/ARM/RaspberryPi" target="_blank" rel="noopener">https://wiki.ubuntu.com/ARM/RaspberryPi</a></p><p>这里下载官方系统的Lite版，<a href="http://director.downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2018-04-19/2018-04-18-raspbian-stretch-lite.zip" target="_blank" rel="noopener">点此下载</a>。</p><h3 id="解压和烧录"><a href="#解压和烧录" class="headerlink" title="解压和烧录"></a>解压和烧录</h3><p>可以在Linux下和Windows下进行烧录，Windows下需要下载 Win32 Disk IMager 工具进行烧录，linux下可以直接使用dd命令。</p><h4 id="Linux下烧录"><a href="#Linux下烧录" class="headerlink" title="Linux下烧录"></a>Linux下烧录</h4><p>将内存卡插入到读卡器，然后读卡器插入电脑，读卡器设备被系统映射为了 <code>/dev/sdc</code>。</p><p><strong>注意</strong>：Linux需要看看读卡器被系统映射为了哪个设备文件，如果指定错了设备文件，后果可能不堪设想。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 先卸载一下 确保系统没有主动挂载这个设备，如果存在多个分区，需要卸载多个</span><br><span class="line">umount /dev/sdc1	</span><br><span class="line">unzip 2018-04-18-raspbian-stretch-lite.zip</span><br><span class="line">sudo dd if=2018-04-18-raspbian-stretch-lite.img of=/dev/sdc bs=4M</span><br></pre></td></tr></table></figure><h4 id="Windows下烧录"><a href="#Windows下烧录" class="headerlink" title="Windows下烧录"></a>Windows下烧录</h4><p>先将下载的xz镜像解压为img文件，然后使用 Win32 Disk IMager 工具烧录到内存卡。</p><p><img src="/uploads/2018/raspberry/ap6e59p5abi3u94q.png" alt=""><br>需要注意的是，选择SD卡的设备，然后选择好解压后的img镜像后点击 write 开始写入。</p><h3 id="启动树莓派"><a href="#启动树莓派" class="headerlink" title="启动树莓派"></a>启动树莓派</h3><p>正常来说，插入内存卡，插入网线就可以开机了，树莓派默认会DHCP获取IP地址，但是如果局域网不存在DHCP服务，那启动后会在获取DHCP地址过程中等待五六分钟，而且这种情况没有显示器就没法操作树莓派了。</p><h4 id="配置静态IP"><a href="#配置静态IP" class="headerlink" title="配置静态IP"></a>配置静态IP</h4><p>但是对于不存在DHCP服务的局域网，可以在启动树莓派之前就配置好树莓派的IP地址，这样启动后就会自动应用配置的IP，连显示器和键盘也不需要了。</p><p>以下操作在 Linux 上进行。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mount /dev/sdc2 /mnt		# 烧录后树莓派的rootfs在sdc的第二个分区上</span><br><span class="line">vim /mnt/etc/network/interfaces # 编辑这个文件为下面内容，将IP信息替换为合适的信息</span><br></pre></td></tr></table></figure><pre><code># This file describes the network interfaces available on your system
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="ubuntu,raspberry,">
+
+
+<meta name="description" content="简介 Raspberry Pi 中文名为树莓派，原本是为学习计算机编程教育而设计的只有卡片大小的微型电脑，上面可以运行 Linux 甚至 Windows 10 loT 系统。树莓派虽小，却五脏俱全，而且拥有丰富的拓展接口，是学习Linux、嵌入式、物联网的利器。">
+<meta name="keywords" content="ubuntu,raspberry">
+<meta property="og:type" content="article">
+<meta property="og:title" content="玩转树莓派">
+<meta property="og:url" content="http://www.hinote.ga/2018/04/24/2018/玩转树莓派/index.html">
+<meta property="og:site_name" content="某科学的最后之作">
+<meta property="og:description" content="简介 Raspberry Pi 中文名为树莓派，原本是为学习计算机编程教育而设计的只有卡片大小的微型电脑，上面可以运行 Linux 甚至 Windows 10 loT 系统。树莓派虽小，却五脏俱全，而且拥有丰富的拓展接口，是学习Linux、嵌入式、物联网的利器。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.hinote.ga/uploads/photos/asfasdasfad.jpg">
+<meta property="og:updated_time" content="2018-04-25T02:12:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="玩转树莓派">
+<meta name="twitter:description" content="简介 Raspberry Pi 中文名为树莓派，原本是为学习计算机编程教育而设计的只有卡片大小的微型电脑，上面可以运行 Linux 甚至 Windows 10 loT 系统。树莓派虽小，却五脏俱全，而且拥有丰富的拓展接口，是学习Linux、嵌入式、物联网的利器。">
+<meta name="twitter:image" content="http://www.hinote.ga/uploads/photos/asfasdasfad.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://www.hinote.ga/2018/04/24/2018/玩转树莓派/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>玩转树莓派 | 某科学的最后之作</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">某科学的最后之作</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">帅的人已经醒来 而丑的人还在沉睡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.hinote.ga/2018/04/24/2018/玩转树莓派/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="魏云飞">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="某科学的最后之作">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">玩转树莓派</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-24T10:12:00+08:00">2018-04-24</time>
+            
+
+            
+            
+              
+                
+              
+            
+
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2018-04-25T10:12:00+08:00">2018-04-25</time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/IoT/" itemprop="url" rel="index"><span itemprop="name">IoT</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">10k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">0:10</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope="" itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="/uploads/photos/asfasdasfad.jpg" rel="gallery_cjq2am8xp00853se6chbslbad" itemscope="" itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="/uploads/photos/asfasdasfad.jpg" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
+<p>Raspberry Pi 中文名为树莓派，原本是为学习计算机编程教育而设计的只有卡片大小的微型电脑，上面可以运行 Linux 甚至 Windows 10 loT 系统。树莓派虽小，却五脏俱全，而且拥有丰富的拓展接口，是学习Linux、嵌入式、物联网的利器。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="开始使用"><a href="#开始使用" class="headerlink" title="开始使用"></a>开始使用</h2><h3 id="准备工具"><a href="#准备工具" class="headerlink" title="准备工具"></a>准备工具</h3><ul>
+<li>树莓派，当前最新版本是 这里使用的是树莓派3B</li>
+<li>读卡器，给树莓派烧录系统用，因为树莓派的系统安装在内存卡。</li>
+<li>最好 8G 或以上的 Micro SD 卡，但是也不用太大，否则可能不稳定甚至不支持。</li>
+<li>最好 5V 2.5A 电源（普通安卓充电器也可以），如果需要为树莓派扩展硬件的话，电源需要比较给力。</li>
+<li>鼠标、键盘、HDMI转VGA线还有显示器，不过这些并不是必须的，看情况使用。</li>
+</ul>
+<h3 id="安装系统"><a href="#安装系统" class="headerlink" title="安装系统"></a>安装系统</h3><h4 id="下载镜像包"><a href="#下载镜像包" class="headerlink" title="下载镜像包"></a>下载镜像包</h4><p>镜像包可以选择官方的镜像，或者第三方的镜像</p>
+<p>官方下载：<a href="https://www.raspberrypi.org/downloads/" target="_blank" rel="noopener">https://www.raspberrypi.org/downloads/</a><br>Ubuntu：<a href="https://wiki.ubuntu.com/ARM/RaspberryPi" target="_blank" rel="noopener">https://wiki.ubuntu.com/ARM/RaspberryPi</a></p>
+<p>这里下载官方系统的Lite版，<a href="http://director.downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2018-04-19/2018-04-18-raspbian-stretch-lite.zip" target="_blank" rel="noopener">点此下载</a>。</p>
+<h3 id="解压和烧录"><a href="#解压和烧录" class="headerlink" title="解压和烧录"></a>解压和烧录</h3><p>可以在Linux下和Windows下进行烧录，Windows下需要下载 Win32 Disk IMager 工具进行烧录，linux下可以直接使用dd命令。</p>
+<h4 id="Linux下烧录"><a href="#Linux下烧录" class="headerlink" title="Linux下烧录"></a>Linux下烧录</h4><p>将内存卡插入到读卡器，然后读卡器插入电脑，读卡器设备被系统映射为了 <code>/dev/sdc</code>。</p>
+<p><strong>注意</strong>：Linux需要看看读卡器被系统映射为了哪个设备文件，如果指定错了设备文件，后果可能不堪设想。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 先卸载一下 确保系统没有主动挂载这个设备，如果存在多个分区，需要卸载多个</span><br><span class="line">umount /dev/sdc1	</span><br><span class="line">unzip 2018-04-18-raspbian-stretch-lite.zip</span><br><span class="line">sudo dd if=2018-04-18-raspbian-stretch-lite.img of=/dev/sdc bs=4M</span><br></pre></td></tr></table></figure>
+<h4 id="Windows下烧录"><a href="#Windows下烧录" class="headerlink" title="Windows下烧录"></a>Windows下烧录</h4><p>先将下载的xz镜像解压为img文件，然后使用 Win32 Disk IMager 工具烧录到内存卡。</p>
+<p><img src="/uploads/2018/raspberry/ap6e59p5abi3u94q.png" alt=""><br>需要注意的是，选择SD卡的设备，然后选择好解压后的img镜像后点击 write 开始写入。</p>
+<h3 id="启动树莓派"><a href="#启动树莓派" class="headerlink" title="启动树莓派"></a>启动树莓派</h3><p>正常来说，插入内存卡，插入网线就可以开机了，树莓派默认会DHCP获取IP地址，但是如果局域网不存在DHCP服务，那启动后会在获取DHCP地址过程中等待五六分钟，而且这种情况没有显示器就没法操作树莓派了。</p>
+<h4 id="配置静态IP"><a href="#配置静态IP" class="headerlink" title="配置静态IP"></a>配置静态IP</h4><p>但是对于不存在DHCP服务的局域网，可以在启动树莓派之前就配置好树莓派的IP地址，这样启动后就会自动应用配置的IP，连显示器和键盘也不需要了。</p>
+<p>以下操作在 Linux 上进行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mount /dev/sdc2 /mnt		# 烧录后树莓派的rootfs在sdc的第二个分区上</span><br><span class="line">vim /mnt/etc/network/interfaces # 编辑这个文件为下面内容，将IP信息替换为合适的信息</span><br></pre></td></tr></table></figure>
+<pre><code># This file describes the network interfaces available on your system
 # and how to activate them. For more information, see interfaces(5).
 
 # The loopback network interface
@@ -20,16 +513,45 @@ iface eth0 inet static
     # dns-* options are implemented by the resolvconf package, if installed
     dns-nameservers 119.29.29.29
     dns-nameservers 223.5.5.5
-</code></pre><h4 id="自动启动SSH服务"><a href="#自动启动SSH服务" class="headerlink" title="自动启动SSH服务"></a>自动启动SSH服务</h4><p>系统默认启动是不启动SSH服务的，所以还要修改下 <code>rc.local</code> 文件，将 SSH服务 在系统启动后也跟着起来。</p><p>编辑 <code>/mnt/etc/rc.local</code> 添加内容：<code>systemctl start ssh.servic</code></p><h4 id="开机启动"><a href="#开机启动" class="headerlink" title="开机启动"></a>开机启动</h4><p>插入内存卡，连接网线，连接电源的那一刻树莓派就自动启动了。默认用户名：pi 默认密码：raspberry，ssh连接下试试吧。</p><h2 id="系统定制"><a href="#系统定制" class="headerlink" title="系统定制"></a>系统定制</h2><blockquote><p>定制只能在 Linux 环境下进行，这里使用 ubuntu 16.04 64位系统。</p></blockquote><p>对原始的img镜像文件进行修改定制，这样如果以后需要频繁重装系统，或者用于商业目的时，可能就有这种需求了。</p><h3 id="安装需要的包"><a href="#安装需要的包" class="headerlink" title="安装需要的包"></a>安装需要的包</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br><span class="line">apt-get install qemu qemu-user qemu-user-static kpartx</span><br></pre></td></tr></table></figure><h3 id="将镜像挂在到系统目录"><a href="#将镜像挂在到系统目录" class="headerlink" title="将镜像挂在到系统目录"></a>将镜像挂在到系统目录</h3><p>需要先将系统镜像映射到loop设备文件，才能正常挂载镜像文件中的分区</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">losetup /dev/loop0 2018-04-18-raspbian-stretch-lite.img</span><br><span class="line">kpartx -av /dev/loop0</span><br><span class="line">mount /dev/mapper/loop0p2 /mnt/</span><br></pre></td></tr></table></figure><p>这样就将镜像的 rootfs 挂载到了 /mnt 下，系统镜像有两个分区，分别被映射为了 /dev/mapper/loop0p1 和 loop0p2， 其中loop0p1是内核存放分区，暂时是不需要的。</p><h3 id="修改镜像中的数据"><a href="#修改镜像中的数据" class="headerlink" title="修改镜像中的数据"></a>修改镜像中的数据</h3><p>qemu 提供了一个非常有意思的功能，可以 chroot 到异构CPU的二进制组成的根文件系统中，这样就可以在 x86 上对 ARM 的根文件系统的程序做调式了。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">modprobe binfmt_misc</span><br><span class="line">echo &apos;:arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-static-arm-binfmt:P&apos; &gt; /proc/sys/fs/binfmt_misc/register</span><br><span class="line">cp /usr/bin/qemu-arm-static /mnt/usr/bin/	# 将此文件拷贝到ARM的根中</span><br><span class="line">chroot /mnt/ bash</span><br></pre></td></tr></table></figure><p>执行了 chroot 之后，如果没有报错就切换到树莓派的根文件系统了，可以看看当前根的二进制文件是不是 ARM 架构的了 <code>file /bin/bash</code>，或者执行 <code>uname -a</code> 可以看到 内核也被模拟成了 ARM 架构的。</p><p>接下来就可以进行一些安装配置和修改文件等操作了，比如修改网卡的配置文件配置一个静态的IP地址，这样启动树莓派后就可以直接连接了。接下来修改 apt 源为阿里云源，加快软件下载速度。</p><p>修改：<code>/etc/apt/sources.list</code></p><pre><code>deb http://mirrors.aliyun.com/raspbian/raspbian stretch main contrib non-free rpi
-</code></pre><p>之后可以 <code>apt-get update</code> 然后安装需要的软件了。这时候就可以执行 <code>systemctl enable ssh.service</code> 命令，将SSH服务加入开机自启了。</p><p>修改完后退出了 chroot 环境，然后对 /mnt 目录进行卸载。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">exit 			# 执行exit命令或者 Ctrl + d 就可以退出了</span><br><span class="line">umount /mnt		# 如果卸载不掉，使用 fuser -ka /mnt 强制卸载</span><br><span class="line">kpartx -d /dev/loop0	# 卸载loop0中的分区映射</span><br><span class="line">losetup -d /dev/loop0	# 卸载img文件和loop0的映射</span><br></pre></td></tr></table></figure><h3 id="刷入内存卡进行开机验证"><a href="#刷入内存卡进行开机验证" class="headerlink" title="刷入内存卡进行开机验证"></a>刷入内存卡进行开机验证</h3><p>一些不当的修改可能导致无法开机，而且一些特殊的软件包会对内核进行更改，这种情况下就无法使用这种方式定制了。建议每次修改完系统镜像后都进行一次归档保存，并且记录每次归档的修改信息，这样如果某次修改出现了问题导致无法开机，就可以回退到上一次归档的镜像而不是重头再来了。</p><h2 id="功能和拓展"><a href="#功能和拓展" class="headerlink" title="功能和拓展"></a>功能和拓展</h2><h3 id="连接WiFi"><a href="#连接WiFi" class="headerlink" title="连接WiFi"></a>连接WiFi</h3><p>树莓派3B默认是包含了WiFi和蓝牙模块的，配置连接WiFi路由器也很简单。</p><p>首先安装连接WiFi使用的程序<br></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install wpasupplicant</span><br></pre></td></tr></table></figure><p></p><h4 id="连接WPA加密的WiFi"><a href="#连接WPA加密的WiFi" class="headerlink" title="连接WPA加密的WiFi"></a>连接WPA加密的WiFi</h4><p>创建配置文件: <code>/etc/wpa_supplicant/wpa_supplicant.conf</code></p><pre><code>network={
+</code></pre><h4 id="自动启动SSH服务"><a href="#自动启动SSH服务" class="headerlink" title="自动启动SSH服务"></a>自动启动SSH服务</h4><p>系统默认启动是不启动SSH服务的，所以还要修改下 <code>rc.local</code> 文件，将 SSH服务 在系统启动后也跟着起来。</p>
+<p>编辑 <code>/mnt/etc/rc.local</code> 添加内容：<code>systemctl start ssh.servic</code></p>
+<h4 id="开机启动"><a href="#开机启动" class="headerlink" title="开机启动"></a>开机启动</h4><p>插入内存卡，连接网线，连接电源的那一刻树莓派就自动启动了。默认用户名：pi 默认密码：raspberry，ssh连接下试试吧。</p>
+<h2 id="系统定制"><a href="#系统定制" class="headerlink" title="系统定制"></a>系统定制</h2><blockquote>
+<p>定制只能在 Linux 环境下进行，这里使用 ubuntu 16.04 64位系统。</p>
+</blockquote>
+<p>对原始的img镜像文件进行修改定制，这样如果以后需要频繁重装系统，或者用于商业目的时，可能就有这种需求了。</p>
+<h3 id="安装需要的包"><a href="#安装需要的包" class="headerlink" title="安装需要的包"></a>安装需要的包</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br><span class="line">apt-get install qemu qemu-user qemu-user-static kpartx</span><br></pre></td></tr></table></figure>
+<h3 id="将镜像挂在到系统目录"><a href="#将镜像挂在到系统目录" class="headerlink" title="将镜像挂在到系统目录"></a>将镜像挂在到系统目录</h3><p>需要先将系统镜像映射到loop设备文件，才能正常挂载镜像文件中的分区</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">losetup /dev/loop0 2018-04-18-raspbian-stretch-lite.img</span><br><span class="line">kpartx -av /dev/loop0</span><br><span class="line">mount /dev/mapper/loop0p2 /mnt/</span><br></pre></td></tr></table></figure>
+<p>这样就将镜像的 rootfs 挂载到了 /mnt 下，系统镜像有两个分区，分别被映射为了 /dev/mapper/loop0p1 和 loop0p2， 其中loop0p1是内核存放分区，暂时是不需要的。</p>
+<h3 id="修改镜像中的数据"><a href="#修改镜像中的数据" class="headerlink" title="修改镜像中的数据"></a>修改镜像中的数据</h3><p>qemu 提供了一个非常有意思的功能，可以 chroot 到异构CPU的二进制组成的根文件系统中，这样就可以在 x86 上对 ARM 的根文件系统的程序做调式了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">modprobe binfmt_misc</span><br><span class="line">echo &apos;:arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-static-arm-binfmt:P&apos; &gt; /proc/sys/fs/binfmt_misc/register</span><br><span class="line">cp /usr/bin/qemu-arm-static /mnt/usr/bin/	# 将此文件拷贝到ARM的根中</span><br><span class="line">chroot /mnt/ bash</span><br></pre></td></tr></table></figure>
+<p>执行了 chroot 之后，如果没有报错就切换到树莓派的根文件系统了，可以看看当前根的二进制文件是不是 ARM 架构的了 <code>file /bin/bash</code>，或者执行 <code>uname -a</code> 可以看到 内核也被模拟成了 ARM 架构的。</p>
+<p>接下来就可以进行一些安装配置和修改文件等操作了，比如修改网卡的配置文件配置一个静态的IP地址，这样启动树莓派后就可以直接连接了。接下来修改 apt 源为阿里云源，加快软件下载速度。</p>
+<p>修改：<code>/etc/apt/sources.list</code></p>
+<pre><code>deb http://mirrors.aliyun.com/raspbian/raspbian stretch main contrib non-free rpi
+</code></pre><p>之后可以 <code>apt-get update</code> 然后安装需要的软件了。这时候就可以执行 <code>systemctl enable ssh.service</code> 命令，将SSH服务加入开机自启了。</p>
+<p>修改完后退出了 chroot 环境，然后对 /mnt 目录进行卸载。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">exit 			# 执行exit命令或者 Ctrl + d 就可以退出了</span><br><span class="line">umount /mnt		# 如果卸载不掉，使用 fuser -ka /mnt 强制卸载</span><br><span class="line">kpartx -d /dev/loop0	# 卸载loop0中的分区映射</span><br><span class="line">losetup -d /dev/loop0	# 卸载img文件和loop0的映射</span><br></pre></td></tr></table></figure>
+<h3 id="刷入内存卡进行开机验证"><a href="#刷入内存卡进行开机验证" class="headerlink" title="刷入内存卡进行开机验证"></a>刷入内存卡进行开机验证</h3><p>一些不当的修改可能导致无法开机，而且一些特殊的软件包会对内核进行更改，这种情况下就无法使用这种方式定制了。建议每次修改完系统镜像后都进行一次归档保存，并且记录每次归档的修改信息，这样如果某次修改出现了问题导致无法开机，就可以回退到上一次归档的镜像而不是重头再来了。</p>
+<h2 id="功能和拓展"><a href="#功能和拓展" class="headerlink" title="功能和拓展"></a>功能和拓展</h2><h3 id="连接WiFi"><a href="#连接WiFi" class="headerlink" title="连接WiFi"></a>连接WiFi</h3><p>树莓派3B默认是包含了WiFi和蓝牙模块的，配置连接WiFi路由器也很简单。</p>
+<p>首先安装连接WiFi使用的程序<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install wpasupplicant</span><br></pre></td></tr></table></figure></p>
+<h4 id="连接WPA加密的WiFi"><a href="#连接WPA加密的WiFi" class="headerlink" title="连接WPA加密的WiFi"></a>连接WPA加密的WiFi</h4><p>创建配置文件: <code>/etc/wpa_supplicant/wpa_supplicant.conf</code></p>
+<pre><code>network={
         ssid=&quot;SSID&quot;
         key_mgmt=WPA-PSK
         psk=&quot;PASSWORD&quot;
 }
-</code></pre><p>将 <code>SSID</code> 和 <code>PASSWORD</code> 替换成要连接的用户名和密码就可以了。</p><p>然后执行 <code>wpa_supplicant</code> 命令手动连接到WiFi</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wpa_supplicant -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf</span><br></pre></td></tr></table></figure><p>这种方式连接WiFi 如果有错误会打印错误信息，适合手动调试WiFi，等连接无误后，<code>ifconfig</code> 命令可以看到 <code>wlan0</code> 这块网卡。这个时候还是没有IP地址的，需要手动配置一个IP地址或者使用 <code>dhclient wlan0</code> 命令来自动获取IP地址。</p><p>还可以让系统 <code>networking</code> 服务来开机自动连接，修改网卡配置文件：<code>/etc/network/interfaces</code> 添加以下内容</p><pre><code>auto wlan0
+</code></pre><p>将 <code>SSID</code> 和 <code>PASSWORD</code> 替换成要连接的用户名和密码就可以了。</p>
+<p>然后执行 <code>wpa_supplicant</code> 命令手动连接到WiFi</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wpa_supplicant -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf</span><br></pre></td></tr></table></figure>
+<p>这种方式连接WiFi 如果有错误会打印错误信息，适合手动调试WiFi，等连接无误后，<code>ifconfig</code> 命令可以看到 <code>wlan0</code> 这块网卡。这个时候还是没有IP地址的，需要手动配置一个IP地址或者使用 <code>dhclient wlan0</code> 命令来自动获取IP地址。</p>
+<p>还可以让系统 <code>networking</code> 服务来开机自动连接，修改网卡配置文件：<code>/etc/network/interfaces</code> 添加以下内容</p>
+<pre><code>auto wlan0
 iface wlan0 inet dhcp
 　　wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-</code></pre><p>或者配置为静态IP地址</p><pre><code>auto wlan0
+</code></pre><p>或者配置为静态IP地址</p>
+<pre><code>auto wlan0
 iface wlan0 inet static
     address 192.168.0.2
     netmask 255.255.255.0
@@ -37,16 +559,21 @@ iface wlan0 inet static
     dns-nameservers 119.29.29.29
     dns-nameservers 114.114.114.114
 　　wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-</code></pre><p><strong>注意</strong>: 使用 <code>systemctl restart networking.service</code> 时，如果长时间没有反应，千万不要强行停止，否则可能会各种问题</p><h4 id="连接隐藏的WiFi"><a href="#连接隐藏的WiFi" class="headerlink" title="连接隐藏的WiFi"></a>连接隐藏的WiFi</h4><p>修改配置文件：<code>/etc/wpa_supplicant/wpa_supplicant.conf</code> 为以下内容</p><pre><code>network={
+</code></pre><p><strong>注意</strong>: 使用 <code>systemctl restart networking.service</code> 时，如果长时间没有反应，千万不要强行停止，否则可能会各种问题</p>
+<h4 id="连接隐藏的WiFi"><a href="#连接隐藏的WiFi" class="headerlink" title="连接隐藏的WiFi"></a>连接隐藏的WiFi</h4><p>修改配置文件：<code>/etc/wpa_supplicant/wpa_supplicant.conf</code> 为以下内容</p>
+<pre><code>network={
     ssid=&quot;SSID&quot;
     scan_ssid=1
     psk=&quot;PASSWORD&quot;
 }
-</code></pre><p>同理，将 <code>SSID</code> 和 <code>PASSWORD</code> 替换为自己实际的，其他步骤和上面的一致。</p><h4 id="连接没密码的WiFi"><a href="#连接没密码的WiFi" class="headerlink" title="连接没密码的WiFi"></a>连接没密码的WiFi</h4><p>修改配置文件：<code>/etc/wpa_supplicant/wpa_supplicant.conf</code> 为以下内容</p><pre><code>network={
+</code></pre><p>同理，将 <code>SSID</code> 和 <code>PASSWORD</code> 替换为自己实际的，其他步骤和上面的一致。</p>
+<h4 id="连接没密码的WiFi"><a href="#连接没密码的WiFi" class="headerlink" title="连接没密码的WiFi"></a>连接没密码的WiFi</h4><p>修改配置文件：<code>/etc/wpa_supplicant/wpa_supplicant.conf</code> 为以下内容</p>
+<pre><code>network={
         ssid=&quot;SSID&quot;
         key_mgmt=NONE
 }
-</code></pre><h4 id="添加多个WiFi"><a href="#添加多个WiFi" class="headerlink" title="添加多个WiFi"></a>添加多个WiFi</h4><p>可以在配置文件中添加多个 <code>network</code> 配置块来添加多个WiFi配置，<code>wpa_supplicant</code> 将会自动连接可以连接的WiFi，也可以手动配置优先级来偏重连接某个WiFi。</p><pre><code>network={
+</code></pre><h4 id="添加多个WiFi"><a href="#添加多个WiFi" class="headerlink" title="添加多个WiFi"></a>添加多个WiFi</h4><p>可以在配置文件中添加多个 <code>network</code> 配置块来添加多个WiFi配置，<code>wpa_supplicant</code> 将会自动连接可以连接的WiFi，也可以手动配置优先级来偏重连接某个WiFi。</p>
+<pre><code>network={
     ssid=&quot;SSID1&quot;
     psk=&quot;PASSWORD1&quot;
     priority=1
@@ -59,7 +586,11 @@ network={
     priority=2
     id_str=&quot;homeTwo&quot;
 }
-</code></pre><h3 id="使用4G上网"><a href="#使用4G上网" class="headerlink" title="使用4G上网"></a>使用4G上网</h3><p>由于树莓派3B并没有自带4G模块，所以想使用SIM卡拨号上网就需要另外买一个4G模块。树莓派3B也没有适用于4G模块的 Mini PCI-e 接口，所以还需要买一个 Mini PCI-e 转 USB 的4G模块专用开发板。</p><p>这里4G模块使用 华为ME909s-821，SIM卡使用联通实名制的4G卡，需要先保证4G卡可以正常上网。</p><p>安装4G拨号软件<br></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install wvdial</span><br></pre></td></tr></table></figure><p></p><p>修改配置文件：<code>/etc/wvdial.conf</code> 添加如下内容</p><pre><code>[Dialer wcdma]
+</code></pre><h3 id="使用4G上网"><a href="#使用4G上网" class="headerlink" title="使用4G上网"></a>使用4G上网</h3><p>由于树莓派3B并没有自带4G模块，所以想使用SIM卡拨号上网就需要另外买一个4G模块。树莓派3B也没有适用于4G模块的 Mini PCI-e 接口，所以还需要买一个 Mini PCI-e 转 USB 的4G模块专用开发板。</p>
+<p>这里4G模块使用 华为ME909s-821，SIM卡使用联通实名制的4G卡，需要先保证4G卡可以正常上网。</p>
+<p>安装4G拨号软件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install wvdial</span><br></pre></td></tr></table></figure></p>
+<p>修改配置文件：<code>/etc/wvdial.conf</code> 添加如下内容</p>
+<pre><code>[Dialer wcdma]
 Init1 = ATZ
 Init2 = ATQ0 V1 E1 S0=0
 Init3 = AT+CGDCONT=1,&quot;IP&quot;,&quot;3gnet&quot;
@@ -71,7 +602,10 @@ ISDN = 0
 Phone = *99#
 Password = guest
 Username = guest
-</code></pre><p>需要注意的地方是 <code>Modem = /dev/ttyUSB0</code> ，需要找到4G模块的设备文件，如果不确定4G模块的设备文件是啥，可以先记录下 <code>/dev/</code> 目录下的所有文件名，然后插上后看看多出来了哪些，4G模块会多出来5个设备文件，一般第一个 <code>ttyUSB*</code> 设备文件是 <code>Modem</code> 的设备文件，也就是 <code>/dev/ttyUSB0</code>，但是如果已经存在了其它的 <code>ttyUSB*</code> 文件，则4G模块的设备文件会依次往后排。</p><p>将4G模块插入 Mini PCI-e 接口将SIM卡插入到卡槽，天线最好接上，否则信号可能太差导致拨号失败。<br><img src="/uploads/2018/raspberry/50tj5q84rn5g2wj8.jpg" alt=""></p><p>使用 <code>wvdial wcdma</code> 命令开始拨号，当出现如下信息时，则拨号成功了</p><pre><code>--&gt; local  IP address 10.90.80.32
+</code></pre><p>需要注意的地方是 <code>Modem = /dev/ttyUSB0</code> ，需要找到4G模块的设备文件，如果不确定4G模块的设备文件是啥，可以先记录下 <code>/dev/</code> 目录下的所有文件名，然后插上后看看多出来了哪些，4G模块会多出来5个设备文件，一般第一个 <code>ttyUSB*</code> 设备文件是 <code>Modem</code> 的设备文件，也就是 <code>/dev/ttyUSB0</code>，但是如果已经存在了其它的 <code>ttyUSB*</code> 文件，则4G模块的设备文件会依次往后排。</p>
+<p>将4G模块插入 Mini PCI-e 接口将SIM卡插入到卡槽，天线最好接上，否则信号可能太差导致拨号失败。<br><img src="/uploads/2018/raspberry/50tj5q84rn5g2wj8.jpg" alt=""></p>
+<p>使用 <code>wvdial wcdma</code> 命令开始拨号，当出现如下信息时，则拨号成功了</p>
+<pre><code>--&gt; local  IP address 10.90.80.32
 --&gt; pppd: XE[01]
 --&gt; remote IP address 10.64.64.64
 --&gt; pppd: XE[01]
@@ -79,14 +613,17 @@ Username = guest
 --&gt; pppd: XE[01]
 --&gt; secondary DNS address 123.123.123.124
 --&gt; pppd: XE[01]
-</code></pre><p>这时候使用 <code>ifconfig</code> 可以看到 <code>ppp0</code> 接口已经连接</p><pre><code>ppp0      Link encap:Point-to-Point Protocol  
+</code></pre><p>这时候使用 <code>ifconfig</code> 可以看到 <code>ppp0</code> 接口已经连接</p>
+<pre><code>ppp0      Link encap:Point-to-Point Protocol  
         inet addr:10.90.80.32  P-t-P:10.64.64.64  Mask:255.255.255.255
         UP POINTOPOINT RUNNING NOARP MULTICAST  MTU:1500  Metric:1
         RX packets:6 errors:0 dropped:0 overruns:0 frame:0
         TX packets:7 errors:0 dropped:0 overruns:0 carrier:0
         collisions:0 txqueuelen:3 
         RX bytes:66 (66.0 B)  TX bytes:129 (129.0 B)
-</code></pre><p>然后替换默认路由到点对点拨号的对端IP就可以使用4G上网了</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ip ro replace default via 10.64.64.6</span><br><span class="line">ping www.baidu.com -c 4</span><br></pre></td></tr></table></figure><pre><code>root@raspberrypi:~# ip ro replace default via 10.64.64.64 
+</code></pre><p>然后替换默认路由到点对点拨号的对端IP就可以使用4G上网了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ip ro replace default via 10.64.64.6</span><br><span class="line">ping www.baidu.com -c 4</span><br></pre></td></tr></table></figure>
+<pre><code>root@raspberrypi:~# ip ro replace default via 10.64.64.64 
 root@raspberrypi:~# ping www.baidu.com -c 4
 PING www.a.shifen.com (61.135.169.121) 56(84) bytes of data.
 64 bytes from 61.135.169.121: icmp_seq=1 ttl=54 time=36.2 ms
@@ -98,18 +635,618 @@ PING www.a.shifen.com (61.135.169.121) 56(84) bytes of data.
 4 packets transmitted, 4 received, 0% packet loss, time 3003ms
 rtt min/avg/max/mdev = 19.859/25.984/36.220/6.300 ms
 root@raspberrypi:~# 
-</code></pre><p>还有一些需要注意的地方，如果使用物联网卡，需要确保物联网卡是否支持4G，是否支持数据业务，以及4G模块支持的网络和运营商。</p><p>将 <code>wvdial</code> 程序 <code>Ctrl + c</code> 后4G就自动断开了。</p><h3 id="使用GPS模块"><a href="#使用GPS模块" class="headerlink" title="使用GPS模块"></a>使用GPS模块</h3><p>如果想用树莓派做行车记录仪之类的东西，GPS模块就必不可少了，这里使用 NEO-7N-0-002 GPS模块。<br>这款GPS模块支持通过USB连接到树莓派，也支持和树莓派直接进行串口连接。</p><h4 id="USB连接"><a href="#USB连接" class="headerlink" title="USB连接"></a>USB连接</h4><p>直接使用普通的数据线连接，自带陶瓷天线，但是最好外接天线。使用自带的陶瓷天线定位时最好将GPS模块放到靠窗的位置，户外效果最佳，否则将无法定位。</p><p>连接如下，通过USB连接后设备被映射为 <code>/dev/ttyACM0</code><br><img src="/uploads/2018/raspberry/ashdlaiefjaef.png" alt=""></p><p>当橘红色的灯按频率闪灭，而不是常亮时就定位成功了，使用 <code>cat /dev/ttyACM0</code> 命令查看GPS模块的输出只需要关心 <code>$GPGGA</code> 的内容就可以，定位成功的信息是这样子的</p><pre><code>root@raspberrypi:~# cat /dev/ttyACM0 |grep GPGGA
+</code></pre><p>还有一些需要注意的地方，如果使用物联网卡，需要确保物联网卡是否支持4G，是否支持数据业务，以及4G模块支持的网络和运营商。</p>
+<p>将 <code>wvdial</code> 程序 <code>Ctrl + c</code> 后4G就自动断开了。</p>
+<h3 id="使用GPS模块"><a href="#使用GPS模块" class="headerlink" title="使用GPS模块"></a>使用GPS模块</h3><p>如果想用树莓派做行车记录仪之类的东西，GPS模块就必不可少了，这里使用 NEO-7N-0-002 GPS模块。<br>这款GPS模块支持通过USB连接到树莓派，也支持和树莓派直接进行串口连接。</p>
+<h4 id="USB连接"><a href="#USB连接" class="headerlink" title="USB连接"></a>USB连接</h4><p>直接使用普通的数据线连接，自带陶瓷天线，但是最好外接天线。使用自带的陶瓷天线定位时最好将GPS模块放到靠窗的位置，户外效果最佳，否则将无法定位。</p>
+<p>连接如下，通过USB连接后设备被映射为 <code>/dev/ttyACM0</code><br><img src="/uploads/2018/raspberry/ashdlaiefjaef.png" alt=""></p>
+<p>当橘红色的灯按频率闪灭，而不是常亮时就定位成功了，使用 <code>cat /dev/ttyACM0</code> 命令查看GPS模块的输出只需要关心 <code>$GPGGA</code> 的内容就可以，定位成功的信息是这样子的</p>
+<pre><code>root@raspberrypi:~# cat /dev/ttyACM0 |grep GPGGA
 $GPGGA,025456.00,?955.49947,N,?1619.28218,E,2,08,1.52,98.4,M,-8.7,M,,0000*74
 $GPGGA,025457.00,?955.49948,N,?1619.28211,E,2,08,1.52,98.5,M,-8.7,M,,0000*72
 $GPGGA,025458.00,?955.49960,N,?1619.28209,E,2,08,1.52,98.4,M,-8.7,M,,0000*7F
 $GPGGA,025459.00,?955.49967,N,?1619.28204,E,2,08,1.52,98.3,M,-8.7,M,,0000*73
-</code></pre><p>其中 <code>?955.49947,N,?1619.28218,E</code> N前面的浮点数表示北纬，E前面的浮点数表示东经，为了防止位置信息泄露，所以其中有一位数字用 <code>?</code> 代替了，想了解 <code>$GPGGA</code> 的更多详细信息，可以翻阅 <code>GPGGA</code> 卫星数据格式。</p><h4 id="串口连接"><a href="#串口连接" class="headerlink" title="串口连接"></a>串口连接</h4><p>由于树莓派3B自带的串口被用于蓝牙了，所以最省事的方法就是使用USB转TTL线，将TTL线的 +5V 接到GPS模块的 VCC 引脚， GND 接到GPS模块的 GND，TXD 接到GPS模块的 RXD，RXD 接到GPS模块的 TXD，也就是说TTL线的输入输出要和GPS模块的输入输出交叉接。</p><p>但是不知道是不是这款GPS模块板子上印刷错了，导致TTL线的 RXD 必须和 GPS模块上印刷的 RXD 引脚相接才能正常接收数据，由于只需要从GPS模块上接收数据，所以TTL线的 TXD 也可以不和GPS模块相接。</p><p>接线图如下<br><img src="/uploads/2018/raspberry/mvoi31xz4nd0sgyw.png" alt=""></p><p>使用 <code>minicom -D /dev/ttyUSB0 -b 9600</code> 命令就可以获取GPS数据了。如果要处理GPS数据，可以用程序直连串口获取。摁下 <code>Ctrl + a</code> 松开后摁 <code>x</code> 然后敲下回车就退出 <code>minicom</code> 了。</p><h3 id="设备和设备文件绑定"><a href="#设备和设备文件绑定" class="headerlink" title="设备和设备文件绑定"></a>设备和设备文件绑定</h3><p>前面的4G模块使用的是 <code>/dev/ttyUSB0</code> 设备文件，TTL线使用的也是 <code>/dev/ttyUSB0</code>，如果同时使用这两个模块，重启后谁也无法确定当前的 <code>/dev/ttyUSB0</code> 是哪个模块，这种情况可以使用 <code>udev</code> 规则来绑定设备和设备文件。</p><p>使用 <code>udevadm info --attribute-walk --name=/dev/ttyUSB0</code> 可以查看当前 <code>/dev/ttyUSB0</code> 设备的详细信息，然后通过这些信息匹配来为设备文件建立一个软连接，这样每次可以通过软连接来访问设备了。</p><p>添加文件：<code>/etc/udev/rules.d/mydevice.rules</code></p><pre><code>KERNEL==&quot;ttyUSB*&quot;, ATTRS{idVendor}==&quot;1a86&quot;, ATTRS{idProduct}==&quot;7523&quot;, MODE:=&quot;0666&quot;, GROUP:=&quot;dialout&quot;,  SYMLINK+=&quot;ttl0&quot;
+</code></pre><p>其中 <code>?955.49947,N,?1619.28218,E</code> N前面的浮点数表示北纬，E前面的浮点数表示东经，为了防止位置信息泄露，所以其中有一位数字用 <code>?</code> 代替了，想了解 <code>$GPGGA</code> 的更多详细信息，可以翻阅 <code>GPGGA</code> 卫星数据格式。</p>
+<h4 id="串口连接"><a href="#串口连接" class="headerlink" title="串口连接"></a>串口连接</h4><p>由于树莓派3B自带的串口被用于蓝牙了，所以最省事的方法就是使用USB转TTL线，将TTL线的 +5V 接到GPS模块的 VCC 引脚， GND 接到GPS模块的 GND，TXD 接到GPS模块的 RXD，RXD 接到GPS模块的 TXD，也就是说TTL线的输入输出要和GPS模块的输入输出交叉接。</p>
+<p>但是不知道是不是这款GPS模块板子上印刷错了，导致TTL线的 RXD 必须和 GPS模块上印刷的 RXD 引脚相接才能正常接收数据，由于只需要从GPS模块上接收数据，所以TTL线的 TXD 也可以不和GPS模块相接。</p>
+<p>接线图如下<br><img src="/uploads/2018/raspberry/mvoi31xz4nd0sgyw.png" alt=""></p>
+<p>使用 <code>minicom -D /dev/ttyUSB0 -b 9600</code> 命令就可以获取GPS数据了。如果要处理GPS数据，可以用程序直连串口获取。摁下 <code>Ctrl + a</code> 松开后摁 <code>x</code> 然后敲下回车就退出 <code>minicom</code> 了。</p>
+<h3 id="设备和设备文件绑定"><a href="#设备和设备文件绑定" class="headerlink" title="设备和设备文件绑定"></a>设备和设备文件绑定</h3><p>前面的4G模块使用的是 <code>/dev/ttyUSB0</code> 设备文件，TTL线使用的也是 <code>/dev/ttyUSB0</code>，如果同时使用这两个模块，重启后谁也无法确定当前的 <code>/dev/ttyUSB0</code> 是哪个模块，这种情况可以使用 <code>udev</code> 规则来绑定设备和设备文件。</p>
+<p>使用 <code>udevadm info --attribute-walk --name=/dev/ttyUSB0</code> 可以查看当前 <code>/dev/ttyUSB0</code> 设备的详细信息，然后通过这些信息匹配来为设备文件建立一个软连接，这样每次可以通过软连接来访问设备了。</p>
+<p>添加文件：<code>/etc/udev/rules.d/mydevice.rules</code></p>
+<pre><code>KERNEL==&quot;ttyUSB*&quot;, ATTRS{idVendor}==&quot;1a86&quot;, ATTRS{idProduct}==&quot;7523&quot;, MODE:=&quot;0666&quot;, GROUP:=&quot;dialout&quot;,  SYMLINK+=&quot;ttl0&quot;
 KERNEL==&quot;ttyUSB*&quot;, ATTRS{bInterfaceNumber}==&quot;02&quot;, MODE:=&quot;0666&quot;, GROUP:=&quot;dialout&quot;,  SYMLINK+=&quot;hw4g0&quot;
 KERNEL==&quot;ttyUSB*&quot;, ATTRS{bInterfaceNumber}==&quot;03&quot;, MODE:=&quot;0666&quot;, GROUP:=&quot;dialout&quot;,  SYMLINK+=&quot;hw4g1&quot;
 KERNEL==&quot;ttyUSB*&quot;, ATTRS{bInterfaceNumber}==&quot;04&quot;, MODE:=&quot;0666&quot;, GROUP:=&quot;dialout&quot;,  SYMLINK+=&quot;hw4g2&quot;
 KERNEL==&quot;ttyUSB*&quot;, ATTRS{bInterfaceNumber}==&quot;05&quot;, MODE:=&quot;0666&quot;, GROUP:=&quot;dialout&quot;,  SYMLINK+=&quot;hw4g3&quot;
 KERNEL==&quot;ttyUSB*&quot;, ATTRS{bInterfaceNumber}==&quot;06&quot;, MODE:=&quot;0666&quot;, GROUP:=&quot;dialout&quot;,  SYMLINK+=&quot;hw4g4&quot;
-</code></pre><p>这样同时使用GPS和4G模块就可以通过访问 <code>/dev/ttl0</code> 和 <code>/dev/hw4g0</code> 来实现了。<code>udev</code> 规则的编写可以执行 <code>man udev</code> 获取。</p><h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><p>资料参考：</p><ul><li><a href="https://www.cnblogs.com/shubin/p/7746399.html" target="_blank" rel="noopener">树莓派命令行配置WiFi网络</a></li><li><a href="https://blog.csdn.net/jiaojian8063868/article/details/79295570" target="_blank" rel="noopener">树莓派调试华为4G模块</a></li><li><a href="https://blog.csdn.net/qq_32384313/article/details/77725544" target="_blank" rel="noopener">华为LTE模块AT拨号上网</a></li><li><a href="https://www.cnblogs.com/huhubun/p/4083718.html" target="_blank" rel="noopener">树莓派调试GPS模块</a></li><li><a href="https://blog.csdn.net/walleva96/article/details/78347612" target="_blank" rel="noopener">udev绑定USB串口的方式</a></li></ul></div><footer class="post-footer"><div class="post-tags"><a href="/tags/ubuntu/" rel="tag"><i class="fa fa-tag"></i> ubuntu</a><a href="/tags/raspberry/" rel="tag"><i class="fa fa-tag"></i> raspberry</a></div><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/2018/04/04/2018/Python进阶指南/" rel="next" title="Python进阶指南"><i class="fa fa-chevron-left"></i> Python进阶指南</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"> <a href="/2018/04/29/2018/ESP8266 WiFi开发板/" rel="prev" title="ESP8266 WiFi开发板">ESP8266 WiFi开发板<i class="fa fa-chevron-right"></i></a></div></div></footer></div></article><div class="post-spread"></div></div></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap"> 文章目录</li><li class="sidebar-nav-overview" data-target="site-overview-wrap"> 站点概览</li></ul><section class="site-overview-wrap sidebar-panel"><div class="site-overview"><div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person"> <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="魏云飞"><p class="site-author-name" itemprop="name">魏云飞</p><p class="site-description motion-element" itemprop="description">帅的人已经醒来 而丑的人还在沉睡</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"> <a href="/archives/"><span class="site-state-item-count">48</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"> <a href="/categories/index.html"><span class="site-state-item-count">26</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"> <a href="/tags/index.html"><span class="site-state-item-count">53</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/yunfwe" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i> GitHub</a></span></div></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开始使用"><span class="nav-number">2.</span> <span class="nav-text">开始使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#准备工具"><span class="nav-number">2.1.</span> <span class="nav-text">准备工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装系统"><span class="nav-number">2.2.</span> <span class="nav-text">安装系统</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#下载镜像包"><span class="nav-number">2.2.1.</span> <span class="nav-text">下载镜像包</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解压和烧录"><span class="nav-number">2.3.</span> <span class="nav-text">解压和烧录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Linux下烧录"><span class="nav-number">2.3.1.</span> <span class="nav-text">Linux下烧录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Windows下烧录"><span class="nav-number">2.3.2.</span> <span class="nav-text">Windows下烧录</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动树莓派"><span class="nav-number">2.4.</span> <span class="nav-text">启动树莓派</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#配置静态IP"><span class="nav-number">2.4.1.</span> <span class="nav-text">配置静态IP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自动启动SSH服务"><span class="nav-number">2.4.2.</span> <span class="nav-text">自动启动SSH服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#开机启动"><span class="nav-number">2.4.3.</span> <span class="nav-text">开机启动</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统定制"><span class="nav-number">3.</span> <span class="nav-text">系统定制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装需要的包"><span class="nav-number">3.1.</span> <span class="nav-text">安装需要的包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将镜像挂在到系统目录"><span class="nav-number">3.2.</span> <span class="nav-text">将镜像挂在到系统目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改镜像中的数据"><span class="nav-number">3.3.</span> <span class="nav-text">修改镜像中的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#刷入内存卡进行开机验证"><span class="nav-number">3.4.</span> <span class="nav-text">刷入内存卡进行开机验证</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功能和拓展"><span class="nav-number">4.</span> <span class="nav-text">功能和拓展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#连接WiFi"><span class="nav-number">4.1.</span> <span class="nav-text">连接WiFi</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#连接WPA加密的WiFi"><span class="nav-number">4.1.1.</span> <span class="nav-text">连接WPA加密的WiFi</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#连接隐藏的WiFi"><span class="nav-number">4.1.2.</span> <span class="nav-text">连接隐藏的WiFi</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#连接没密码的WiFi"><span class="nav-number">4.1.3.</span> <span class="nav-text">连接没密码的WiFi</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加多个WiFi"><span class="nav-number">4.1.4.</span> <span class="nav-text">添加多个WiFi</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用4G上网"><span class="nav-number">4.2.</span> <span class="nav-text">使用4G上网</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用GPS模块"><span class="nav-number">4.3.</span> <span class="nav-text">使用GPS模块</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#USB连接"><span class="nav-number">4.3.1.</span> <span class="nav-text">USB连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#串口连接"><span class="nav-number">4.3.2.</span> <span class="nav-text">串口连接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设备和设备文件绑定"><span class="nav-number">4.4.</span> <span class="nav-text">设备和设备文件绑定</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">5.</span> <span class="nav-text">附录</span></a></li></ol></div></div></section></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright">&copy; <span itemprop="copyrightYear">2018</span><span class="with-love"><i class="fa fa-user"></i></span> <span class="author" itemprop="copyrightHolder">魏云飞</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-area-chart"></i></span> <span title="站点总字数">521k</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-coffee"></i></span> <span title="站点总阅读时长">8:41</span></div><div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.0.4</div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i></div></div><script type="text/javascript">"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script><script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script><script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script><script type="text/javascript">
+</code></pre><p>这样同时使用GPS和4G模块就可以通过访问 <code>/dev/ttl0</code> 和 <code>/dev/hw4g0</code> 来实现了。<code>udev</code> 规则的编写可以执行 <code>man udev</code> 获取。</p>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><p>资料参考：</p>
+<ul>
+<li><a href="https://www.cnblogs.com/shubin/p/7746399.html" target="_blank" rel="noopener">树莓派命令行配置WiFi网络</a></li>
+<li><a href="https://blog.csdn.net/jiaojian8063868/article/details/79295570" target="_blank" rel="noopener">树莓派调试华为4G模块</a></li>
+<li><a href="https://blog.csdn.net/qq_32384313/article/details/77725544" target="_blank" rel="noopener">华为LTE模块AT拨号上网</a></li>
+<li><a href="https://www.cnblogs.com/huhubun/p/4083718.html" target="_blank" rel="noopener">树莓派调试GPS模块</a></li>
+<li><a href="https://blog.csdn.net/walleva96/article/details/78347612" target="_blank" rel="noopener">udev绑定USB串口的方式</a></li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ubuntu/" rel="tag"><i class="fa fa-tag"></i> ubuntu</a>
+          
+            <a href="/tags/raspberry/" rel="tag"><i class="fa fa-tag"></i> raspberry</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/04/2018/Python进阶指南/" rel="next" title="Python进阶指南">
+                <i class="fa fa-chevron-left"></i> Python进阶指南
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/29/2018/ESP8266 WiFi开发板/" rel="prev" title="ESP8266 WiFi开发板">
+                ESP8266 WiFi开发板 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="魏云飞">
+            
+              <p class="site-author-name" itemprop="name">魏云飞</p>
+              <p class="site-description motion-element" itemprop="description">帅的人已经醒来 而丑的人还在沉睡</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">49</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">56</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/yunfwe" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开始使用"><span class="nav-number">2.</span> <span class="nav-text">开始使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#准备工具"><span class="nav-number">2.1.</span> <span class="nav-text">准备工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装系统"><span class="nav-number">2.2.</span> <span class="nav-text">安装系统</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#下载镜像包"><span class="nav-number">2.2.1.</span> <span class="nav-text">下载镜像包</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解压和烧录"><span class="nav-number">2.3.</span> <span class="nav-text">解压和烧录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Linux下烧录"><span class="nav-number">2.3.1.</span> <span class="nav-text">Linux下烧录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Windows下烧录"><span class="nav-number">2.3.2.</span> <span class="nav-text">Windows下烧录</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动树莓派"><span class="nav-number">2.4.</span> <span class="nav-text">启动树莓派</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#配置静态IP"><span class="nav-number">2.4.1.</span> <span class="nav-text">配置静态IP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自动启动SSH服务"><span class="nav-number">2.4.2.</span> <span class="nav-text">自动启动SSH服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#开机启动"><span class="nav-number">2.4.3.</span> <span class="nav-text">开机启动</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统定制"><span class="nav-number">3.</span> <span class="nav-text">系统定制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装需要的包"><span class="nav-number">3.1.</span> <span class="nav-text">安装需要的包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将镜像挂在到系统目录"><span class="nav-number">3.2.</span> <span class="nav-text">将镜像挂在到系统目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改镜像中的数据"><span class="nav-number">3.3.</span> <span class="nav-text">修改镜像中的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#刷入内存卡进行开机验证"><span class="nav-number">3.4.</span> <span class="nav-text">刷入内存卡进行开机验证</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功能和拓展"><span class="nav-number">4.</span> <span class="nav-text">功能和拓展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#连接WiFi"><span class="nav-number">4.1.</span> <span class="nav-text">连接WiFi</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#连接WPA加密的WiFi"><span class="nav-number">4.1.1.</span> <span class="nav-text">连接WPA加密的WiFi</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#连接隐藏的WiFi"><span class="nav-number">4.1.2.</span> <span class="nav-text">连接隐藏的WiFi</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#连接没密码的WiFi"><span class="nav-number">4.1.3.</span> <span class="nav-text">连接没密码的WiFi</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加多个WiFi"><span class="nav-number">4.1.4.</span> <span class="nav-text">添加多个WiFi</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用4G上网"><span class="nav-number">4.2.</span> <span class="nav-text">使用4G上网</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用GPS模块"><span class="nav-number">4.3.</span> <span class="nav-text">使用GPS模块</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#USB连接"><span class="nav-number">4.3.1.</span> <span class="nav-text">USB连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#串口连接"><span class="nav-number">4.3.2.</span> <span class="nav-text">串口连接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设备和设备文件绑定"><span class="nav-number">4.4.</span> <span class="nav-text">设备和设备文件绑定</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">5.</span> <span class="nav-text">附录</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">魏云飞</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">553k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+    <span title="站点总阅读时长">9:13</span>
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.0.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
     // Popup Window;
     var isfetched = false;
     var isXml = true;
@@ -427,4 +1564,48 @@ KERNEL==&quot;ttyUSB*&quot;, ATTRS{bInterfaceNumber}==&quot;06&quot;, MODE:=&quo
         onPopupClose();
       }
     });
-  </script></body><script>var titleTime,OriginTitile=document.title;document.addEventListener("visibilitychange",function(){document.hidden?($('[rel="icon"]').attr("href","/img/TEP.ico"),document.title="╭(°A°`)╮ 页面崩溃啦 ~ ",clearTimeout(titleTime)):($('[rel="icon"]').attr("href","/favicon.ico"),document.title="(ฅ>ω<*ฅ) 噫又好了~"+OriginTitile,titleTime=setTimeout(function(){document.title=OriginTitile},2e3))})</script></html>
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<script>
+var OriginTitile = document.title;
+ var titleTime;
+ document.addEventListener('visibilitychange', function () {
+     if (document.hidden) {
+         $('[rel="icon"]').attr('href', "/img/TEP.ico");
+         document.title = '╭(°A°`)╮ 页面崩溃啦 ~ ';
+         clearTimeout(titleTime);
+     }
+     else {
+         $('[rel="icon"]').attr('href', "/favicon.ico");
+         document.title = '(ฅ>ω<*ฅ) 噫又好了~' + OriginTitile;
+         titleTime = setTimeout(function () {
+             document.title = OriginTitile;
+         }, 2000);
+     }
+ });
+</script>
+</html>

@@ -1,4 +1,480 @@
-<!DOCTYPE html><html class="theme-next mist use-motion" lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#222"><script src="/lib/pace/pace.min.js?v=1.0.2"></script><link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"><link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css"><link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css"><link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4"><link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4"><link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4"><link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222"><script type="text/javascript" id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Mist",version:"6.0.4",sidebar:{position:"left",display:"hide",offset:12,b2t:!1,scrollpercent:!1,onmobile:!1},fancybox:!0,fastclick:!1,lazyload:!1,tabs:!0,motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}},algolia:{applicationID:"",apiKey:"",indexName:"",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><meta name="keywords" content="websocket,"><meta name="description" content="简介 WebSocket协议是基于TCP的一种新的网络协议。它实现了浏览器与服务器全双工(full-duplex)通信——允许服务器主动发送信息给客户端。它弥补了 HTTP 协议只能只能由客户端，而无法实现服务器主动推送消息。在此之前，浏览器想了解服务端有没有更新数据只能每隔一段时间就发送一个HTTP请求去询问，这样的效率是非常低下的。而通过 WebSocket，服务器和客户端可以建立一条稳定的连"><meta name="keywords" content="websocket"><meta property="og:type" content="article"><meta property="og:title" content="WebSocket 协议分析"><meta property="og:url" content="http://www.hinote.ga/2018/06/22/2018/WebSocket协议分析/index.html"><meta property="og:site_name" content="某科学的最后之作"><meta property="og:description" content="简介 WebSocket协议是基于TCP的一种新的网络协议。它实现了浏览器与服务器全双工(full-duplex)通信——允许服务器主动发送信息给客户端。它弥补了 HTTP 协议只能只能由客户端，而无法实现服务器主动推送消息。在此之前，浏览器想了解服务端有没有更新数据只能每隔一段时间就发送一个HTTP请求去询问，这样的效率是非常低下的。而通过 WebSocket，服务器和客户端可以建立一条稳定的连"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="http://www.hinote.ga/uploads/photos/asdasdaefaeda.jpg"><meta property="og:updated_time" content="2018-12-05T15:10:29.247Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="WebSocket 协议分析"><meta name="twitter:description" content="简介 WebSocket协议是基于TCP的一种新的网络协议。它实现了浏览器与服务器全双工(full-duplex)通信——允许服务器主动发送信息给客户端。它弥补了 HTTP 协议只能只能由客户端，而无法实现服务器主动推送消息。在此之前，浏览器想了解服务端有没有更新数据只能每隔一段时间就发送一个HTTP请求去询问，这样的效率是非常低下的。而通过 WebSocket，服务器和客户端可以建立一条稳定的连"><meta name="twitter:image" content="http://www.hinote.ga/uploads/photos/asdasdaefaeda.jpg"><link rel="canonical" href="http://www.hinote.ga/2018/06/22/2018/WebSocket协议分析/"><script type="text/javascript" id="page.configurations">CONFIG.page={sidebar:""}</script><title>WebSocket 协议分析 | 某科学的最后之作</title><noscript><style type="text/css">.sidebar-inner,.use-motion .brand,.use-motion .collection-title,.use-motion .comments,.use-motion .menu-item,.use-motion .motion-element,.use-motion .pagination,.use-motion .post-block,.use-motion .post-body,.use-motion .post-header{opacity:initial}.use-motion .logo,.use-motion .site-subtitle,.use-motion .site-title{opacity:initial;top:initial}.logo-line-after i{right:initial}</style></noscript></head><body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div><header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">某科学的最后之作</span><span class="logo-line-after"><i></i></span></a></div><p class="site-subtitle">帅的人已经醒来 而丑的人还在沉睡</p></div><div class="site-nav-toggle"> <button><span class="btn-bar"></span><span class="btn-bar"></span><span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class="menu-item menu-item-search"><a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br>搜索</a></li></ul><div class="site-search"><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i></span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"> <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input"></div></div><div id="local-search-result"></div></div></div></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="http://www.hinote.ga/2018/06/22/2018/WebSocket协议分析/"><span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person"><meta itemprop="name" content="魏云飞"><meta itemprop="description" content=""><meta itemprop="image" content="/uploads/avatar.png"></span><span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization"><meta itemprop="name" content="某科学的最后之作"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">WebSocket 协议分析</h1><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">发表于</span> <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-22T20:12:00+08:00">2018-06-22</time> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-calendar-check-o"></i></span> <span class="post-meta-item-text">更新于&#58;</span> <time title="更新于" itemprop="dateModified" datetime="2018-12-05T23:10:29+08:00">2018-12-05</time></span> <span class="post-category"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-folder-o"></i></span> <span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/WebSocket/" itemprop="url" rel="index"><span itemprop="name">WebSocket</span></a></span></span><div class="post-symbolscount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span> <span class="post-meta-item-text">字数统计&#58;</span> <span title="字数统计">7.1k</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-clock-o"></i></span> <span class="post-meta-item-text">阅读时长 &asymp;</span> <span title="阅读时长">0:07</span></div></div></header><div class="post-body" itemprop="articleBody"><div class="post-gallery" itemscope="" itemtype="http://schema.org/ImageGallery"><div class="post-gallery-row"> <a class="post-gallery-img fancybox" href="/uploads/photos/asdasdaefaeda.jpg" rel="gallery_cjpgy2uvx006bmwe6dtsvlp42" itemscope="" itemtype="http://schema.org/ImageObject" itemprop="url"><img src="/uploads/photos/asdasdaefaeda.jpg" itemprop="contentUrl"></a></div></div><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote><p>WebSocket协议是基于TCP的一种新的网络协议。它实现了浏览器与服务器全双工(full-duplex)通信——允许服务器主动发送信息给客户端。它弥补了 HTTP 协议只能只能由客户端，而无法实现服务器主动推送消息。在此之前，浏览器想了解服务端有没有更新数据只能每隔一段时间就发送一个HTTP请求去询问，这样的效率是非常低下的。而通过 WebSocket，服务器和客户端可以建立一条稳定的连接，并且可以双向通信。</p></blockquote><a id="more"></a><h2 id="协议分析"><a href="#协议分析" class="headerlink" title="协议分析"></a>协议分析</h2><p>WebSocket 协议的规范可以翻阅 <a href="https://tools.ietf.org/html/rfc6455" target="_blank" rel="noopener">RFC 6455</a></p><p>WebSocket协议有两部分：握手和数据传输。由客户端主动发送连接请求，握手信息是标准的HTTP协议，并通过 <code>Upgrade</code> 字段来表示升级为 <code>WebSocket</code> 协议，因此 WebSocket 的请求也很容易的可以穿过HTTP代理等服务。</p><h3 id="握手阶段"><a href="#握手阶段" class="headerlink" title="握手阶段"></a>握手阶段</h3><p>客户端发起的握手请求：</p><pre><code>GET /chat HTTP/1.1
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="websocket,">
+
+
+<meta name="description" content="简介 WebSocket协议是基于TCP的一种新的网络协议。它实现了浏览器与服务器全双工(full-duplex)通信——允许服务器主动发送信息给客户端。它弥补了 HTTP 协议只能只能由客户端，而无法实现服务器主动推送消息。在此之前，浏览器想了解服务端有没有更新数据只能每隔一段时间就发送一个HTTP请求去询问，这样的效率是非常低下的。而通过 WebSocket，服务器和客户端可以建立一条稳定的连">
+<meta name="keywords" content="websocket">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebSocket 协议分析">
+<meta property="og:url" content="http://www.hinote.ga/2018/06/22/2018/WebSocket协议分析/index.html">
+<meta property="og:site_name" content="某科学的最后之作">
+<meta property="og:description" content="简介 WebSocket协议是基于TCP的一种新的网络协议。它实现了浏览器与服务器全双工(full-duplex)通信——允许服务器主动发送信息给客户端。它弥补了 HTTP 协议只能只能由客户端，而无法实现服务器主动推送消息。在此之前，浏览器想了解服务端有没有更新数据只能每隔一段时间就发送一个HTTP请求去询问，这样的效率是非常低下的。而通过 WebSocket，服务器和客户端可以建立一条稳定的连">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.hinote.ga/uploads/photos/asdasdaefaeda.jpg">
+<meta property="og:updated_time" content="2018-12-05T15:10:29.247Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WebSocket 协议分析">
+<meta name="twitter:description" content="简介 WebSocket协议是基于TCP的一种新的网络协议。它实现了浏览器与服务器全双工(full-duplex)通信——允许服务器主动发送信息给客户端。它弥补了 HTTP 协议只能只能由客户端，而无法实现服务器主动推送消息。在此之前，浏览器想了解服务端有没有更新数据只能每隔一段时间就发送一个HTTP请求去询问，这样的效率是非常低下的。而通过 WebSocket，服务器和客户端可以建立一条稳定的连">
+<meta name="twitter:image" content="http://www.hinote.ga/uploads/photos/asdasdaefaeda.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://www.hinote.ga/2018/06/22/2018/WebSocket协议分析/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>WebSocket 协议分析 | 某科学的最后之作</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">某科学的最后之作</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">帅的人已经醒来 而丑的人还在沉睡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.hinote.ga/2018/06/22/2018/WebSocket协议分析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="魏云飞">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="某科学的最后之作">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">WebSocket 协议分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-22T20:12:00+08:00">2018-06-22</time>
+            
+
+            
+            
+              
+                
+              
+            
+
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2018-12-05T23:10:29+08:00">2018-12-05</time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/WebSocket/" itemprop="url" rel="index"><span itemprop="name">WebSocket</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">7.1k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">0:07</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope="" itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="/uploads/photos/asdasdaefaeda.jpg" rel="gallery_cjq2am8wy00733se6uuybmr2z" itemscope="" itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="/uploads/photos/asdasdaefaeda.jpg" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
+<p>WebSocket协议是基于TCP的一种新的网络协议。它实现了浏览器与服务器全双工(full-duplex)通信——允许服务器主动发送信息给客户端。它弥补了 HTTP 协议只能只能由客户端，而无法实现服务器主动推送消息。在此之前，浏览器想了解服务端有没有更新数据只能每隔一段时间就发送一个HTTP请求去询问，这样的效率是非常低下的。而通过 WebSocket，服务器和客户端可以建立一条稳定的连接，并且可以双向通信。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="协议分析"><a href="#协议分析" class="headerlink" title="协议分析"></a>协议分析</h2><p>WebSocket 协议的规范可以翻阅 <a href="https://tools.ietf.org/html/rfc6455" target="_blank" rel="noopener">RFC 6455</a></p>
+<p>WebSocket协议有两部分：握手和数据传输。由客户端主动发送连接请求，握手信息是标准的HTTP协议，并通过 <code>Upgrade</code> 字段来表示升级为 <code>WebSocket</code> 协议，因此 WebSocket 的请求也很容易的可以穿过HTTP代理等服务。</p>
+<h3 id="握手阶段"><a href="#握手阶段" class="headerlink" title="握手阶段"></a>握手阶段</h3><p>客户端发起的握手请求：</p>
+<pre><code>GET /chat HTTP/1.1
 Host: server.example.com
 Upgrade: WebSocket
 Connection: Upgrade
@@ -6,12 +482,25 @@ Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==
 Origin: http://example.com
 Sec-WebSocket-Protocol: chat, superchat
 Sec-WebSocket-Version: 13
-</code></pre><p>来自服务端的响应：</p><pre><code>HTTP/1.1 101 Switching Protocols
+</code></pre><p>来自服务端的响应：</p>
+<pre><code>HTTP/1.1 101 Switching Protocols
 Upgrade: WebSocket
 Connection: Upgrade
 Sec-WebSocket-Accept:s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
 Sec-WebSocket-Protocol: chat
-</code></pre><p>接下来看各字段具体作用</p><ul><li><code>Upgrade: WebSocket</code>：这是一个特殊的HTTP请求，目的是将客户端和服务端的通信协议从HTTP协议升级到 WebSocket 协议。</li><li><code>Sec-WebSocket-Key</code>：这是一段Base64加密的密钥。</li><li><code>Sec-WebSocket-Accept</code>：服务端收到客户端发来的密钥后追加一段魔法字符串，并将结果进行SHA-1散列签名后再经过Base64加密返回客户端。</li><li><code>Sec-WebSocket-Protocol</code>：表示客户端提供的可供选择的自协议，及服务端选中的支持的子协议。</li><li><code>Origin</code>：服务器端用于区分未授权的 websocket 浏览器。</li><li><code>HTTP/1.1 101 Switching Protocols</code>：其中101为服务器返回的状态码，所有非101的状态码都表示握手并未完成。</li></ul><p>在对 <code>Sec-WebSocket-Accept</code> 的解释中，有一个魔法字符串，这个魔法字符串是 WebSocket 标准中规定的一个常量：<code>258EAFA5-E914-47DA-95CA-C5AB0DC85B11</code>。这个常量只是定制标准时随机生成的一个标识符而已。</p><h3 id="传输阶段"><a href="#传输阶段" class="headerlink" title="传输阶段"></a>传输阶段</h3><p>Websocket协议通过序列化的数据帧传输数据。数据封包协议中定义了opcode、payload length、Payload data等字段。其中要求：<strong>客户端向服务器传输的数据帧必须进行掩码处理，服务器若接收到未经过掩码处理的数据帧，则必须主动关闭连接。服务器向客户端传输的数据帧一定不能进行掩码处理，客户端若接收到经过掩码处理的数据帧，则必须主动关闭连接。</strong></p><p>具体数据帧格式如下所示：</p><pre><code>0                   1                   2                   3
+</code></pre><p>接下来看各字段具体作用</p>
+<ul>
+<li><code>Upgrade: WebSocket</code>：这是一个特殊的HTTP请求，目的是将客户端和服务端的通信协议从HTTP协议升级到 WebSocket 协议。</li>
+<li><code>Sec-WebSocket-Key</code>：这是一段Base64加密的密钥。</li>
+<li><code>Sec-WebSocket-Accept</code>：服务端收到客户端发来的密钥后追加一段魔法字符串，并将结果进行SHA-1散列签名后再经过Base64加密返回客户端。</li>
+<li><code>Sec-WebSocket-Protocol</code>：表示客户端提供的可供选择的自协议，及服务端选中的支持的子协议。</li>
+<li><code>Origin</code>：服务器端用于区分未授权的 websocket 浏览器。</li>
+<li><code>HTTP/1.1 101 Switching Protocols</code>：其中101为服务器返回的状态码，所有非101的状态码都表示握手并未完成。</li>
+</ul>
+<p>在对 <code>Sec-WebSocket-Accept</code> 的解释中，有一个魔法字符串，这个魔法字符串是 WebSocket 标准中规定的一个常量：<code>258EAFA5-E914-47DA-95CA-C5AB0DC85B11</code>。这个常量只是定制标准时随机生成的一个标识符而已。</p>
+<h3 id="传输阶段"><a href="#传输阶段" class="headerlink" title="传输阶段"></a>传输阶段</h3><p>Websocket协议通过序列化的数据帧传输数据。数据封包协议中定义了opcode、payload length、Payload data等字段。其中要求：<strong>客户端向服务器传输的数据帧必须进行掩码处理，服务器若接收到未经过掩码处理的数据帧，则必须主动关闭连接。服务器向客户端传输的数据帧一定不能进行掩码处理，客户端若接收到经过掩码处理的数据帧，则必须主动关闭连接。</strong></p>
+<p>具体数据帧格式如下所示：</p>
+<pre><code>0                   1                   2                   3
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-------+-+-------------+-------------------------------+
 |F|R|R|R| opcode|M| Payload len |    Extended payload length    |
@@ -29,12 +518,618 @@ Sec-WebSocket-Protocol: chat
 + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
 |                     Payload Data continued ...                |
 +---------------------------------------------------------------+
-</code></pre><p>00010001</p><p><strong>FIN：</strong>标识是否为此消息的最后一个数据包，占 1 bit<br><strong>RSV1, RSV2, RSV3：</strong> 用于扩展协议，一般为0，各占1bit<br><strong>Opcode：</strong>数据包类型（frame type），占4bits</p><ul><li><code>0x0</code>：标识一个中间数据包</li><li><code>0x1</code>：标识一个text类型数据包</li><li><code>0x2</code>：标识一个binary类型数据包</li><li><code>0x3-7</code>：保留</li><li><code>0x8</code>：标识一个断开连接类型数据包</li><li><code>0x9</code>：标识一个ping类型数据包</li><li><code>0xA</code>：表示一个pong类型数据包</li><li><code>0xB-F</code>：保留</li></ul><p><strong>MASK：</strong>占1bits 用于标识PayloadData是否经过掩码处理。如果是1，Masking-key域的数据即是掩码密钥，用于解码PayloadData。客户端发出的数据帧需要进行掩码处理，所以此位是1。<br><strong>Payload length：</strong>Payload data的长度，占7bits，7+16bits，7+64bits。如果其值在0-125，则是payload的真实长度。如果值是126，则后面2个字节形成的16bits无符号整型数的值是payload的真实长度。如果值是127，则后面8个字节形成的64bits无符号整型数的值是payload的真实长度。<br><strong>Masking-key：</strong>如果是客户端发送的数据，长度信息之后的4个字节是掩码，<br><strong>Payload data：</strong>应用层数据，客户端发往服务端需要将数据的每一位和掩码的第 N%4 位进行异或运算。</p><p>而服务端返回的数据则不需要掩码和加密数据。</p><h2 id="实现服务端"><a href="#实现服务端" class="headerlink" title="实现服务端"></a>实现服务端</h2><p>接下来使用 Python3 来实现一个简单的 WebSocket 回声服务器，并每个比特的分析 WebSocket 协议的头部。</p><h3 id="编写代码"><a href="#编写代码" class="headerlink" title="编写代码"></a>编写代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"></span><br><span class="line">HOST = <span class="string">'0.0.0.0'</span></span><br><span class="line">PORT = <span class="number">2000</span></span><br><span class="line">MAGIC_STRING = <span class="string">'258EAFA5-E914-47DA-95CA-C5AB0DC85B11'</span></span><br><span class="line"></span><br><span class="line">HTTP_RESPONSE = (</span><br><span class="line">    <span class="string">'HTTP/1.1 101 Switching Protocols\r\n'</span></span><br><span class="line">    <span class="string">"Upgrade: websocket\r\n"</span></span><br><span class="line">    <span class="string">"Connection: Upgrade\r\n"</span></span><br><span class="line">    <span class="string">"Sec-WebSocket-Accept: &#123;KEY&#125;\r\n"</span></span><br><span class="line">    <span class="string">"WebSocket-Location: ws://&#123;HOST&#125;/echo\r\n\r\n"</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure><p>这里定义监听在 TCP 2000 端口，还有 WebSocket 标准定义的魔法字符串，以及通过 HTTP 协议建立 WebSocket 连接的响应模板字符串。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">handshake</span><span class="params">(conn)</span>:</span></span><br><span class="line">    headers = &#123;&#125;</span><br><span class="line">    raw_headers = conn.recv(<span class="number">4096</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> len(raw_headers): <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">    header, data = raw_headers.split(<span class="string">b'\r\n\r\n'</span>, <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> header.split(<span class="string">b'\r\n'</span>)[<span class="number">1</span>:]:</span><br><span class="line">        key, val = line.split(<span class="string">b': '</span>, <span class="number">1</span>)</span><br><span class="line">        headers[key] = val</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        sec_key = headers[<span class="string">b'Sec-WebSocket-Key'</span>]</span><br><span class="line">    <span class="keyword">except</span>: <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">    res_key = base64.b64encode(hashlib.sha1(sec_key + MAGIC_STRING.encode()).digest())</span><br><span class="line">    http_response = HTTP_RESPONSE.format(KEY=res_key.decode(), HOST=HOST)</span><br><span class="line">    conn.send(http_response.encode())</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure><p>解析客户端发来的 WebSocket 握手请求，请求头中的 <code>Sec-WebSocket-Key</code> 和魔法字符串拼接后的SHA1的值经过Base64编码返回客户端，这一步握手就成功了，接下来的数据传输就是通过 WebSocket 协议进行了。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parseData</span><span class="params">(package)</span>:</span></span><br><span class="line">    fin = package[<span class="number">0</span>] &gt;&gt; <span class="number">7</span>              <span class="comment"># 第一个字节(8 bit)右移7位获得FIN的比特位。</span></span><br><span class="line">    opcode = package[<span class="number">0</span>] &amp; <span class="number">0b1111</span>       <span class="comment"># 与运算获取最后四个比特位(opcode)的值</span></span><br><span class="line">    mask_flag = package[<span class="number">1</span>] &gt;&gt; <span class="number">7</span>        <span class="comment"># 客户端必须将MASK设置为1（必须将数据进行掩码处理）</span></span><br><span class="line">    data_length = package[<span class="number">1</span>] &amp; <span class="number">0b1111111</span>   <span class="comment"># 计算数据长度</span></span><br><span class="line">    <span class="keyword">if</span> data_length == <span class="number">126</span>:             <span class="comment"># 如果数据长度126，则之后的2个字节也是长度信息</span></span><br><span class="line">        masks = package[<span class="number">4</span>:<span class="number">8</span>]           <span class="comment"># 所以掩码值就在第 4,5,6,7 这四个字节</span></span><br><span class="line">        raw_data = package[<span class="number">8</span>:]         <span class="comment"># 实际的数据所在字节</span></span><br><span class="line">    <span class="keyword">elif</span> data_length == <span class="number">127</span>:           <span class="comment"># 如果数据长度127，则之后的8个字节也是长度信息</span></span><br><span class="line">        masks = package[<span class="number">10</span>:<span class="number">14</span>]         <span class="comment"># 所以掩码值就在第 10,11,12,13 这四个字节</span></span><br><span class="line">        raw_data = package[<span class="number">14</span>:]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        masks = package[<span class="number">2</span>:<span class="number">6</span>]           <span class="comment"># 如果长度在0-125，则 2,3,4,5 就是掩码的值</span></span><br><span class="line">        raw_data = package[<span class="number">6</span>:]</span><br><span class="line">    data = <span class="string">b""</span></span><br><span class="line">    i = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> B <span class="keyword">in</span> raw_data:</span><br><span class="line">        tmp = B ^ masks[i % <span class="number">4</span>]         <span class="comment"># 将数据的每个字节与掩码进行异或运算</span></span><br><span class="line">        data += struct.pack(<span class="string">'B'</span>, tmp)  <span class="comment"># 然后将值打包为二进制</span></span><br><span class="line">        i += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> data</span><br></pre></td></tr></table></figure><p>解析接收到的 WebSocket 数据帧，并返回解密后的数据部分。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">packData</span><span class="params">(data)</span>:</span></span><br><span class="line">    finAndOpcode = struct.pack(<span class="string">'B'</span>, <span class="number">0b10000001</span>)</span><br><span class="line">    maskAndLength = struct.pack(<span class="string">'B'</span>, len(data))</span><br><span class="line">    <span class="keyword">return</span> finAndOpcode+maskAndLength+data</span><br></pre></td></tr></table></figure><p>构建服务端返回客户端的数据帧，因为不需要对数据按字节异或加密，所以代码比较简单。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">startServer</span><span class="params">()</span>:</span></span><br><span class="line">    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, <span class="number">1</span>)</span><br><span class="line">    sock.bind((HOST, PORT))</span><br><span class="line">    sock.listen(<span class="number">5</span>)</span><br><span class="line">    print(<span class="string">'Server listen on %s:%s ...'</span> % (HOST,PORT))</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        conn, addr = sock.accept()</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> handshake(conn): </span><br><span class="line">            print(<span class="string">"Client %s:%s handshake failed!"</span> % addr)</span><br><span class="line">        print(<span class="string">"Client %s:%s handshake success!"</span> % addr)</span><br><span class="line">        data = conn.recv(<span class="number">4096</span>)</span><br><span class="line">        print(<span class="string">'Raw data: '</span>, data, sep=<span class="string">''</span>)</span><br><span class="line">        print(<span class="string">'Fact data: '</span>+parseData(data).decode())</span><br><span class="line">        conn.send(packData(parseData(data)))</span><br><span class="line">        conn.close()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        startServer()</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        print(<span class="string">"Server exit..."</span>)</span><br></pre></td></tr></table></figure><p>创建套接字监听，并启动服务，当有客户端握手成功后，将客户端发来的数据原样返回并关闭连接。运行脚本，然后看看效果吧！</p><h3 id="浏览器测试"><a href="#浏览器测试" class="headerlink" title="浏览器测试"></a>浏览器测试</h3><p>这里在 Chrome 浏览器中做演示，<code>F12</code> 进入开发者模式，然后点击 <code>Console</code>，现在就打开 JavaScript 的交互界面了。然后输入如下代码：</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ws = <span class="keyword">new</span> WebSocket(<span class="string">"ws://127.0.0.1:2000/echo"</span>)</span><br><span class="line">ws.onmessage = <span class="function"><span class="params">data</span> =&gt;</span> &#123;<span class="built_in">console</span>.log(<span class="string">"Recv: "</span>+data.data)&#125;</span><br><span class="line">ws.send(<span class="string">"Hi! 喵喵喵"</span>)</span><br></pre></td></tr></table></figure><p>可以看到，发送给服务端的字符串又被原样返回了。</p><p><img src="/uploads/2018/websocket/20180624225605.png" alt=""></p><p>服务端也可以看到终端上的输出：</p><pre><code>yunfwe@zhzz:/mnt/c/Users/yunfwe/Desktop$ python3 server.py
+</code></pre><p>00010001</p>
+<p><strong>FIN：</strong>标识是否为此消息的最后一个数据包，占 1 bit<br><strong>RSV1, RSV2, RSV3：</strong> 用于扩展协议，一般为0，各占1bit<br><strong>Opcode：</strong>数据包类型（frame type），占4bits</p>
+<ul>
+<li><code>0x0</code>：标识一个中间数据包</li>
+<li><code>0x1</code>：标识一个text类型数据包</li>
+<li><code>0x2</code>：标识一个binary类型数据包</li>
+<li><code>0x3-7</code>：保留</li>
+<li><code>0x8</code>：标识一个断开连接类型数据包</li>
+<li><code>0x9</code>：标识一个ping类型数据包</li>
+<li><code>0xA</code>：表示一个pong类型数据包</li>
+<li><code>0xB-F</code>：保留</li>
+</ul>
+<p><strong>MASK：</strong>占1bits 用于标识PayloadData是否经过掩码处理。如果是1，Masking-key域的数据即是掩码密钥，用于解码PayloadData。客户端发出的数据帧需要进行掩码处理，所以此位是1。<br><strong>Payload length：</strong>Payload data的长度，占7bits，7+16bits，7+64bits。如果其值在0-125，则是payload的真实长度。如果值是126，则后面2个字节形成的16bits无符号整型数的值是payload的真实长度。如果值是127，则后面8个字节形成的64bits无符号整型数的值是payload的真实长度。<br><strong>Masking-key：</strong>如果是客户端发送的数据，长度信息之后的4个字节是掩码，<br><strong>Payload data：</strong>应用层数据，客户端发往服务端需要将数据的每一位和掩码的第 N%4 位进行异或运算。</p>
+<p>而服务端返回的数据则不需要掩码和加密数据。</p>
+<h2 id="实现服务端"><a href="#实现服务端" class="headerlink" title="实现服务端"></a>实现服务端</h2><p>接下来使用 Python3 来实现一个简单的 WebSocket 回声服务器，并每个比特的分析 WebSocket 协议的头部。</p>
+<h3 id="编写代码"><a href="#编写代码" class="headerlink" title="编写代码"></a>编写代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"></span><br><span class="line">HOST = <span class="string">'0.0.0.0'</span></span><br><span class="line">PORT = <span class="number">2000</span></span><br><span class="line">MAGIC_STRING = <span class="string">'258EAFA5-E914-47DA-95CA-C5AB0DC85B11'</span></span><br><span class="line"></span><br><span class="line">HTTP_RESPONSE = (</span><br><span class="line">    <span class="string">'HTTP/1.1 101 Switching Protocols\r\n'</span></span><br><span class="line">    <span class="string">"Upgrade: websocket\r\n"</span></span><br><span class="line">    <span class="string">"Connection: Upgrade\r\n"</span></span><br><span class="line">    <span class="string">"Sec-WebSocket-Accept: &#123;KEY&#125;\r\n"</span></span><br><span class="line">    <span class="string">"WebSocket-Location: ws://&#123;HOST&#125;/echo\r\n\r\n"</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>这里定义监听在 TCP 2000 端口，还有 WebSocket 标准定义的魔法字符串，以及通过 HTTP 协议建立 WebSocket 连接的响应模板字符串。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">handshake</span><span class="params">(conn)</span>:</span></span><br><span class="line">    headers = &#123;&#125;</span><br><span class="line">    raw_headers = conn.recv(<span class="number">4096</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> len(raw_headers): <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">    header, data = raw_headers.split(<span class="string">b'\r\n\r\n'</span>, <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> header.split(<span class="string">b'\r\n'</span>)[<span class="number">1</span>:]:</span><br><span class="line">        key, val = line.split(<span class="string">b': '</span>, <span class="number">1</span>)</span><br><span class="line">        headers[key] = val</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        sec_key = headers[<span class="string">b'Sec-WebSocket-Key'</span>]</span><br><span class="line">    <span class="keyword">except</span>: <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">    res_key = base64.b64encode(hashlib.sha1(sec_key + MAGIC_STRING.encode()).digest())</span><br><span class="line">    http_response = HTTP_RESPONSE.format(KEY=res_key.decode(), HOST=HOST)</span><br><span class="line">    conn.send(http_response.encode())</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+<p>解析客户端发来的 WebSocket 握手请求，请求头中的 <code>Sec-WebSocket-Key</code> 和魔法字符串拼接后的SHA1的值经过Base64编码返回客户端，这一步握手就成功了，接下来的数据传输就是通过 WebSocket 协议进行了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parseData</span><span class="params">(package)</span>:</span></span><br><span class="line">    fin = package[<span class="number">0</span>] &gt;&gt; <span class="number">7</span>              <span class="comment"># 第一个字节(8 bit)右移7位获得FIN的比特位。</span></span><br><span class="line">    opcode = package[<span class="number">0</span>] &amp; <span class="number">0b1111</span>       <span class="comment"># 与运算获取最后四个比特位(opcode)的值</span></span><br><span class="line">    mask_flag = package[<span class="number">1</span>] &gt;&gt; <span class="number">7</span>        <span class="comment"># 客户端必须将MASK设置为1（必须将数据进行掩码处理）</span></span><br><span class="line">    data_length = package[<span class="number">1</span>] &amp; <span class="number">0b1111111</span>   <span class="comment"># 计算数据长度</span></span><br><span class="line">    <span class="keyword">if</span> data_length == <span class="number">126</span>:             <span class="comment"># 如果数据长度126，则之后的2个字节也是长度信息</span></span><br><span class="line">        masks = package[<span class="number">4</span>:<span class="number">8</span>]           <span class="comment"># 所以掩码值就在第 4,5,6,7 这四个字节</span></span><br><span class="line">        raw_data = package[<span class="number">8</span>:]         <span class="comment"># 实际的数据所在字节</span></span><br><span class="line">    <span class="keyword">elif</span> data_length == <span class="number">127</span>:           <span class="comment"># 如果数据长度127，则之后的8个字节也是长度信息</span></span><br><span class="line">        masks = package[<span class="number">10</span>:<span class="number">14</span>]         <span class="comment"># 所以掩码值就在第 10,11,12,13 这四个字节</span></span><br><span class="line">        raw_data = package[<span class="number">14</span>:]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        masks = package[<span class="number">2</span>:<span class="number">6</span>]           <span class="comment"># 如果长度在0-125，则 2,3,4,5 就是掩码的值</span></span><br><span class="line">        raw_data = package[<span class="number">6</span>:]</span><br><span class="line">    data = <span class="string">b""</span></span><br><span class="line">    i = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> B <span class="keyword">in</span> raw_data:</span><br><span class="line">        tmp = B ^ masks[i % <span class="number">4</span>]         <span class="comment"># 将数据的每个字节与掩码进行异或运算</span></span><br><span class="line">        data += struct.pack(<span class="string">'B'</span>, tmp)  <span class="comment"># 然后将值打包为二进制</span></span><br><span class="line">        i += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> data</span><br></pre></td></tr></table></figure>
+<p>解析接收到的 WebSocket 数据帧，并返回解密后的数据部分。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">packData</span><span class="params">(data)</span>:</span></span><br><span class="line">    finAndOpcode = struct.pack(<span class="string">'B'</span>, <span class="number">0b10000001</span>)</span><br><span class="line">    maskAndLength = struct.pack(<span class="string">'B'</span>, len(data))</span><br><span class="line">    <span class="keyword">return</span> finAndOpcode+maskAndLength+data</span><br></pre></td></tr></table></figure>
+<p>构建服务端返回客户端的数据帧，因为不需要对数据按字节异或加密，所以代码比较简单。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">startServer</span><span class="params">()</span>:</span></span><br><span class="line">    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, <span class="number">1</span>)</span><br><span class="line">    sock.bind((HOST, PORT))</span><br><span class="line">    sock.listen(<span class="number">5</span>)</span><br><span class="line">    print(<span class="string">'Server listen on %s:%s ...'</span> % (HOST,PORT))</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        conn, addr = sock.accept()</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> handshake(conn): </span><br><span class="line">            print(<span class="string">"Client %s:%s handshake failed!"</span> % addr)</span><br><span class="line">        print(<span class="string">"Client %s:%s handshake success!"</span> % addr)</span><br><span class="line">        data = conn.recv(<span class="number">4096</span>)</span><br><span class="line">        print(<span class="string">'Raw data: '</span>, data, sep=<span class="string">''</span>)</span><br><span class="line">        print(<span class="string">'Fact data: '</span>+parseData(data).decode())</span><br><span class="line">        conn.send(packData(parseData(data)))</span><br><span class="line">        conn.close()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        startServer()</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        print(<span class="string">"Server exit..."</span>)</span><br></pre></td></tr></table></figure>
+<p>创建套接字监听，并启动服务，当有客户端握手成功后，将客户端发来的数据原样返回并关闭连接。运行脚本，然后看看效果吧！</p>
+<h3 id="浏览器测试"><a href="#浏览器测试" class="headerlink" title="浏览器测试"></a>浏览器测试</h3><p>这里在 Chrome 浏览器中做演示，<code>F12</code> 进入开发者模式，然后点击 <code>Console</code>，现在就打开 JavaScript 的交互界面了。然后输入如下代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ws = <span class="keyword">new</span> WebSocket(<span class="string">"ws://127.0.0.1:2000/echo"</span>)</span><br><span class="line">ws.onmessage = <span class="function"><span class="params">data</span> =&gt;</span> &#123;<span class="built_in">console</span>.log(<span class="string">"Recv: "</span>+data.data)&#125;</span><br><span class="line">ws.send(<span class="string">"Hi! 喵喵喵"</span>)</span><br></pre></td></tr></table></figure>
+<p>可以看到，发送给服务端的字符串又被原样返回了。</p>
+<p><img src="/uploads/2018/websocket/20180624225605.png" alt=""></p>
+<p>服务端也可以看到终端上的输出：</p>
+<pre><code>yunfwe@zhzz:/mnt/c/Users/yunfwe/Desktop$ python3 server.py
 Server listen on 0.0.0.0:2000 ...
 Client 127.0.0.1:53117 handshake success!
 Raw data: b&apos;\x81\x8d7\x91\xc6\x8b\x7f\xf8\xe7\xab\xd2\x07sn\xa1$#\x1d\x82&apos;
 Fact data: Hi! 喵喵喵
-</code></pre><h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><p>客户端一般都是浏览器等程序，如果感兴趣的话也可以试试用 Python 实现一个简单的 WebSocket 客户端。</p></div><footer class="post-footer"><div class="post-tags"><a href="/tags/websocket/" rel="tag"><i class="fa fa-tag"></i> websocket</a></div><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/2018/06/03/2018/一步步搭建PXE网络装机/" rel="next" title="一步步搭建PXE网络装机"><i class="fa fa-chevron-left"></i> 一步步搭建PXE网络装机</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"> <a href="/2018/07/12/2018/Bottle 轻量级Web框架/" rel="prev" title="Bottle 轻量级Web框架">Bottle 轻量级Web框架<i class="fa fa-chevron-right"></i></a></div></div></footer></div></article><div class="post-spread"></div></div></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap"> 文章目录</li><li class="sidebar-nav-overview" data-target="site-overview-wrap"> 站点概览</li></ul><section class="site-overview-wrap sidebar-panel"><div class="site-overview"><div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person"> <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="魏云飞"><p class="site-author-name" itemprop="name">魏云飞</p><p class="site-description motion-element" itemprop="description">帅的人已经醒来 而丑的人还在沉睡</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"> <a href="/archives/"><span class="site-state-item-count">48</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"> <a href="/categories/index.html"><span class="site-state-item-count">26</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"> <a href="/tags/index.html"><span class="site-state-item-count">53</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/yunfwe" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i> GitHub</a></span></div></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#协议分析"><span class="nav-number">2.</span> <span class="nav-text">协议分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#握手阶段"><span class="nav-number">2.1.</span> <span class="nav-text">握手阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#传输阶段"><span class="nav-number">2.2.</span> <span class="nav-text">传输阶段</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现服务端"><span class="nav-number">3.</span> <span class="nav-text">实现服务端</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编写代码"><span class="nav-number">3.1.</span> <span class="nav-text">编写代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#浏览器测试"><span class="nav-number">3.2.</span> <span class="nav-text">浏览器测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">4.</span> <span class="nav-text">附录</span></a></li></ol></div></div></section></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright">&copy; <span itemprop="copyrightYear">2018</span><span class="with-love"><i class="fa fa-user"></i></span> <span class="author" itemprop="copyrightHolder">魏云飞</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-area-chart"></i></span> <span title="站点总字数">521k</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-coffee"></i></span> <span title="站点总阅读时长">8:41</span></div><div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.0.4</div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i></div></div><script type="text/javascript">"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script><script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script><script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script><script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script><script type="text/javascript">
+</code></pre><h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><p>客户端一般都是浏览器等程序，如果感兴趣的话也可以试试用 Python 实现一个简单的 WebSocket 客户端。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/websocket/" rel="tag"><i class="fa fa-tag"></i> websocket</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/03/2018/一步步搭建PXE网络装机/" rel="next" title="一步步搭建PXE网络装机">
+                <i class="fa fa-chevron-left"></i> 一步步搭建PXE网络装机
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/07/12/2018/Bottle 轻量级Web框架/" rel="prev" title="Bottle 轻量级Web框架">
+                Bottle 轻量级Web框架 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="魏云飞">
+            
+              <p class="site-author-name" itemprop="name">魏云飞</p>
+              <p class="site-description motion-element" itemprop="description">帅的人已经醒来 而丑的人还在沉睡</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">49</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">56</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/yunfwe" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#协议分析"><span class="nav-number">2.</span> <span class="nav-text">协议分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#握手阶段"><span class="nav-number">2.1.</span> <span class="nav-text">握手阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#传输阶段"><span class="nav-number">2.2.</span> <span class="nav-text">传输阶段</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现服务端"><span class="nav-number">3.</span> <span class="nav-text">实现服务端</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编写代码"><span class="nav-number">3.1.</span> <span class="nav-text">编写代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#浏览器测试"><span class="nav-number">3.2.</span> <span class="nav-text">浏览器测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">4.</span> <span class="nav-text">附录</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">魏云飞</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">553k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+    <span title="站点总阅读时长">9:13</span>
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.0.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
     // Popup Window;
     var isfetched = false;
     var isXml = true;
@@ -352,4 +1447,48 @@ Fact data: Hi! 喵喵喵
         onPopupClose();
       }
     });
-  </script></body><script>var titleTime,OriginTitile=document.title;document.addEventListener("visibilitychange",function(){document.hidden?($('[rel="icon"]').attr("href","/img/TEP.ico"),document.title="╭(°A°`)╮ 页面崩溃啦 ~ ",clearTimeout(titleTime)):($('[rel="icon"]').attr("href","/favicon.ico"),document.title="(ฅ>ω<*ฅ) 噫又好了~"+OriginTitile,titleTime=setTimeout(function(){document.title=OriginTitile},2e3))})</script></html>
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<script>
+var OriginTitile = document.title;
+ var titleTime;
+ document.addEventListener('visibilitychange', function () {
+     if (document.hidden) {
+         $('[rel="icon"]').attr('href', "/img/TEP.ico");
+         document.title = '╭(°A°`)╮ 页面崩溃啦 ~ ';
+         clearTimeout(titleTime);
+     }
+     else {
+         $('[rel="icon"]').attr('href', "/favicon.ico");
+         document.title = '(ฅ>ω<*ฅ) 噫又好了~' + OriginTitile;
+         titleTime = setTimeout(function () {
+             document.title = OriginTitile;
+         }, 2000);
+     }
+ });
+</script>
+</html>
