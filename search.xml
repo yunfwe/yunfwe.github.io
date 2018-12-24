@@ -233,17 +233,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[Leanote开源云笔记搭建]]></title>
-    <url>%2F2018%2F01%2F02%2F2018%2FLeanote%E5%BC%80%E6%BA%90%E4%BA%91%E7%AC%94%E8%AE%B0%E6%90%AD%E5%BB%BA%2F</url>
-    <content type="text"><![CDATA[简介 Leanote是一款开源的云笔记和博客系统 可以很方便的搭建自己的云笔记。在自己的云主机上搭建了Leanote后 就可以抛弃某云笔记了。而且还自带一套博客系统 写好的笔记可以一键生成到博客空间。Leanote还支持注册（注册功能可以关闭）或者手动添加用户，可以让好友也一起用的哦。Github地址: https://github.com/leanote/leanote 安装步骤 下载 leanote 二进制版。 安装和启动 mongodb。 导入初始数据。 配置 leanote。 运行 leanote。 下载 leanote 二进制版 下载地址: http://leanote.org/#download 下载后将压缩包解压到目录中 linux为例 12tar xf leanote-linux-amd64-v2.6.bin.tar.gz -C /usr/local/ls /usr/local/leanote/ 安装和启动 mongodb 可以使用包管理器下载比如apt或者yum 也可以从mongodb官方下载二进制包 1234567wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.0.1.tgztar xf mongodb-linux-x86_64-3.0.1.tgz -C /usr/local/mv /usr/local/&#123;mongodb-linux-x86_64-3.0.1,mongodb&#125;mkdir /usr/local/mongodb/data/usr/local/mongodb/bin/mongod --dbpath /usr/local/mongodb/data/ &amp;&gt;&gt;/tmp/mongod &amp;/usr/local/mongodb/bin/mongo&gt; show dbs # 进入mongo cli后 查看所有库 导入初始数据 初始数据存放在 /usr/local/leanote/mongodb_backup/leanote_install_data/ 中 12/usr/local/mongodb/bin/mongorestore -h localhost -d leanote --dir \/usr/local/leanote/mongodb_backup/leanote_install_data/ 输出没有异常的话可以重新进入 mongo cli 然后 show dbs 看看是否存在leanote库了 配置 leanote 默认leanote已经存在两个用户 用户 密码 admin abc123 demo@leanote.com demo@leanote.com 编辑 /usr/local/leanote/conf/app.conf 文件 修改app.secret 可以随便更改几个字符串 1vim /usr/local/leanote/conf/app.conf 默认启动端口啥的 也看着改吧 运行 leanote12cd /usr/local/leanote/bin/bash run.sh 修改配置文件的http.addr为0.0.0.0可以外部访问leanote服务接下来就可以浏览器访问Leanote这个专为IT人员打造的云笔记系统了。 备注Leanote官网：https://leanote.com/可以在官网下载Windows客户端 还可以登录到自己搭建的私网leanote服务器]]></content>
-      <categories>
-        <category>Leanote</category>
-      </categories>
-      <tags>
-        <tag>Leanote</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[Linux挂载多分区的img镜像文件]]></title>
     <url>%2F2018%2F01%2F02%2F2018%2FLinux%E6%8C%82%E8%BD%BD%E5%A4%9A%E5%88%86%E5%8C%BA%E7%9A%84img%E9%95%9C%E5%83%8F%E6%96%87%E4%BB%B6%2F</url>
     <content type="text"><![CDATA[简介 有时候想挂载一个img镜像文件到系统目录，发现无法挂载。使用fdisk命令查看镜像结构 发现有多个分区，这个时候需要将所有分区映射为设备文件后才可以挂载。这个用处好像不太多 这个问题是当时为了修改树莓派的ubuntu镜像文件才用的。或者想自己制作一个linux启动镜像的时候可以玩玩。 环境 当然是在linux下进行操作了 步骤先看看loop设备已经映射了哪些镜像1losetup -a 将loop设备和img镜像绑定1losetup /dev/loop0 ubuntu-16.04.3.img 将loop0的所有分区映射出来1kpartx -av /dev/loop0 root@ubuntu-Lenovo:/home/ubuntu# kpartx -av /dev/loop0 add map loop0p1 (253:0): 0 262144 linear 7:0 8192 add map loop0p2 (253:1): 0 7540736 linear 7:0 270336 将用到的分区挂载到目录1mount /dev/mapper/loop0p2 /mnt/pi/ 需要注意的是映射的设备文件在/dev/mapper/目录下 卸载12umount /mnt/pi/losetup -d /dev/loop0 后记img镜像里面装个系统 就可以使用qemu等虚拟机启动了 挺好玩的如果遇到无法umount的问题 可以直接使用 fuser -ka /mnt/pi/ 强制卸载]]></content>
@@ -252,6 +241,17 @@
       </categories>
       <tags>
         <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Leanote开源云笔记搭建]]></title>
+    <url>%2F2018%2F01%2F02%2F2018%2FLeanote%E5%BC%80%E6%BA%90%E4%BA%91%E7%AC%94%E8%AE%B0%E6%90%AD%E5%BB%BA%2F</url>
+    <content type="text"><![CDATA[简介 Leanote是一款开源的云笔记和博客系统 可以很方便的搭建自己的云笔记。在自己的云主机上搭建了Leanote后 就可以抛弃某云笔记了。而且还自带一套博客系统 写好的笔记可以一键生成到博客空间。Leanote还支持注册（注册功能可以关闭）或者手动添加用户，可以让好友也一起用的哦。Github地址: https://github.com/leanote/leanote 安装步骤 下载 leanote 二进制版。 安装和启动 mongodb。 导入初始数据。 配置 leanote。 运行 leanote。 下载 leanote 二进制版 下载地址: http://leanote.org/#download 下载后将压缩包解压到目录中 linux为例 12tar xf leanote-linux-amd64-v2.6.bin.tar.gz -C /usr/local/ls /usr/local/leanote/ 安装和启动 mongodb 可以使用包管理器下载比如apt或者yum 也可以从mongodb官方下载二进制包 1234567wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.0.1.tgztar xf mongodb-linux-x86_64-3.0.1.tgz -C /usr/local/mv /usr/local/&#123;mongodb-linux-x86_64-3.0.1,mongodb&#125;mkdir /usr/local/mongodb/data/usr/local/mongodb/bin/mongod --dbpath /usr/local/mongodb/data/ &amp;&gt;&gt;/tmp/mongod &amp;/usr/local/mongodb/bin/mongo&gt; show dbs # 进入mongo cli后 查看所有库 导入初始数据 初始数据存放在 /usr/local/leanote/mongodb_backup/leanote_install_data/ 中 12/usr/local/mongodb/bin/mongorestore -h localhost -d leanote --dir \/usr/local/leanote/mongodb_backup/leanote_install_data/ 输出没有异常的话可以重新进入 mongo cli 然后 show dbs 看看是否存在leanote库了 配置 leanote 默认leanote已经存在两个用户 用户 密码 admin abc123 demo@leanote.com demo@leanote.com 编辑 /usr/local/leanote/conf/app.conf 文件 修改app.secret 可以随便更改几个字符串 1vim /usr/local/leanote/conf/app.conf 默认启动端口啥的 也看着改吧 运行 leanote12cd /usr/local/leanote/bin/bash run.sh 修改配置文件的http.addr为0.0.0.0可以外部访问leanote服务接下来就可以浏览器访问Leanote这个专为IT人员打造的云笔记系统了。 备注Leanote官网：https://leanote.com/可以在官网下载Windows客户端 还可以登录到自己搭建的私网leanote服务器]]></content>
+      <categories>
+        <category>Leanote</category>
+      </categories>
+      <tags>
+        <tag>Leanote</tag>
       </tags>
   </entry>
   <entry>
@@ -320,8 +320,8 @@
       <tags>
         <tag>mysql</tag>
         <tag>php</tag>
-        <tag>zabbix</tag>
         <tag>apache</tag>
+        <tag>zabbix</tag>
       </tags>
   </entry>
   <entry>
@@ -513,8 +513,8 @@
         <category>Zabbix</category>
       </categories>
       <tags>
-        <tag>LNMP</tag>
         <tag>zabbix</tag>
+        <tag>LNMP</tag>
         <tag>监控</tag>
       </tags>
   </entry>
@@ -528,8 +528,8 @@
       <tags>
         <tag>mysql</tag>
         <tag>php</tag>
-        <tag>nginx</tag>
         <tag>zabbix</tag>
+        <tag>nginx</tag>
       </tags>
   </entry>
   <entry>
