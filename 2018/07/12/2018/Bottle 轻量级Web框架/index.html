@@ -1,0 +1,1915 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="bottle,python,">
+
+
+<meta name="description" content="简介 Bottle 是一个快速、简单、轻量级的 Python Web 框架，Bottle 作为一个单独的文件模块分发，而且除了标准库没有任何第三方依赖，但是麻雀虽小五脏俱全，所以非常适合第一次接触 Python Web 开发的新手入门学习使用。Bottle 支持URL映射、模板引擎、访问表单、文件上传等功能。内建 HTTP 开发服务器，而且还支持 Paste, Gevent, gunicorn 等">
+<meta name="keywords" content="bottle,python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bottle 轻量级Web框架">
+<meta property="og:url" content="http://www.yunfwe.cn/2018/07/12/2018/Bottle 轻量级Web框架/index.html">
+<meta property="og:site_name" content="某科学的最后之作">
+<meta property="og:description" content="简介 Bottle 是一个快速、简单、轻量级的 Python Web 框架，Bottle 作为一个单独的文件模块分发，而且除了标准库没有任何第三方依赖，但是麻雀虽小五脏俱全，所以非常适合第一次接触 Python Web 开发的新手入门学习使用。Bottle 支持URL映射、模板引擎、访问表单、文件上传等功能。内建 HTTP 开发服务器，而且还支持 Paste, Gevent, gunicorn 等">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.yunfwe.cn/uploads/photos/dasdefadsad.jpg">
+<meta property="og:updated_time" content="2018-07-14T16:00:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Bottle 轻量级Web框架">
+<meta name="twitter:description" content="简介 Bottle 是一个快速、简单、轻量级的 Python Web 框架，Bottle 作为一个单独的文件模块分发，而且除了标准库没有任何第三方依赖，但是麻雀虽小五脏俱全，所以非常适合第一次接触 Python Web 开发的新手入门学习使用。Bottle 支持URL映射、模板引擎、访问表单、文件上传等功能。内建 HTTP 开发服务器，而且还支持 Paste, Gevent, gunicorn 等">
+<meta name="twitter:image" content="http://www.yunfwe.cn/uploads/photos/dasdefadsad.jpg">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="某科学的最后之作" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://www.yunfwe.cn/2018/07/12/2018/Bottle 轻量级Web框架/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>Bottle 轻量级Web框架 | 某科学的最后之作</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">某科学的最后之作</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">帅的人已经醒来 而丑的人还在沉睡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.yunfwe.cn/2018/07/12/2018/Bottle 轻量级Web框架/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="魏云飞">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="某科学的最后之作">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Bottle 轻量级Web框架</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-12T12:50:00+08:00">2018-07-12</time>
+            
+
+            
+            
+              
+                
+              
+            
+
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2018-07-15T00:00:00+08:00">2018-07-15</time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">34k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">0:34</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="/uploads/photos/dasdefadsad.jpg" rel="gallery_cmde8g1xl004xpijx248txajw" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="/uploads/photos/dasdefadsad.jpg" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
+<p>Bottle 是一个快速、简单、轻量级的 Python Web 框架，Bottle 作为一个单独的文件模块分发，而且除了标准库没有任何第三方依赖，但是麻雀虽小五脏俱全，所以非常适合第一次接触 Python Web 开发的新手入门学习使用。Bottle 支持URL映射、模板引擎、访问表单、文件上传等功能。内建 HTTP 开发服务器，而且还支持 Paste, Gevent, gunicorn 等高性能 WSGI 服务器。本文通过阅读<a href="http://bottlepy.org/docs/0.12/" target="_blank" rel="noopener">官方文档</a> 并结合自己的实际测试编写而成。<br><a id="more"></a></p>
+</blockquote>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="快速安装体验"><a href="#快速安装体验" class="headerlink" title="快速安装体验"></a>快速安装体验</h3><p>Bottle 的安装非常简单，可以通过 <code>easy_install bottle</code> 或者使用 <code>pip install bottle</code> 来安装，甚至可以直接下载 <a href="https://github.com/defnull/bottle/raw/master/bottle.py" target="_blank" rel="noopener">Bottle.py</a> (最新版，非稳定版) 放到程序目录下来使用。Bottle 可以运行在 <strong>Python2.5+</strong> 和 <strong>Python3.x</strong> 上。</p>
+<p>目前 Bottle 稳定版为 <code>0.12.13</code>，开发版为 <code>0.13-dev</code>。<a href="https://github.com/bottlepy/bottle" target="_blank" rel="noopener">点此打开Github地址</a></p>
+<p><strong>看一个简单的例子：</strong><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> bottle</span><br><span class="line"></span><br><span class="line">app = bottle.Bottle()</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/hello/&lt;name&gt;')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">(name)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> bottle.template(<span class="string">'&lt;b&gt;Hello &#123;&#123;name&#125;&#125;&lt;/b&gt;!'</span>, name=name)</span><br><span class="line"></span><br><span class="line">app.run(host=<span class="string">"localhost"</span>, port=<span class="number">8080</span>)</span><br></pre></td></tr></table></figure></p>
+<p><strong>启动脚本：</strong></p>
+<pre><code>(python3) root@ubuntu:~# python demo.py
+Bottle v0.12.13 server starting up (using WSGIRefServer())...
+Listening on http://localhost:8080/
+Hit Ctrl-C to quit.
+</code></pre><p><strong>使用浏览器或者 curl 测试：</strong></p>
+<pre><code>root@ubuntu:~# curl http://127.0.0.1:8080/hello/yunfwe        
+&lt;b&gt;Hello yunfwe&lt;/b&gt;!
+</code></pre><p>如果学过 Flask 框架，可以发现它们的语法非常相似。</p>
+<h3 id="教程"><a href="#教程" class="headerlink" title="教程"></a>教程</h3><h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>Bottle 不依赖任何第三方库，所以可以直接将 <code>bottle.py</code> 下载到项目目录中使用，但这通常下载的是最新开发版。</p>
+<pre><code>$ wget https://github.com/defnull/bottle/raw/master/bottle.py
+</code></pre><p>如果更喜欢稳定版，可以在 PyPi 上获取，推荐使用 pip 包管理器来安装，或者使用 easy_install 也可以。</p>
+<pre><code>$ sudo pip install bottle
+$ sudo easy_install bottle
+</code></pre><p>Bottle 支持 Python2.5 或者更高版本才能正常运行，如果你没有权限在系统范围内安装，可以使用 Python虚拟环境 <code>virtualenv</code>。</p>
+<h4 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h4><p>安装成功后，从最简单的 “Hello World” 示例开始吧！</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> bottle</span><br><span class="line"></span><br><span class="line">app = bottle.Bottle()</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/hello')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'Hello World!'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    app.run(host=<span class="string">'localhost'</span>, port=<span class="number">8080</span>, debug=<span class="literal">True</span>, reloader=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p>运行此代码，访问 <code>http://localhost:8080/hello</code>，将在浏览器中看到 “Hello World!”，下面是它的工作原理：</p>
+<p>使用 <code>app.route()</code> 装饰器装饰的函数 <code>hello()</code>，与 <code>app.route()</code> 传入的路径参数 <code>/hello</code> 做绑定，当浏览器请求 URL 时，如果匹配了这个路径，将调用这个路径所绑定的函数，并将函数的返回值发送回浏览器，就是这么简单。路由是这个框架最重要的概念，你可以根据需求定义任何数量的路由。</p>
+<p>最后一行的 <code>app.run()</code> 会启动一个内置的开发服务器，它根据传递的参数在 <code>localhost</code> 上的 <code>8080</code> 端口启动服务，直到你通过 <code>Ctrl-C</code> 停止这个服务。<code>debug=True</code> 会以调试模式启动服务，在开发过程中是非常有用，但是在程序发布后应该是关闭的。<code>reloader=True</code> 也是在开发时非常有用的一个小技巧，Bottle 会自动检测当前脚本是否更新，如果有更新会自动帮你重新运行程序，这样就免去每次改了代码，需要手动停止程序再重新启动程序的过程，这个配置在生产环境也应该是关闭的。</p>
+<h4 id="请求路由"><a href="#请求路由" class="headerlink" title="请求路由"></a>请求路由</h4><p>上一章中，我们只构建了一个只有一条路由，而且非常简单的 Web 应用程序。多个 <code>app.route()</code> 都可以绑定到通一个回调函数上，看下面的例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/')</span></span><br><span class="line"><span class="meta">@app.route('/hello/&lt;name&gt;')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">(name=<span class="string">'yunfwe'</span>)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> bottle.template(<span class="string">'Hello &#123;&#123;name&#125;&#125;!\n'</span>, name=name)</span><br></pre></td></tr></table></figure>
+<p>浏览器访问：</p>
+<pre><code>root@ubuntu:~# curl http://127.0.0.1:8080/
+Hello yunfwe!
+root@ubuntu:~# curl http://127.0.0.1:8080/hello/bottle
+Hello bottle!
+</code></pre><p>这个示例告诉我们两件事：可以将多个路由绑定到同一个函数上，并且可以向URL添加通配符，并通过关键字参数访问它们。</p>
+<h5 id="动态路由"><a href="#动态路由" class="headerlink" title="动态路由"></a>动态路由</h5><p>包含通配符的路由称为动态路由，并且可以匹配满足条件的所有URL。简单的通配符由尖括号中的名称组成，例如：<code>&lt;name&gt;</code>。<br>路由 <code>/hello/&lt;name&gt;</code> 会匹配 <code>/hello/alice</code> 以及 <code>/hello/bob</code> 等，如果遇到了下一个斜杆 <code>/</code> 则不会匹配，例如：<code>/hello/mr/smith</code>。</p>
+<p>每个通配符都将匹配到的部分作为关键字参数传递给路由绑定的回调函数，所以回调函数应该提供参数接收它们，否则将会抛出异常。通过动态路由，可以设计出漂亮而且有意义的URL，下面是一些示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/wiki/&lt;pagename&gt;')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show_wiki_page</span><span class="params">(pagename)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/&lt;action&gt;/&lt;user&gt;')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">user_api</span><span class="params">(action, user)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<h5 id="过滤器"><a href="#过滤器" class="headerlink" title="过滤器"></a>过滤器</h5><p>还可以使用过滤器来定义更具体的通配符，在将URL匹配到的部分传递给回调函数前通过过滤器来转换它们。</p>
+<p>当前内置的几个过滤器：</p>
+<ul>
+<li><code>:int</code> 仅匹配正整数，并将值转为整数后传递给回调</li>
+<li><code>:float</code> 类似于 <code>:int</code>，将值转为浮点数后传递给回调</li>
+<li><code>:path</code> 以非贪婪的方式匹配包含斜杠字符在内的所有字符，并且可以用于匹配多个路径段</li>
+<li><code>:re[:exp]</code> 允许使用自定义的正则表达式匹配，匹配的值不会被修改或者转换。</li>
+</ul>
+<p><strong>示例：</strong><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/int/&lt;val:int&gt;')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_int</span><span class="params">(val)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> str(val) + <span class="string">'\n'</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/float/&lt;val:float&gt;')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_float</span><span class="params">(val)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> str(val) + <span class="string">'\n'</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/path/&lt;val:path&gt;')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_path</span><span class="params">(val)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> str(val) + <span class="string">'\n'</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/re/&lt;val:re:[a-z]+&gt;')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_re</span><span class="params">(val)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> str(val) + <span class="string">'\n'</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>结果：</strong></p>
+<pre><code>root@ubuntu:~# curl http://127.0.0.1:8080/int/123
+123
+root@ubuntu:~# curl http://127.0.0.1:8080/float/1.1
+1.1
+root@ubuntu:~# curl http://127.0.0.1:8080/path/usr/local/
+usr/local/
+root@ubuntu:~# curl http://127.0.0.1:8080/re/abcdef
+abcdef
+</code></pre><h5 id="HTTP请求方法"><a href="#HTTP请求方法" class="headerlink" title="HTTP请求方法"></a>HTTP请求方法</h5><p>HTTP协议为不同的任务定义了几种请求方法，<code>GET</code> 方法是 Bottle 路由的默认方法，如果需要处理其他方法，比如 <code>POST</code>, <code>PUT</code>, <code>DELETE</code> 等方法，需要添加一个 <code>method</code> 参数到 <code>app.route()</code> 装饰器上，或者使用 <code>app.get()</code>, <code>app.post()</code>, <code>app.put()</code>, <code>app.delete()</code> 这四个备选装饰器。</p>
+<p><code>POST</code> 方法常用于 HTML 表单提交，下面示例演示如何使用 <code>POST</code> 处理登陆表单。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> bottle</span><br><span class="line"></span><br><span class="line">app = bottle.Bottle()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或者使用 @app.route('/login')</span></span><br><span class="line"><span class="meta">@app.get('/login')  </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">login</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'''</span></span><br><span class="line"><span class="string">        &lt;form action="/login" method="post"&gt;</span></span><br><span class="line"><span class="string">            Username: &lt;input name="username" type="text" /&gt;</span></span><br><span class="line"><span class="string">            Password: &lt;input name="password" type="password" /&gt;</span></span><br><span class="line"><span class="string">            &lt;input value="Login" type="submit" /&gt;</span></span><br><span class="line"><span class="string">        &lt;/form&gt;</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 或者使用 @app.route('/login', method='POST')</span></span><br><span class="line"><span class="meta">@app.post('/login') </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">do_login</span><span class="params">()</span>:</span></span><br><span class="line">    username = bottle.request.forms.get(<span class="string">'username'</span>)</span><br><span class="line">    password = bottle.request.forms.get(<span class="string">'password'</span>)</span><br><span class="line">    <span class="keyword">if</span> username == <span class="string">'root'</span> <span class="keyword">and</span> password == <span class="string">'123456'</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"&lt;p&gt;Your login information was correct.&lt;/p&gt;\n"</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"&lt;p&gt;Login failed.&lt;/p&gt;\n"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    app.run(host=<span class="string">'localhost'</span>, port=<span class="number">8080</span>, debug=<span class="literal">True</span>, reloader=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>使用浏览器或者 curl 验证结果：</strong></p>
+<pre><code>root@ubuntu:~# curl http://127.0.0.1:8080/login -X GET
+        &lt;form action=&quot;/login&quot; method=&quot;post&quot;&gt;
+            Username: &lt;input name=&quot;username&quot; type=&quot;text&quot; /&gt;
+            Password: &lt;input name=&quot;password&quot; type=&quot;password&quot; /&gt;
+            &lt;input value=&quot;Login&quot; type=&quot;submit&quot; /&gt;
+        &lt;/form&gt;
+root@ubuntu:~# curl http://127.0.0.1:8080/login -X POST --data &apos;username=root&amp;password=654321&apos;
+&lt;p&gt;Login failed.&lt;/p&gt;
+root@ubuntu:~# curl http://127.0.0.1:8080/login -X POST --data &apos;username=root&amp;password=123456&apos;
+&lt;p&gt;Your login information was correct.&lt;/p&gt;
+</code></pre><p>或者还可以在一个回调函数里同时处理 <code>GET</code> 和 <code>POST</code> 请求，需要传给 <code>method</code> 参数一个列表，将需要的 HTTP 方法加入到列表中 例如：<code>method=[&#39;GET&#39;, &#39;POST&#39;]</code>，然后在回调函数中通过 <code>bottle.request.method</code> 来判断当前请求的方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> bottle</span><br><span class="line"></span><br><span class="line">app = bottle.Bottle()</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/login', method=['GET', 'POST'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">login</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">if</span> bottle.request.method == <span class="string">'GET'</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'''</span></span><br><span class="line"><span class="string">        &lt;form action="/login" method="post"&gt;</span></span><br><span class="line"><span class="string">            Username: &lt;input name="username" type="text" /&gt;</span></span><br><span class="line"><span class="string">            Password: &lt;input name="password" type="password" /&gt;</span></span><br><span class="line"><span class="string">            &lt;input value="Login" type="submit" /&gt;</span></span><br><span class="line"><span class="string">        &lt;/form&gt;</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">    <span class="keyword">if</span> bottle.request.method == <span class="string">'POST'</span>:</span><br><span class="line">        username = bottle.request.forms.get(<span class="string">'username'</span>)</span><br><span class="line">        password = bottle.request.forms.get(<span class="string">'password'</span>)</span><br><span class="line">        <span class="keyword">if</span> username == <span class="string">'root'</span> <span class="keyword">and</span> password == <span class="string">'123456'</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"&lt;p&gt;Your login information was correct.&lt;/p&gt;\n"</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"&lt;p&gt;Login failed.&lt;/p&gt;\n"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    app.run(host=<span class="string">'localhost'</span>, port=<span class="number">8080</span>, debug=<span class="literal">True</span>, reloader=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>特殊方法：HEAD 和 ANY</strong></p>
+<p><code>HEAD</code> 方法和 <code>GET</code> 方法类似，但是 <code>HEAD</code> 方法并不返回消息体，只返回 HTTP 协议头部信息。<code>HEAD</code> 方法常用来测试链接的有效性。当对 Bottle 的 <code>GET</code> 路由使用 <code>HEAD</code> 方法访问时，Bottle 会正常按照 <code>GET</code> 请求处理，但是并不会返回消息体（回调函数的返回结果）。</p>
+<p><code>ANY</code> 方法会匹配所有请求方法，但也只会在没有定义其他更具体的路由时。这对于将请求重定向到更具体的子应用程序的代理路由很有用。</p>
+<h5 id="显式路由配置"><a href="#显式路由配置" class="headerlink" title="显式路由配置"></a>显式路由配置</h5><p>如果不想使用装饰器的方式来定义路由，可以显式的将某个函数传递给某个路由，下面看一个简单的例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> bottle</span><br><span class="line"></span><br><span class="line">app = bottle.Bottle()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'Hello World!'</span></span><br><span class="line"></span><br><span class="line">app.route(<span class="string">'/'</span>, <span class="string">'GET'</span>, hello)</span><br></pre></td></tr></table></figure>
+<p>或者使用一个工厂函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> bottle</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'Hello World!'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setup_routing</span><span class="params">(app, urls)</span>:</span></span><br><span class="line">    <span class="keyword">for</span> u <span class="keyword">in</span> urls:</span><br><span class="line">        app.route(*u)</span><br><span class="line"></span><br><span class="line">urls = [</span><br><span class="line">    (<span class="string">'/'</span>, <span class="string">'GET'</span>, hello),</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">app = bottle.Bottle()</span><br><span class="line">setup_routing(app, urls)</span><br></pre></td></tr></table></figure>
+<h5 id="错误页面"><a href="#错误页面" class="headerlink" title="错误页面"></a>错误页面</h5><p>如果出现任何问题，Bottle 会显示一个包含错误信息但非常简单的错误页面，可以通过 <code>app.error()</code> 装饰器来覆盖特定 HTTP 状态码的默认页面：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.error(404)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">error404</span><span class="params">(error)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'Nothing here, Sorry!\nError Message: %s\n'</span> % str(error)</span><br></pre></td></tr></table></figure>
+<p>当访问一个未定义的页面时：</p>
+<pre><code>root@ubuntu:~# curl http://127.0.0.1:8080/abc
+Nothing here, Sorry!
+Error Message: (404, &quot;Not found: &apos;/abc&apos;&quot;)
+</code></pre><p>还可以捕捉 <code>abort()</code> 主动抛出的错误：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/abort')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_abort</span><span class="params">()</span>:</span></span><br><span class="line">    bottle.abort(<span class="number">500</span>, <span class="string">' Server error'</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.error(500)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">error500</span><span class="params">(error)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'Error Message: %s\n'</span> % str(error)</span><br></pre></td></tr></table></figure>
+<pre><code>root@ubuntu:~# curl http://127.0.0.1:8080/abort
+Error Message: (500, &apos; Server error&apos;)
+</code></pre><h4 id="生成响应"><a href="#生成响应" class="headerlink" title="生成响应"></a>生成响应</h4><p>在存 WSGI 中，一个标准的 WSGI 应用必须返回可迭代的字符串。而 Bottle 更灵活，支持多种类型，并且会自动添加一个合适的 <code>Content-Type</code> 头部。下面是路由绑定的回调函数允许返回的类型列表：</p>
+<ul>
+<li><strong>dict</strong>：返回字典类型的数据会自动转换为 JSON 字符串，并设置 <code>Content-Type</code> 类型为 <code>application/json</code>。</li>
+<li><strong>空字符串，False，None或其他非真值</strong>：会产生一个空输出，并将 <code>Content-Length</code> 设置为 0。</li>
+<li><strong>Unicode</strong>：会使用 <code>Content-Type</code> 中指定的编码（默认UTF-8）自动编码，然后将其视为普通字符串。</li>
+<li><strong>Byte</strong>：字节类型，Bottle 将整个字节串作为一个整体返回，并且根据长度设置 <code>Content-Length</code>。</li>
+<li><strong>HTTPError或HTTPResponse</strong>：返回一个 HTTPError 或 HTTPResponse 的实例，如果是 HTTPError，则会运行错误处理程序</li>
+<li><strong>文件对象</strong>：具有 <code>.read()</code> 方法的所有内容都被视为文件对象，并传递给定义在 WSGI 服务框架中的 <code>wsgi.file_wrapper</code> 可调用对象。一些 WSGI 服务器可以利用更优的系统调用(<code>sendfile</code>) 来高效的传输文件。<code>Content-Length</code> 或 <code>Content-Type</code> 都不会自动设置。</li>
+<li><strong>迭代器和生成器</strong>：只要是可以产生或迭代 Unicode, Byte, HTTPError, HTTPResponse 类型，就可以在回调函数中使用。</li>
+</ul>
+<p>下面看一些示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/dict')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_dict</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">'msg'</span>:<span class="string">'hello bottle'</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/false')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_false</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/unicode')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_unicode</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">u'喵喵喵'</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/byte')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_byte</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">b'abcabc'</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/response')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_response</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> bottle.HTTPResponse(body=<span class="string">'hello bottle'</span>, status=<span class="number">200</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/file')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_file</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> open(<span class="string">'/etc/issue'</span>,<span class="string">'rb'</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/generators')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_generators</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">        <span class="keyword">yield</span> str(i)</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<pre><code>root@ubuntu:~# curl http://127.0.0.1:8080/dict
+{&quot;msg&quot;: &quot;hello bottle&quot;}
+root@ubuntu:~# curl http://127.0.0.1:8080/false
+root@ubuntu:~# curl http://127.0.0.1:8080/unicode
+喵喵喵
+root@ubuntu:~# curl http://127.0.0.1:8080/byte
+abcabc
+abcabcroot@ubuntu:~# curl http://127.0.0.1:8080/response
+hello bottle
+root@ubuntu:~# curl http://127.0.0.1:8080/file
+Ubuntu 16.04.5 LTS \n \l
+root@ubuntu:~# curl http://127.0.0.1:8080/generators
+0123456789
+</code></pre><h5 id="更改默认编码"><a href="#更改默认编码" class="headerlink" title="更改默认编码"></a>更改默认编码</h5><p>Bottle 使用 <code>Content-Type</code> 标头的字符集参数来决定如何对 Unicode 字符串进行编码。此标头默认为 <code>text/html;charset=UTF8</code>，并且可以使用 <code>bottle.response.content_type</code> 来进行修改。<br>例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/gbk')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_latin</span><span class="params">()</span>:</span></span><br><span class="line">    bottle.response.content_type = <span class="string">'text/html; charset=gbk'</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">u'这些文字将使用gbk编码'</span></span><br></pre></td></tr></table></figure>
+<h5 id="处理静态文件"><a href="#处理静态文件" class="headerlink" title="处理静态文件"></a>处理静态文件</h5><p>Bottle 没有像 Flask 一样默认提供了静态文件路由，必须手动添加路由和回调来控制要提供的文件。虽然你可以直接返回一个文件对象，Bottle 提供的 <code>static_file()</code> 以一种安全和方便的方式提供文件访问，默认会自动检测文件拓展类型，并提供合适的 <code>mimetype</code>。浏览器对于文本文件，图像文件等可能会直接浏览而不是下载，这时可以使用 <code>download=True</code> 来使浏览器强制下载文件。如果想指定客户端拿到的文件名，可以使用 <code>download=filename</code>，客户端将自动将文件保存为传给 <code>download</code> 的文件名。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/static/filepath:path')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">server_static</span><span class="params">(filepath)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> bottle.static_file(filepath, root=<span class="string">'/your/static/files/path'</span>)</span><br></pre></td></tr></table></figure>
+<p>指定静态文件的根目录时一定要小心，如果使用了相对路径，很有可能并不是你想象得那样。可以试试使用 <code>os.path.dirname(os.path.abspath(__file__))</code> 巧妙的获取脚本所在目录。</p>
+<h5 id="HTTP错误和重定向"><a href="#HTTP错误和重定向" class="headerlink" title="HTTP错误和重定向"></a>HTTP错误和重定向</h5><p>调用 <code>bottle.abort()</code> 函数是生成 HTTP 错误页面的快捷方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/restricted')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">restricted</span><span class="params">()</span>:</span></span><br><span class="line">    bottle.abort(<span class="number">401</span>, <span class="string">"Sorry, access denied."</span>)</span><br></pre></td></tr></table></figure>
+<p>如果将客户端重定向到其他URL，可以使用 <code>bottle.redirect()</code>，它会发送 <code>303 See Other</code>，并且添加 <code>Location</code> 头部来告诉客户端新的地址在哪。你还可以提供不同的 HTTP 状态码作为重定向函数的第二个参数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/old')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">old</span><span class="params">()</span>:</span></span><br><span class="line">    bottle.redirect(<span class="string">"/new"</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/new')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">new</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'New page.'</span></span><br></pre></td></tr></table></figure>
+<pre><code>root@ubuntu:~# curl http://127.0.0.1:8080/old -L
+New page.
+</code></pre><h5 id="response-对象"><a href="#response-对象" class="headerlink" title="response 对象"></a>response 对象</h5><p>响应的元数据，比如 HTTP 状态码、响应标头 还有 Cookie 存储在 <code>bottle.response</code> 对象中。你可以直接或使用预定义的方法操作这些元数据，直到它们被传输到浏览器。这里介绍最常见的用例和功能。</p>
+<p><strong>状态码</strong><br>HTTP 状态码控制浏览器的行为，默认值为 <code>200 OK</code>。可以通过设置 <code>bottle.response.status</code> 来更改状态吗，在大多数情况下不需要手动设置，但使用 <code>abort()</code> 或者返回 <code>HTTPResponse</code> 实例时需要提供状态码。</p>
+<p><strong>响应头</strong></p>
+<p>修改响应头，比如添加 <code>Cache-Control</code> 或者修改 <code>Content-Type</code> 可以通过 <code>bottle.response.set_header()</code> 和 <code>bottle.response.add_header()</code> 来修改。它们接受两个参数，一个标头名，一个值。这两个方法的区别是，<code>set_header()</code> 会覆盖已有的标头名，而 <code>add_header()</code> 则会继续添加一个即使已存在的标头。</p>
+<h5 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h5><p>Cookie 是一种用户客户端跟踪技术，Bottle 中可以通过 <code>bottle.request.get_cookie()</code> 和 <code>bottle.response.set_cookie()</code> 获取和设置 Cookie。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/cookie')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_cookie</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">if</span> bottle.request.get_cookie(<span class="string">"visited"</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Welcome back! Nice to see you again\n"</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        bottle.response.set_cookie(<span class="string">"visited"</span>, <span class="string">"yes"</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Hello there! Nice to meet you\n"</span></span><br></pre></td></tr></table></figure>
+<p>使用 curl 测试访问，第一次将 Cookie 保存到文件，第二次带上 Cookie 去访问：</p>
+<pre><code>root@ubuntu:~# curl http://127.0.0.1:8080/cookie -c cookie.txt
+Hello there! Nice to meet you
+root@ubuntu:~# curl http://127.0.0.1:8080/cookie -b cookie.txt
+Welcome back! Nice to see you again
+</code></pre><p><code>set_cookie()</code> 方法接受许多其他关键字参数来控制 Cookie 的生存期和行为，这里介绍一些常用的设置：</p>
+<ul>
+<li><strong>max_age</strong>：表示 Cookie 创建后多久过期，单位为秒。如果为 0，表示立即过期，为 -1 表示关闭窗口后 Cookie 就过期。</li>
+<li><strong>expires</strong>：指定一个 Cookie 的过期时间点，值是 UNIX 时间戳，现在已被 max_age 取代。</li>
+<li><strong>domain</strong>：允许读取 Cookie 的域，可以使多个web服务器共享 Cookie。</li>
+<li><strong>path</strong>：指定与 Cookie 关联在一起的网页。默认情况下 Cookie 会与创建它的页面，以及该页面下的子页面关联。</li>
+<li><strong>secure</strong>：限制 Cookie 使用 HTTPS 连接，默认不限制。</li>
+<li><strong>httponly</strong>：限制客户端 JavaScript 读取 Cookie。</li>
+</ul>
+<p>如果没有设置 Cookie 有效期，则默认在页面会话结束后立即过期，在使用 Cookie 时应该考虑下面这些问题：</p>
+<ul>
+<li>在大多数浏览器中，Cookie 的大小限制为 4K 的文本</li>
+<li>有些用户将浏览器设置为不接受 Cookie。</li>
+<li>Cookie 存储在客户端，不以任何方式加密，攻击者可能通过 XSS 漏洞窃取用户的 Cookie。</li>
+<li>Cookie 很容易伪造，不要过于相信 Cookie。</li>
+</ul>
+<p><strong>Cookie 签名</strong></p>
+<p>如上所述，恶意客户很容易伪造 Cookie，Bottle 可以对 Cookie 进行签名加密，以防止这种伪造。你只需在 <code>set_cookie()</code> 和 <code>get_cookie()</code> 时通过 <code>secret</code> 参数提供密钥签名。如果 cookie 未签名，或者签名不匹配，<code>get_cookie()</code> 将返回 <code>None</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/cookie')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_cookie</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">if</span> bottle.request.get_cookie(<span class="string">"visited"</span>, secret=<span class="string">'qweasd'</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Welcome back! Nice to see you again\n"</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        bottle.response.set_cookie(<span class="string">"visited"</span>, <span class="string">"yes"</span>, secret=<span class="string">'qweasd'</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Hello there! Nice to meet you\n"</span></span><br></pre></td></tr></table></figure>
+<p>接下来用 curl 验证结果</p>
+<pre><code>root@ubuntu:~# cat cookie.txt 
+# Netscape HTTP Cookie File
+# http://curl.haxx.se/docs/http-cookies.html
+# This file was generated by libcurl! Edit at your own risk.
+
+127.0.0.1    FALSE    /    FALSE    0    visited    yes
+root@ubuntu:~# curl http://127.0.0.1:8080/cookie -b cookie.txt
+Hello there! Nice to meet you
+root@ubuntu:~# curl http://127.0.0.1:8080/cookie -c cookie.txt
+Hello there! Nice to meet you
+root@ubuntu:~# curl http://127.0.0.1:8080/cookie -b cookie.txt
+Welcome back! Nice to see you again
+root@ubuntu:~# cat cookie.txt 
+# Netscape HTTP Cookie File
+# http://curl.haxx.se/docs/http-cookies.html
+# This file was generated by libcurl! Edit at your own risk.
+
+127.0.0.1    FALSE    /    FALSE    0    visited    &quot;!7Bk4nXY6kRKp8QWKVN4ZWQ==?gASVEwAAAAAAAACMB3Zpc2l0ZWSUjAN5ZXOUhpQu&quot;
+</code></pre><p>可以看到，之前的 <code>cookie.txt</code> 文件里，<code>visited</code> 字段的值是明文的，带着旧的 Cookie 访问服务，服务已经不承认旧的 Cookie 了。之后重新保存新的 Cookie，才可以继续使用。而新的 <code>cookie.txt</code> 文件里，<code>visited</code> 字段的值已经是加密后的。</p>
+<p>Cookie 将所有信息都保存到了客户端，这样是极不安全的，对应的有比较安全的 Session 技术，将用户信息保存在服务端，通过在 Cookie 中保存一个 SessionID，然后使用 SessionID 来获取用户信息。可惜 Bottle 并没有实现 Session，想在 Bottle 中使用 Session 技术，还需要利用第三方实现。</p>
+<h4 id="请求数据"><a href="#请求数据" class="headerlink" title="请求数据"></a>请求数据</h4><p>Cookie, HTTP 标头, HTML <code>&lt;form&gt;</code> 字段和其他请求数据可以通过全局的 <code>request</code> 对象获取。即使在多线程多客户端连接的环境，这个特殊的对象也始终引用当前请求。</p>
+<p>该对象是 <code>BaseRequest</code> 的子类，它有丰富的访问数据的 API，我们这里介绍最常用的。</p>
+<h5 id="FormsDict"><a href="#FormsDict" class="headerlink" title="FormsDict"></a>FormsDict</h5><p>Bottle 使用一种特殊类型的字典来存储表单数据和 Cookie。<code>FormsDict</code> 的行为就像一个普通字典，但是有一些额外的功能，使你使用的更方便。</p>
+<p><strong>属性访问</strong>：字典中的所有值都可以作为属性访问，这些虚拟属性返回 Unicode 字符串，即使该值丢失或者 Unicode 解码失败。这种情况下，字符串为空，但仍存在：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">name = bottle.request.cookies.name</span><br><span class="line">name = bottle.request.cookies.getunicode(<span class="string">'name'</span>) <span class="comment"># encoding='utf-8' (default)</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    name = bottle.request.cookies.get(<span class="string">'name'</span>, <span class="string">''</span>).decode(<span class="string">'utf-8'</span>)</span><br><span class="line"><span class="keyword">except</span> UnicodeError:</span><br><span class="line">    name = <span class="string">u''</span></span><br></pre></td></tr></table></figure>
+<p><strong>每个键多个值</strong>：<code>FormsDict</code> 是 <code>MultiDict</code> 的子类，可以为每个键存储多个值。标准字典访问方法只能返回单个值，但 <code>getall()</code> 方法返回指定键的所有值的列表。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> choice <span class="keyword">in</span> request.forms.getall(<span class="string">'multiple_choice'</span>):</span><br><span class="line">    do_something(choice)</span><br></pre></td></tr></table></figure>
+<p><strong>WTForms支持</strong>：一些库（例如<code>WTForms</code>）希望将 Unicode 字典作为输入，<code>FormsDict.decode()</code> 会自动解码所有值并返回自身的副本，同时保留每个键的所有值和功能。</p>
+<h5 id="Cookie-1"><a href="#Cookie-1" class="headerlink" title="Cookie"></a>Cookie</h5><p>前面已经讲到使用 <code>set_cookie()</code> 和 <code>get_cookie()</code> 来设置和获取 Cookie，客户端发送的所有 Cookie 还可以通过 <code>FormsDict</code> 获取，下面看一个简单的例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/count')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">counter</span><span class="params">()</span>:</span></span><br><span class="line">    count = int(bottle.request.cookies.get(<span class="string">'counter'</span>,<span class="string">'0'</span>))</span><br><span class="line">    count += <span class="number">1</span></span><br><span class="line">    bottle.response.set_cookie(<span class="string">'counter'</span>, str(count))</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'Count: %d\n'</span> % count</span><br></pre></td></tr></table></figure>
+<p>使用 curl 或者浏览器不停的刷新页面，可以看到计数器一直在增加：</p>
+<pre><code>root@ubuntu:~# curl http://127.0.0.1:8080/count -b cookie.txt -c cookie.txt
+Count: 1
+root@ubuntu:~# curl http://127.0.0.1:8080/count -b cookie.txt -c cookie.txt
+Count: 2
+root@ubuntu:~# curl http://127.0.0.1:8080/count -b cookie.txt -c cookie.txt
+Count: 3
+root@ubuntu:~# curl http://127.0.0.1:8080/count -b cookie.txt -c cookie.txt
+Count: 4
+root@ubuntu:~# curl http://127.0.0.1:8080/count -b cookie.txt -c cookie.txt
+Count: 5
+</code></pre><h5 id="HTTP-标头"><a href="#HTTP-标头" class="headerlink" title="HTTP 标头"></a>HTTP 标头</h5><p>客户端发送的所有 HTTP 标头都存储在 <code>WSGIHeaderDict</code> 中，可以通过 <code>BaseRequest.headers</code> 属性访问。<code>WSGIHeaderDict</code> 的键基本上都是不区分大小写的。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/headers')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">headers</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> bottle.request.headers.get(<span class="string">'User-Agent'</span>) + <span class="string">'\n'</span></span><br></pre></td></tr></table></figure>
+<p>打印出客户端标识：</p>
+<pre><code>root@ubuntu:~# curl http://127.0.0.1:8080/headers
+curl/7.47.0
+</code></pre><h5 id="HTML-表单处理"><a href="#HTML-表单处理" class="headerlink" title="HTML 表单处理"></a>HTML 表单处理</h5><p>在 HTML 中，典型的 <code>&lt;form&gt;</code> 看起来像这样：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"/login"</span> <span class="attr">method</span>=<span class="string">"post"</span>&gt;</span></span><br><span class="line">    Username: <span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">"username"</span> <span class="attr">type</span>=<span class="string">"text"</span> /&gt;</span></span><br><span class="line">    Password: <span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">"password"</span> <span class="attr">type</span>=<span class="string">"password"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">value</span>=<span class="string">"Login"</span> <span class="attr">type</span>=<span class="string">"submit"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>action</code> 属性指定将接收表单数据的 URL，<code>method</code> 定义要使用的 HTTP 方法。用 <code>method=&quot;get&quot;</code> 返回的表单，可以使用 <code>BaseRequest.query</code> 来接收，但 GET 请求并不是安全的，所以在返回用户名和密码用 POST 方法。通过 POST 返回的表单存储在 <code>BaseRequest.forms</code>。服务端代码可能如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.post('/login') </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">do_login</span><span class="params">()</span>:</span></span><br><span class="line">    username = bottle.request.forms.get(<span class="string">'username'</span>)</span><br><span class="line">    password = bottle.request.forms.get(<span class="string">'password'</span>)</span><br><span class="line">    <span class="keyword">if</span> username == <span class="string">'root'</span> <span class="keyword">and</span> password == <span class="string">'123456'</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"&lt;p&gt;Your login information was correct.&lt;/p&gt;\n"</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"&lt;p&gt;Login failed.&lt;/p&gt;\n"</span></span><br></pre></td></tr></table></figure>
+<p>还有其他几个属性可以用于访问表单数据，下面给出一个整体概述：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>GET 表单字段</th>
+<th>POST 表单字段</th>
+<th>文件上传</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BaseRequest.query</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+</tr>
+<tr>
+<td>BaseRequest.forms</td>
+<td>no</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr>
+<td>BaseRequest.files</td>
+<td>no</td>
+<td>no</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>BaseRequest.params</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr>
+<td>BaseRequest.GET</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+</tr>
+<tr>
+<td>BaseRequest.POST</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+<h5 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h5><p>为了支持文件上传，我们需要修改 <code>&lt;form&gt;</code> 标签。首先需要添加标签 <code>enctype=&quot;multipart/form-data&quot;</code> 来告诉浏览器如何编码，然后添加 <code>&lt;input type=&quot;file&quot; /&gt;</code> 来让用户选择文件：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;form action=<span class="string">"/upload"</span> method=<span class="string">"post"</span> enctype=<span class="string">"multipart/form-data"</span>&gt;</span><br><span class="line">  Select a file: &lt;input type=<span class="string">"file"</span> name=<span class="string">"upload"</span> /&gt;</span><br><span class="line">  &lt;input type=<span class="string">"submit"</span> value=<span class="string">"Start upload"</span> /&gt;</span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure>
+<p>Bottle 使用 <code>BaseRequest.files</code> 存储上传的文件以及一些有关上传的元数据，它是 <code>FileUpload</code> 的实例。下面是个服务端保存上传的文件的示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/upload', method='POST')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">do_upload</span><span class="params">()</span>:</span></span><br><span class="line">    upload = bottle.request.files.get(<span class="string">'upload'</span>)</span><br><span class="line">    filename = upload.filename</span><br><span class="line">    upload_root = <span class="string">"/tmp"</span></span><br><span class="line">    upload.save(upload_root)</span><br><span class="line">    <span class="keyword">return</span> filename + <span class="string">'\n'</span></span><br></pre></td></tr></table></figure>
+<p>使用 curl 测试上传文件</p>
+<pre><code>root@ubuntu:~# curl http://127.0.0.1:8080/upload -F &quot;upload=@/etc/issue&quot;
+issue
+root@ubuntu:~# cat /tmp/issue 
+Ubuntu 16.04.5 LTS \n \l
+</code></pre><p><code>FileUpload.filename</code> 会对文件名清理和规范化，以防止文件名中出现不支持的字符或路径导致错误。如果想访问未经修改的文件名，可以通过访问 <code>FileUpload.raw_filename</code>。</p>
+<p><code>FileUpload.save</code> 将文件安全高效的存储到硬盘，如果想手动操作文件数据流，可以访问 <code>FileUpload.file</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/upload', method='POST')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">do_upload</span><span class="params">()</span>:</span></span><br><span class="line">    upload = bottle.request.files.get(<span class="string">'upload'</span>)</span><br><span class="line">    <span class="keyword">return</span> upload.file.read()</span><br></pre></td></tr></table></figure>
+<pre><code>root@ubuntu:~# curl http://127.0.0.1:8080/upload -F &quot;upload=@/etc/issue&quot;
+Ubuntu 16.04.5 LTS \n \l
+</code></pre><p>这里使用了最危险的读取文件的方法，如果文件非常大，可能系统内存会耗尽，所以最好不要这样做。</p>
+<h5 id="JSON-内容"><a href="#JSON-内容" class="headerlink" title="JSON 内容"></a>JSON 内容</h5><p>如果客户端将 <code>Content-Type: application/json</code> 的内容发送到服务器，<code>BaseRequest.json</code> 属性会包含已解析的数据（数据结构正常的情况下）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/json', method='POST')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_json</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> bottle.request.json</span><br></pre></td></tr></table></figure>
+<pre><code>root@ubuntu:~# curl http://127.0.0.1:8080/json -X POST -H &apos;content-type: application/json&apos; -d &apos;{&quot;msg&quot;:&quot;hello world&quot;}&apos;
+{&quot;msg&quot;: &quot;hello world&quot;}
+</code></pre><h5 id="原始请求体"><a href="#原始请求体" class="headerlink" title="原始请求体"></a>原始请求体</h5><p>你可以通过原始数据作为类文件对象访问 <code>BaseRequest.body</code>。这是 <code>BytesIO</code> 缓冲区或临时文件，具体取决于内容长度和 <code>BaseRequest.MEMFILE_MAX</code> 的设置（默认1M大小）。可以通过 <code>bottle.request[&#39;wsgi.input&#39;]</code> 来访问它。</p>
+<p>上传的内容非常大的情况下（比如上传一个巨大的JSON内容），可以在程序开始提供给 <code>bottle.BaseRequest.MEMFILE_MAX</code> 一个合适的值。否则将抛出 <code>413 Request Entity Too Large</code>。</p>
+<h5 id="WSGI-环境"><a href="#WSGI-环境" class="headerlink" title="WSGI 环境"></a>WSGI 环境</h5><p>每个 <code>BaseRequest</code> 实例都包含一个 WSGI 环境字典，如果想直接访问它，可以通过 <code>BaseRequest.environ</code> 来直接访问：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/getip')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getip</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> bottle.request.environ.get(<span class="string">'REMOTE_ADDR'</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>root@ubuntu:~# curl http://127.0.0.1:8080/getip
+127.0.0.1
+</code></pre><h4 id="模板引擎"><a href="#模板引擎" class="headerlink" title="模板引擎"></a>模板引擎</h4><p>Bottle 附带了一个快速而强大的内置模板引擎，名为 <code>Simple Template Engine</code>，要渲染模板，可以使用 <code>template()</code> 函数或者 <code>view()</code> 装饰器。需要做的就是将模板名称和关键字参数传递给模板：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/hello')</span></span><br><span class="line"><span class="meta">@app.route('/hello/&lt;name&gt;')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_template</span><span class="params">(name=<span class="string">'World'</span>)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> bottle.template(<span class="string">'hello'</span>, name=name)</span><br></pre></td></tr></table></figure>
+<p>这里传递的模板名为 <code>hello</code>，Bottle 会在脚本所在目录和所在目录中的 <code>views</code> 目录下寻找模板文件，可以通过将路径添加到 <code>bottle.TEMPLATE_PATH</code>列表中来增加 Bottle 的搜索路径。模板文件的拓展名为 <code>tpl</code>，接着在脚本目录下创建 <code>views</code> 目录，然后在这个目录下新建 <code>hello.tpl</code> 文件，写入如下内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">%if name == &apos;World&apos;:</span><br><span class="line">    &lt;h1&gt;Hello &#123;&#123;name&#125;&#125;!&lt;/h1&gt;</span><br><span class="line">    &lt;p&gt;This is a test.&lt;/p&gt;</span><br><span class="line">%else:</span><br><span class="line">    &lt;h1&gt;Hello &#123;&#123;name.title()&#125;&#125;!&lt;/h1&gt;</span><br><span class="line">    &lt;p&gt;How are you?&lt;/p&gt;</span><br><span class="line">%end</span><br></pre></td></tr></table></figure>
+<p>测试访问，可以看到模板中根据 <code>name</code> 的值进行了逻辑处理</p>
+<pre><code>root@ubuntu:~# curl http://127.0.0.1:8080/hello
+    &lt;h1&gt;Hello World!&lt;/h1&gt;
+    &lt;p&gt;This is a test.&lt;/p&gt;
+root@ubuntu:~# curl http://127.0.0.1:8080/hello/abc
+    &lt;h1&gt;Hello Abc!&lt;/h1&gt;
+    &lt;p&gt;How are you?&lt;/p&gt;
+</code></pre><p>也可以直接将模板字符串传递给 <code>template()</code> 函数，但是并不推荐这样做 例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/hello')</span></span><br><span class="line"><span class="meta">@app.route('/hello/&lt;name&gt;')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_template</span><span class="params">(name=<span class="string">'World'</span>)</span>:</span></span><br><span class="line">    hello = <span class="string">"""%if name == 'World':</span></span><br><span class="line"><span class="string">    &lt;h1&gt;Hello &#123;&#123;name&#125;&#125;!&lt;/h1&gt;</span></span><br><span class="line"><span class="string">    &lt;p&gt;This is a test.&lt;/p&gt;</span></span><br><span class="line"><span class="string">%else:</span></span><br><span class="line"><span class="string">    &lt;h1&gt;Hello &#123;&#123;name.title()&#125;&#125;!&lt;/h1&gt;</span></span><br><span class="line"><span class="string">    &lt;p&gt;How are you?&lt;/p&gt;</span></span><br><span class="line"><span class="string">%end"""</span></span><br><span class="line">    <span class="keyword">return</span> bottle.template(hello, name=name)</span><br></pre></td></tr></table></figure>
+<p>模板使用 <code>%</code> 开始编写 Python 的代码，使用 <code>%end</code> 结束代码块，更详细的语法规则 下面会讲到。<br>模板在编译后，将缓存在内存中，在清楚缓存之前，对模板的任何改动都不会立即生效，可以通过调用 <code>bottle.TEMPLATES.clear()</code> 来清理缓存，如果在调试模式下将禁用缓存。</p>
+<h4 id="插件"><a href="#插件" class="headerlink" title="插件"></a>插件</h4><p>Bottle 的核心功能涵盖了最常见的用例，但作为一个微框架，它有其局限性，插件为框架添加缺少的功能，这就是插件发挥作用的地方。</p>
+<h5 id="体验插件"><a href="#体验插件" class="headerlink" title="体验插件"></a>体验插件</h5><p>这里看看 <code>SQLitePlugin</code> 插件的简单用法，首先通过pip安装这个插件：<code>pip install bottle-sqlite</code>，然后看下面示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> bottle</span><br><span class="line"><span class="keyword">from</span> bottle_sqlite <span class="keyword">import</span> SQLitePlugin</span><br><span class="line"></span><br><span class="line">app = bottle.Bottle()</span><br><span class="line">sqlite_plugin = SQLitePlugin(dbfile=<span class="string">'/tmp/test.db'</span>)</span><br><span class="line">app.install(sqlite_plugin)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/createdb')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create</span><span class="params">(db)</span>:</span></span><br><span class="line">    db.execute(<span class="string">'create table data (key varchar, value varchar)'</span>)</span><br><span class="line">    db.commit()</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'True\n'</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/set')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">db_set</span><span class="params">(db)</span>:</span></span><br><span class="line">    key = bottle.request.params.get(<span class="string">'k'</span>)</span><br><span class="line">    value = bottle.request.params.get(<span class="string">'v'</span>)</span><br><span class="line">    db.execute(<span class="string">'insert into data values (?,?)'</span>, (key, value))</span><br><span class="line">    db.commit()</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'True\n'</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/get')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">db_get</span><span class="params">(db)</span>:</span></span><br><span class="line">    key = bottle.request.params.get(<span class="string">'k'</span>)</span><br><span class="line">    c = db.execute(<span class="string">'select value from data where key=?'</span>, (key,))</span><br><span class="line">    row = c.fetchone()</span><br><span class="line">    print(row)</span><br><span class="line">    <span class="keyword">return</span> row[<span class="number">0</span>] + <span class="string">'\n'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    app.run(host=<span class="string">'localhost'</span>, port=<span class="number">8080</span>, debug=<span class="literal">True</span>, reloader=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p>对接口进行测试：</p>
+<pre><code>root@ubuntu:~# curl http://127.0.0.1:8080/createdb
+True
+root@ubuntu:~# curl &quot;http://127.0.0.1:8080/set?k=a&amp;v=qwe&quot;
+True
+root@ubuntu:~# curl &quot;http://127.0.0.1:8080/get?k=a&quot;
+qwe
+</code></pre><p>对 <code>app</code> 对象安装 <code>SQLitePlugin</code> 插件，接着在需要使用数据库的地方，给回调函数添加 <code>db</code> 关键字即可，关键字的位置无所谓。插件检测到添加了 <code>db</code> 的关键字后，会将一个打开的 <code>sqlite3.Connection</code> 对象传递给 <code>db</code> 关键字，这样就可以在回掉函数中操作数据库了。</p>
+<h5 id="卸载插件"><a href="#卸载插件" class="headerlink" title="卸载插件"></a>卸载插件</h5><p>卸载插件非常简单，调用 <code>app.uninstall()</code> 函数即可：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">app.uninstall(sqlite_plugin)    <span class="comment"># 卸载指定的插件</span></span><br><span class="line">app.uninstall(SQLitePlugin)     <span class="comment"># 卸载这个类型的所有插件</span></span><br><span class="line">app.uninstall(<span class="string">'sqlite'</span>)         <span class="comment"># 卸载以这个名称开头的所有插件</span></span><br><span class="line">app.uninstall(<span class="literal">True</span>)             <span class="comment"># 一次性卸载所有插件</span></span><br></pre></td></tr></table></figure>
+<h5 id="将插件安装到指定的路由"><a href="#将插件安装到指定的路由" class="headerlink" title="将插件安装到指定的路由"></a>将插件安装到指定的路由</h5><p>有时候并不想全局安装某个插件，可以单独将这个插件安装到某个路由上：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sqlite_plugin = SQLitePlugin(dbfile=<span class="string">'/tmp/test.db'</span>)</span><br><span class="line"><span class="meta">@app.route('/create', apply=[sqlite_plugin])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create</span><span class="params">(db)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<p>将需要应用到这个路由的插件添加到 <code>apply</code> 参数的列表中就可以了。</p>
+<h5 id="黑名单插件"><a href="#黑名单插件" class="headerlink" title="黑名单插件"></a>黑名单插件</h5><p>有时候不想让某个函数应用某个插件，可以使用 <code>skip</code> 来跳过这些插件：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sqlite_plugin = SQLitePlugin(dbfile=<span class="string">'/tmp/test.db'</span>)</span><br><span class="line">app.install(sqlite_plugin)</span><br><span class="line"><span class="meta">@app.route('/create', skip=[sqlite_plugin])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<p>如果设置 <code>skip=True</code> 将跳过所有插件。</p>
+<h5 id="插件与子程序"><a href="#插件与子程序" class="headerlink" title="插件与子程序"></a>插件与子程序</h5><p>将一个 Bottle 程序挂挂载到另一个 Bottle 程序上，相当于在主程序上创建一个代理路由，访问该代理路由的请求都转发到相应的子程序。此类代理路由是禁用插件的，安装在主程序上的插件并不会影响到子程序 例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> bottle</span><br><span class="line"><span class="keyword">from</span> bottle_sqlite <span class="keyword">import</span> SQLitePlugin</span><br><span class="line"></span><br><span class="line">app = bottle.Bottle()</span><br><span class="line">blog = bottle.Bottle()</span><br><span class="line"></span><br><span class="line">sqlite_plugin = SQLitePlugin(dbfile=<span class="string">'/tmp/test.db'</span>)</span><br><span class="line">app.install(sqlite_plugin)</span><br><span class="line"></span><br><span class="line"><span class="meta">@blog.route('/db')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">blog_db</span><span class="params">(db=<span class="string">'Not sqlite db\n'</span>)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> str(db)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/db')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">app_db</span><span class="params">(db=<span class="string">'Not sqlite db\n'</span>)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> str(db)</span><br><span class="line"></span><br><span class="line">app.mount(<span class="string">'/blog'</span>, blog)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    app.run(host=<span class="string">'localhost'</span>, port=<span class="number">8080</span>, debug=<span class="literal">True</span>, reloader=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p>访问这几个路由：</p>
+<pre><code>root@ubuntu:~# curl http://127.0.0.1:8080/db
+&lt;sqlite3.Connection object at 0x7fad044429d0&gt;
+root@ubuntu:~# curl http://127.0.0.1:8080/blog/db
+Not sqlite db
+</code></pre><p>使用 <code>app.mount()</code> 函数将 <code>blog</code> 的所有路由挂载到 <code>app</code> 的 <code>/blog</code> 路由下。</p>
+<h4 id="实际开发"><a href="#实际开发" class="headerlink" title="实际开发"></a>实际开发</h4><p>现在已经可以使用Bottle开发简单的应用了，下面这些知识可以帮助你提高工作效率。</p>
+<h5 id="默认应用"><a href="#默认应用" class="headerlink" title="默认应用"></a>默认应用</h5><p>Bottle 维护一个全局堆栈的 Bottle 实例，并使用堆栈顶部作为某些模块级函数和装饰器的默认值，例如 <code>bottle.route()</code> 装饰器，是调用默认应用程序的快捷方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bottle <span class="keyword">import</span> route</span><br><span class="line"></span><br><span class="line"><span class="meta">@route('/')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'hello world'</span></span><br></pre></td></tr></table></figure>
+<p>对于小型应用程序会非常方便，但是只要导入模块，就会将路由安装到全局应用程序中。为了避免这种导入，Bottle 提供了更明确的方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bottle <span class="keyword">import</span> Bottle</span><br><span class="line"></span><br><span class="line">app = Bottle()</span><br><span class="line"><span class="meta">@app.route('/')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'hello world'</span></span><br></pre></td></tr></table></figure>
+<p>分离应用程序对象可以大大提高可重用性，其他开发人员也可以安全的从你的模块中导入对象并使用 <code>Bottle.mount()</code> 将应用程序合并在一起。另外还可以使用应用程序堆栈来隔离路由：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bottle <span class="keyword">import</span> route, default_app</span><br><span class="line">default_app.push()</span><br><span class="line"></span><br><span class="line"><span class="meta">@route('/')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'Hello World'</span></span><br><span class="line"></span><br><span class="line">app = default_app.pop()</span><br></pre></td></tr></table></figure>
+<h5 id="调试模式"><a href="#调试模式" class="headerlink" title="调试模式"></a>调试模式</h5><p>在开发早期，调试模式非常有用，可以在有错误发生时显示更详细的错误信息，并且模板不会缓存，插件也会立即应用。</p>
+<p>可以通过调用 <code>bottle.debug(True)</code> 或者在 <code>app.run()</code> 中设置 <code>debug</code> 参数为 <code>True</code>。</p>
+<h5 id="自动加载运行"><a href="#自动加载运行" class="headerlink" title="自动加载运行"></a>自动加载运行</h5><p>在开发过程中，修改了代码必须手动重启服务才可以测试更改，自动重新加载器可以帮你完成这些工作：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> bottle</span><br><span class="line">app = bottle.Bottle()</span><br><span class="line">app.run(reloader=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<h5 id="命令行界面"><a href="#命令行界面" class="headerlink" title="命令行界面"></a>命令行界面</h5><p>从版本 <code>0.10</code> 开始，就可以使用 Bottle 作为命令行工具：</p>
+<pre><code>root@ubuntu:~# python -m bottle
+Usage: bottle.py [options] package.module:app
+
+Options:
+-h, --help            show this help message and exit
+--version             show version number.
+-b ADDRESS, --bind=ADDRESS
+                        bind socket to ADDRESS.
+-s SERVER, --server=SERVER
+                        use SERVER as backend.
+-p PLUGIN, --plugin=PLUGIN
+                        install additional plugin/s.
+--debug               start server in debug mode.
+--reload              auto-reload on file changes.
+
+Error: No application specified.
+</code></pre><p>只用指定应用模块启动即可：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> bottle</span><br><span class="line"></span><br><span class="line">app = bottle.Bottle()</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'Hello World'</span></span><br></pre></td></tr></table></figure>
+<p>将代码保存为 <code>hello.py</code>，然后通过命令行启动：<code>python -m bottle --debug --reload hello:app</code>，<code>hello</code> 是模块名，<code>app</code> 是应用对象。</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>Bottle 应用程序的配置存储在 <code>Bottle.config</code> 这个类似于字典的对象里，可以用与通过配置告诉插件需要做什么，也可以存储自己的配置。</p>
+<h4 id="基础配置"><a href="#基础配置" class="headerlink" title="基础配置"></a>基础配置</h4><p><code>Bottle.config</code> 的行为看起来很想普通字典，所有常见的字典方法都能按照预期工作，让我们看看一些例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> bottle</span><br><span class="line">app = bottle.Bottle()</span><br><span class="line"></span><br><span class="line">app.config[<span class="string">'autojson'</span>]    = <span class="literal">False</span>      <span class="comment"># 关闭JSON自动转换的特性</span></span><br><span class="line">app.config[<span class="string">'sqlite.db'</span>]   = <span class="string">':memory:'</span> <span class="comment"># 告诉SQLite插件使用哪个数据库</span></span><br><span class="line">app.config[<span class="string">'myapp.param'</span>] = <span class="string">'value'</span>    <span class="comment"># 自定义配置值</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 一次性配置多个值</span></span><br><span class="line">app.config.update(&#123;</span><br><span class="line">    <span class="string">'autojson'</span>: <span class="literal">False</span>,</span><br><span class="line">    <span class="string">'sqlite.db'</span>: <span class="string">':memory:'</span>,</span><br><span class="line">    <span class="string">'myapp.param'</span>: <span class="string">'value'</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加默认值</span></span><br><span class="line">app.config.setdefault(<span class="string">'myapp.param2'</span>, <span class="string">'some default'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取值</span></span><br><span class="line">param  = app.config[<span class="string">'myapp.param'</span>]</span><br><span class="line">param2 = app.config.get(<span class="string">'myapp.param2'</span>, <span class="string">'fallback value'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在路由中从配置获取数据的例子</span></span><br><span class="line"><span class="meta">@app.route('/about', view='about.rst')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">about</span><span class="params">()</span>:</span></span><br><span class="line">    email = app.config.get(<span class="string">'my.email'</span>, <span class="string">'nomail@example.com'</span>)</span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">'email'</span>: email&#125;</span><br></pre></td></tr></table></figure>
+<p><code>app</code> 对象并不是总是可用的，但是你可以在请求上下文中，使用 <code>request</code> 对象获取当前应用程序对象和它的配置</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bottle <span class="keyword">import</span> request</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_admin</span><span class="params">(user)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> user == request.app.config[<span class="string">'myapp.admin_user'</span>]</span><br></pre></td></tr></table></figure>
+<h4 id="命名约定"><a href="#命名约定" class="headerlink" title="命名约定"></a>命名约定</h4><p>为了更好的开发，插件和应用程序应遵守一些简单的命名规则：</p>
+<ul>
+<li>所有的键名都应该是小写字符串，不能有特殊字符，但下划线除外。</li>
+<li>命名空间由 “.” 分隔，比如 <code>namespace.field</code>。</li>
+<li>Bottle 使用根命名空间进行自己的配置，插件应将所有变量存储在自己的命名空间中，例如 <code>sqlite.db</code>。</li>
+<li>自定义的配置也应该有单独的命名空间，比如 <code>myapp.*</code></li>
+</ul>
+<h4 id="从文件加载配置"><a href="#从文件加载配置" class="headerlink" title="从文件加载配置"></a>从文件加载配置</h4><p>如果想使非程序员也能够配置程序，或想给程序带来高的可配置性，那么配置文件很有用。这里提供了配置文件的一种非常常见的语法：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[bottle]</span></span><br><span class="line"><span class="attr">debug</span> = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="section">[sqlite]</span></span><br><span class="line"><span class="attr">db</span> = /tmp/test.db</span><br><span class="line"><span class="attr">commit</span> = auto</span><br><span class="line"></span><br><span class="line"><span class="section">[myapp]</span></span><br><span class="line"><span class="attr">admin_user</span> = defnull</span><br></pre></td></tr></table></figure>
+<p>现在可以通过 <code>load_config()</code> 方法加载这些配置文件：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">app.config.load_config(<span class="string">'/etc/myapp.conf'</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="从嵌套的字典加载配置"><a href="#从嵌套的字典加载配置" class="headerlink" title="从嵌套的字典加载配置"></a>从嵌套的字典加载配置</h4><p>另一个常用的方法使 <code>load_dict()</code>。这个方法将嵌套的字典转换为具有命名空间键和值的平面字典。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 从字典中加载配置</span></span><br><span class="line">app.config.load_dict(&#123;</span><br><span class="line">    <span class="string">'autojson'</span>: <span class="literal">False</span>,</span><br><span class="line">    <span class="string">'sqlite'</span>: &#123; <span class="string">'db'</span>: <span class="string">':memory:'</span> &#125;,</span><br><span class="line">    <span class="string">'myapp'</span>: &#123;</span><br><span class="line">        <span class="string">'param'</span>: <span class="string">'value'</span>,</span><br><span class="line">        <span class="string">'param2'</span>: <span class="string">'value2'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">assert</span> app.config[<span class="string">'myapp.param'</span>] == <span class="string">'value'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 从json文件中加载配置</span></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">'/etc/myapp.json'</span>) <span class="keyword">as</span> fp:</span><br><span class="line">    app.config.load_dict(json.load(fp))</span><br></pre></td></tr></table></figure>
+<h4 id="监听配置更改"><a href="#监听配置更改" class="headerlink" title="监听配置更改"></a>监听配置更改</h4><p>每次更改 Bottle 中的值时，都将触发应用程序对象上的 <code>config</code> 钩子。此钩子可用于在运行时对配置更改做出反应，例如重新连接到新数据库、更改后端服务上的调试设置 或者调整工作线程池的大小。钩子的回调函数接收两个参数(键, 新值)，并在字典中实际值更改之前调用，如果回调函数引发异常将取消更改，并保留原值。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.hook('config')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_config_change</span><span class="params">(key, value)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> key == <span class="string">'debug'</span>:</span><br><span class="line">        switch_own_debug_mode_to(value)</span><br></pre></td></tr></table></figure>
+<p>钩子的回调函数不能改变要存储到字典中的值，只能有过滤器的用处。</p>
+<h4 id="过滤器和其他元数据"><a href="#过滤器和其他元数据" class="headerlink" title="过滤器和其他元数据"></a>过滤器和其他元数据</h4><p><code>ConfigDict</code> 允许你存储元数据和配置键，目前定义了两个源字段：</p>
+<ul>
+<li><strong>help</strong>: 帮助或说明字符串，可由调试、内省或管理工具去帮助站点管理员配置应用程序。</li>
+<li><strong>filter</strong>: 接收和返回单个值的可调用对象，如果你为键定义了过滤器，那么存储到该键的所有值都先通过过滤器。过滤器可以对值进行检查和修改，或者抛出异常。下面看个例子：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomePlugin</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setup</span><span class="params">(app)</span>:</span></span><br><span class="line">        app.config.meta_set(<span class="string">'some.int'</span>, <span class="string">'filter'</span>, int)</span><br><span class="line">        app.config.meta_set(<span class="string">'some.list'</span>, <span class="string">'filter'</span>,</span><br><span class="line">            <span class="keyword">lambda</span> val: str(val).split(<span class="string">';'</span>))</span><br><span class="line">        app.config.meta_set(<span class="string">'some.list'</span>, <span class="string">'help'</span>,</span><br><span class="line">            <span class="string">'A semicolon separated list.'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">apply</span><span class="params">(self, callback, route)</span>:</span></span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> bottle</span><br><span class="line">app = bottle.default_app()</span><br><span class="line">app.install(SomePlugin())</span><br><span class="line"></span><br><span class="line">app.config[<span class="string">'some.list'</span>] = <span class="string">'a;b;c'</span>     <span class="comment"># 自动转为列表</span></span><br><span class="line">app.config[<span class="string">'some.int'</span>] = <span class="string">'not an int'</span> <span class="comment"># 抛出异常</span></span><br></pre></td></tr></table></figure>
+<h3 id="简单模板引擎"><a href="#简单模板引擎" class="headerlink" title="简单模板引擎"></a>简单模板引擎</h3><p>Bottle 附带一个快速、功能强大且易学的内置模板引擎，简称 <code>SimpleTemplate</code>。 <code>view()</code> 和 <code>template()</code> 函数帮助用户使用这个引擎。这里解释模板语法，并提供几个常用的示例。</p>
+<p><strong>基本 API 使用</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bottle <span class="keyword">import</span> SimpleTemplate</span><br><span class="line">tpl = SimpleTemplate(<span class="string">'Hello &#123;&#123;name&#125;&#125;!'</span>)</span><br><span class="line">tpl.render(name=<span class="string">'World'</span>)</span><br><span class="line"><span class="comment"># 结果：u'Hello World!'</span></span><br></pre></td></tr></table></figure>
+<p>使用 <code>template()</code> 函数可以简化这个过程</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bottle <span class="keyword">import</span> template</span><br><span class="line">template(<span class="string">'Hello &#123;&#123;name&#125;&#125;!'</span>, name=<span class="string">'World'</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="SimpleTemplate-语法"><a href="#SimpleTemplate-语法" class="headerlink" title="SimpleTemplate 语法"></a>SimpleTemplate 语法</h4><p>Python 是一种非常强大的语言，但它严格的缩进使它很难用于模板语言。<code>SimpleTemplate</code> 取消了这些限制，允许你编写干净，可读和可维护的模板，同时保留 Python 语言的功能。</p>
+<h5 id="内联表达式"><a href="#内联表达式" class="headerlink" title="内联表达式"></a>内联表达式</h5><p>上面已经学习了两个大括号这样的语法，实际上可以在大括号中使用任何 Python 表达式：</p>
+<pre><code>&gt;&gt;&gt; template(&apos;Hello {{name}}!&apos;, name=&apos;World&apos;)
+&apos;Hello World!&apos;
+&gt;&gt;&gt; template(&apos;Hello {{name.title() if name else "stranger"}}!&apos;, name=None)
+&apos;Hello stranger!&apos;
+&gt;&gt;&gt; template(&apos;Hello {{name.title() if name else "stranger"}}!&apos;, name=&apos;mArC&apos;)
+&apos;Hello Marc!&apos;
+</code></pre><p>如果传入的字符串包含 HTML 字符，则会自动转义来防止 XSS 攻击，但是你可以使用 <code>!</code> 来表示禁止转义：</p>
+<pre><code>&gt;&gt;&gt; template(&apos;Hello {{name}}&apos;, name=&apos;&lt;b&gt;World&lt;/b&gt;&apos;)
+&apos;Hello &amp;lt;b&amp;gt;World&amp;lt;/b&amp;gt;&apos;
+&gt;&gt;&gt; template(&apos;Hello {{!name}}&apos;, name=&apos;&lt;b&gt;World&lt;/b&gt;&apos;)
+&apos;Hello &lt;b&gt;World&lt;/b&gt;&apos;
+</code></pre><h5 id="嵌入-Python-代码"><a href="#嵌入-Python-代码" class="headerlink" title="嵌入 Python 代码"></a>嵌入 Python 代码</h5><p>模板引擎允许你在模板中嵌入 Python 代码行或块。代码行以 <code>%</code> 开头，代码快由 <code>&lt;%</code> 和 <code>%&gt;</code> 包围：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">% name = "Bob"  # 行级别的 Python 代码</span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>Some plain text in between<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">%</span></span></span><br><span class="line"><span class="tag">  # 块级别的 <span class="attr">Python</span> 代码</span></span><br><span class="line"><span class="tag">  <span class="attr">name</span> = <span class="string">name.title().strip()</span></span></span><br><span class="line"><span class="tag">%&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>More plain text<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>嵌入的 Python 代码遵循常规 Python 语法，但有两个额外的语法规则：</p>
+<ul>
+<li>缩进被忽略，你可以根据需要在语句前尽可能多的放置空格，这样可以与周围的代码对其，提高可读性。</li>
+<li>缩进的块现在必须用 <code>%end</code> 显式关闭，比如：</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">  % for item in basket:</span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>&#123;&#123;item&#125;&#125;<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">  % end</span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h5 id="空白符控制"><a href="#空白符控制" class="headerlink" title="空白符控制"></a>空白符控制</h5><p>代码块和代码行在模板中总是跨行的，在模板被渲染后，代码段会被删除，但是模板中并不会出现悬空的空白行，例如：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line"> % if True:</span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span>&gt;</span>content<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"> % end</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>被渲染后成为：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span>&gt;</span>content<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如果想跳过代码段前面的换行符，可以使用双反斜杠结束文本：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span>\\</span><br><span class="line"> %if True:</span><br><span class="line"><span class="tag">&lt;<span class="name">span</span>&gt;</span>content<span class="tag">&lt;/<span class="name">span</span>&gt;</span>\\</span><br><span class="line"> %end</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>渲染后的效果是：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>content<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="模板功能"><a href="#模板功能" class="headerlink" title="模板功能"></a>模板功能</h4><p>每个模板都预置了一些函数，可以帮助处理一些常见的功能。这些函数直接可用，无需安装或导入。</p>
+<p>注意：在 0.12 版本之前，<code>include()</code> 和 <code>rebase()</code> 是语法关键字，而不是函数。</p>
+<h5 id="include"><a href="#include" class="headerlink" title="include"></a>include</h5><p><strong>include(sub_template, </strong>variables)**</p>
+<p>使用指定的变量渲染子模版，并将生成的文本插入到当前模板。该函数返回包含在子模板中传递或定义的局部变量的字典:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">% include('header.tpl', title='Page Title')</span><br><span class="line">Page Content</span><br><span class="line">% include('footer.tpl')</span><br></pre></td></tr></table></figure>
+<h5 id="rebase"><a href="#rebase" class="headerlink" title="rebase"></a>rebase</h5><p><strong>rebase(name, </strong>variables)**</p>
+<p>将当前模板标记为稍后包含在不同的模板中，呈现当前模板后，其将生成的文本存储在一个名为 <code>base</code> 的变量中，并传递给基本模板，然后呈现该模板：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">% rebase('base.tpl', title='Page Title')</span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>Page Content ...<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>以下是 <code>base.tpl</code> 的内容：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>&#123;&#123;title or 'No title'&#125;&#125;<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  &#123;&#123;!base&#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>渲染的最终结果：</p>
+<pre><code>&gt;&gt;&gt; from bottle import template
+&gt;&gt;&gt; t = &apos;&apos;&apos;% rebase(&apos;base.tpl&apos;, title=&apos;Page Title&apos;)
+... &lt;p&gt;Page Content ...&lt;/p&gt;&apos;&apos;&apos;
+&gt;&gt;&gt; print(template(t))
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Page Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Page Content ...&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><h5 id="defined"><a href="#defined" class="headerlink" title="defined"></a>defined</h5><p><strong>defined(name)</strong></p>
+<p>测试一个变量名是否定义：</p>
+<pre><code>&gt;&gt;&gt; t = &apos;&apos;&apos;% if defined(&quot;title&quot;):
+... &lt;p&gt;defined title&lt;/&gt;
+... % else:
+... &lt;p&gt;not defined title&lt;/p&gt;
+... % end&apos;&apos;&apos;
+&gt;&gt;&gt; template(t)
+&apos;&lt;p&gt;not defined title&lt;/p&gt;\n&apos;
+&gt;&gt;&gt; template(t, title=&apos;test&apos;)
+&apos;&lt;p&gt;defined title&lt;/&gt;\n&apos;
+</code></pre><h5 id="get"><a href="#get" class="headerlink" title="get"></a>get</h5><p><strong>get(name, default=None)</strong></p>
+<p>和字典的 <code>get</code> 方法相似：</p>
+<pre><code>&gt;&gt;&gt; t = &apos;&apos;&apos;% print(get(&apos;title&apos;))&apos;&apos;&apos;
+&gt;&gt;&gt; template(t)
+None
+&apos;&apos;
+&gt;&gt;&gt; template(t, title=&apos;abc&apos;)
+abc
+&apos;&apos;
+</code></pre><h5 id="setdefault"><a href="#setdefault" class="headerlink" title="setdefault"></a>setdefault</h5><p><strong>setdefault(name, default)</strong></p>
+<p>如果变量没有定义，创建它并提供一个默认值，否则返回它的值：</p>
+<pre><code>&gt;&gt;&gt; t = &apos;&apos;&apos;% setdefault(&quot;title&quot;, &quot;abc&quot;)
+... {{title}}&apos;&apos;&apos;
+&gt;&gt;&gt; template(t)
+&apos;abc&apos;
+&gt;&gt;&gt; template(t, title=&apos;title&apos;)
+&apos;title&apos;
+</code></pre><h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><p>目前我最喜欢的部署方式是使用 <code>gunicorn</code>，如果想通过协程的方式提高程序的并发，还会搭配 <code>gevent</code>。它们都可以很方便的通过 <code>pip</code> 安装</p>
+<h3 id="gunicorn"><a href="#gunicorn" class="headerlink" title="gunicorn"></a>gunicorn</h3><h4 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h4><p><code>pip install gunicorn</code></p>
+<h4 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h4><p>gunicorn 最好通过配置文件的方式启动，配置文件可以是普通的键值对的文本，也可以是一个可执行的 Python 文件，采用 Python 文件的方式更灵活，所以我更喜欢这个。下面看一个配置文件的例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> multiprocessing</span><br><span class="line"></span><br><span class="line">DEBUG = os.environ.get(<span class="string">'DEBUG'</span>,<span class="string">'FALSE'</span>).upper() <span class="keyword">in</span> [<span class="string">'TRUE'</span>,<span class="string">'1'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># gunicorn config</span></span><br><span class="line">path_of_current_file = os.path.abspath(__file__)</span><br><span class="line">path_of_current_dir = os.path.dirname(path_of_current_file)</span><br><span class="line">sys.path.insert(<span class="number">0</span>, path_of_current_dir)</span><br><span class="line">worker_class = <span class="string">'gevent'</span></span><br><span class="line">workers = multiprocessing.cpu_count()</span><br><span class="line">chdir = path_of_current_dir</span><br><span class="line">worker_connections = <span class="number">1000</span></span><br><span class="line">timeout = <span class="number">30</span></span><br><span class="line">max_requests = <span class="number">2000</span></span><br><span class="line">loglevel = <span class="string">'info'</span></span><br><span class="line">bind = <span class="string">"0.0.0.0:8000"</span></span><br><span class="line">pidfile = <span class="string">'%s/run/gunicorn.pid'</span> % path_of_current_dir</span><br><span class="line"><span class="keyword">if</span> DEBUG:</span><br><span class="line">    reload = <span class="literal">True</span></span><br><span class="line">    debug = <span class="literal">True</span></span><br><span class="line">    errorlog = <span class="string">"-"</span></span><br><span class="line">    accesslog = <span class="string">"-"</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    reload = <span class="literal">False</span></span><br><span class="line">    debug = <span class="literal">False</span></span><br><span class="line">    errorlog = <span class="string">'%s/logs/error.log'</span> % path_of_current_dir</span><br><span class="line">    accesslog = <span class="string">'%s/logs/access.log'</span> % path_of_current_dir</span><br></pre></td></tr></table></figure>
+<p>配置文件的代码很简单，会自动根据当前系统CPU核数来配置生成多少个工作进程，还可以采用多进程配合多线程的方式，但这里选择了使用协程用以更好的支持并发。</p>
+<p>并且配置文件编写了通过环境变量获取是否进入DEBUG模式的代码，让程序的配置更灵活。更多 <code>gunicron</code> 的配置说明可以查看官方文档：<a href="https://docs.gunicorn.org/en/stable/" target="_blank" rel="noopener">点此打开</a></p>
+<h4 id="配合Gevent"><a href="#配合Gevent" class="headerlink" title="配合Gevent"></a>配合Gevent</h4><p>使用 Gevent 可以在几乎不修改任何代码的情况下让 Web 性能获取飙升，安装也非常简单 <code>pip install gevent</code>。在上面的配置文件中，<code>worker_class</code> 已经指定了要使用 <code>gevent</code></p>
+<h4 id="启动程序"><a href="#启动程序" class="headerlink" title="启动程序"></a>启动程序</h4><p><code>gunicorn</code> 的启动方式也非常简单，直接使用命令行将应用程序对象和配置文件传递给 <code>gunicorn</code>:</p>
+<p><strong>hello.py</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> bottle</span><br><span class="line"></span><br><span class="line">app = bottle.Bottle()</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'Hello World'</span></span><br></pre></td></tr></table></figure>
+<p><strong>启动</strong>:</p>
+<pre><code>root@ubuntu: # gunicorn hello:app -c config.py 
+[2018-10-16 11:42:45 +0000] [46823] [INFO] Starting gunicorn 19.6.0
+[2018-10-16 11:42:45 +0000] [46823] [INFO] Listening at: http://0.0.0.0:8000 (46823)
+[2018-10-16 11:42:45 +0000] [46823] [INFO] Using worker: gevent
+[2018-10-16 11:42:45 +0000] [46827] [INFO] Booting worker with pid: 46827
+[2018-10-16 11:42:45 +0000] [46828] [INFO] Booting worker with pid: 46828
+[2018-10-16 11:42:45 +0000] [46829] [INFO] Booting worker with pid: 46829
+[2018-10-16 11:42:45 +0000] [46830] [INFO] Booting worker with pid: 46830
+</code></pre><p>但是默认是前台启动的，如果想启动后就放入后台执行，可以将 <code>daemon=True</code> 写入配置文件，或者直接在命令行添加 <code>-D</code> 参数。</p>
+<h4 id="使用-Nginx-做静态资源服务器"><a href="#使用-Nginx-做静态资源服务器" class="headerlink" title="使用 Nginx 做静态资源服务器"></a>使用 Nginx 做静态资源服务器</h4><p>gunicorn 是 WSGI 服务器，并不擅长处理静态资源，可以将静态文件交给 Nginx 处理。使用 Nginx 配置动静分离，将动态的请求转发到 gunicorn ，将静态资源直接返回给客户端，这样又可以提升不少的性能。</p>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="可用插件列表"><a href="#可用插件列表" class="headerlink" title="可用插件列表"></a>可用插件列表</h3><p>官网列出的 Bottle 现在可用的插件：<a href="http://bottlepy.org/docs/0.12/plugins/index.html" target="_blank" rel="noopener">点击打开</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/bottle/" rel="tag"><i class="fa fa-tag"></i> bottle</a>
+          
+            <a href="/tags/python/" rel="tag"><i class="fa fa-tag"></i> python</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/22/2018/WebSocket协议分析/" rel="next" title="WebSocket 协议分析">
+                <i class="fa fa-chevron-left"></i> WebSocket 协议分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/08/2018/Pyenv Python版本管理器/" rel="prev" title="Pyenv Python版本管理器">
+                Pyenv Python版本管理器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="魏云飞">
+            
+              <p class="site-author-name" itemprop="name">魏云飞</p>
+              <p class="site-description motion-element" itemprop="description">帅的人已经醒来 而丑的人还在沉睡</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">61</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/yunfwe" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">2.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#快速安装体验"><span class="nav-number">2.1.</span> <span class="nav-text">快速安装体验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#教程"><span class="nav-number">2.2.</span> <span class="nav-text">教程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装"><span class="nav-number">2.2.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hello-World"><span class="nav-number">2.2.2.</span> <span class="nav-text">Hello World</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#请求路由"><span class="nav-number">2.2.3.</span> <span class="nav-text">请求路由</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#动态路由"><span class="nav-number">2.2.3.1.</span> <span class="nav-text">动态路由</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#过滤器"><span class="nav-number">2.2.3.2.</span> <span class="nav-text">过滤器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#HTTP请求方法"><span class="nav-number">2.2.3.3.</span> <span class="nav-text">HTTP请求方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#显式路由配置"><span class="nav-number">2.2.3.4.</span> <span class="nav-text">显式路由配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#错误页面"><span class="nav-number">2.2.3.5.</span> <span class="nav-text">错误页面</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生成响应"><span class="nav-number">2.2.4.</span> <span class="nav-text">生成响应</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#更改默认编码"><span class="nav-number">2.2.4.1.</span> <span class="nav-text">更改默认编码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#处理静态文件"><span class="nav-number">2.2.4.2.</span> <span class="nav-text">处理静态文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#HTTP错误和重定向"><span class="nav-number">2.2.4.3.</span> <span class="nav-text">HTTP错误和重定向</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#response-对象"><span class="nav-number">2.2.4.4.</span> <span class="nav-text">response 对象</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Cookie"><span class="nav-number">2.2.4.5.</span> <span class="nav-text">Cookie</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#请求数据"><span class="nav-number">2.2.5.</span> <span class="nav-text">请求数据</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#FormsDict"><span class="nav-number">2.2.5.1.</span> <span class="nav-text">FormsDict</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Cookie-1"><span class="nav-number">2.2.5.2.</span> <span class="nav-text">Cookie</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#HTTP-标头"><span class="nav-number">2.2.5.3.</span> <span class="nav-text">HTTP 标头</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#HTML-表单处理"><span class="nav-number">2.2.5.4.</span> <span class="nav-text">HTML 表单处理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#文件上传"><span class="nav-number">2.2.5.5.</span> <span class="nav-text">文件上传</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#JSON-内容"><span class="nav-number">2.2.5.6.</span> <span class="nav-text">JSON 内容</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#原始请求体"><span class="nav-number">2.2.5.7.</span> <span class="nav-text">原始请求体</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#WSGI-环境"><span class="nav-number">2.2.5.8.</span> <span class="nav-text">WSGI 环境</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#模板引擎"><span class="nav-number">2.2.6.</span> <span class="nav-text">模板引擎</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#插件"><span class="nav-number">2.2.7.</span> <span class="nav-text">插件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#体验插件"><span class="nav-number">2.2.7.1.</span> <span class="nav-text">体验插件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#卸载插件"><span class="nav-number">2.2.7.2.</span> <span class="nav-text">卸载插件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#将插件安装到指定的路由"><span class="nav-number">2.2.7.3.</span> <span class="nav-text">将插件安装到指定的路由</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#黑名单插件"><span class="nav-number">2.2.7.4.</span> <span class="nav-text">黑名单插件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#插件与子程序"><span class="nav-number">2.2.7.5.</span> <span class="nav-text">插件与子程序</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实际开发"><span class="nav-number">2.2.8.</span> <span class="nav-text">实际开发</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#默认应用"><span class="nav-number">2.2.8.1.</span> <span class="nav-text">默认应用</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#调试模式"><span class="nav-number">2.2.8.2.</span> <span class="nav-text">调试模式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#自动加载运行"><span class="nav-number">2.2.8.3.</span> <span class="nav-text">自动加载运行</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#命令行界面"><span class="nav-number">2.2.8.4.</span> <span class="nav-text">命令行界面</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置"><span class="nav-number">2.3.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基础配置"><span class="nav-number">2.3.1.</span> <span class="nav-text">基础配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#命名约定"><span class="nav-number">2.3.2.</span> <span class="nav-text">命名约定</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#从文件加载配置"><span class="nav-number">2.3.3.</span> <span class="nav-text">从文件加载配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#从嵌套的字典加载配置"><span class="nav-number">2.3.4.</span> <span class="nav-text">从嵌套的字典加载配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#监听配置更改"><span class="nav-number">2.3.5.</span> <span class="nav-text">监听配置更改</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#过滤器和其他元数据"><span class="nav-number">2.3.6.</span> <span class="nav-text">过滤器和其他元数据</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单模板引擎"><span class="nav-number">2.4.</span> <span class="nav-text">简单模板引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SimpleTemplate-语法"><span class="nav-number">2.4.1.</span> <span class="nav-text">SimpleTemplate 语法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#内联表达式"><span class="nav-number">2.4.1.1.</span> <span class="nav-text">内联表达式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#嵌入-Python-代码"><span class="nav-number">2.4.1.2.</span> <span class="nav-text">嵌入 Python 代码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#空白符控制"><span class="nav-number">2.4.1.3.</span> <span class="nav-text">空白符控制</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#模板功能"><span class="nav-number">2.4.2.</span> <span class="nav-text">模板功能</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#include"><span class="nav-number">2.4.2.1.</span> <span class="nav-text">include</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#rebase"><span class="nav-number">2.4.2.2.</span> <span class="nav-text">rebase</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#defined"><span class="nav-number">2.4.2.3.</span> <span class="nav-text">defined</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#get"><span class="nav-number">2.4.2.4.</span> <span class="nav-text">get</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#setdefault"><span class="nav-number">2.4.2.5.</span> <span class="nav-text">setdefault</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署"><span class="nav-number">3.</span> <span class="nav-text">部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gunicorn"><span class="nav-number">3.1.</span> <span class="nav-text">gunicorn</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装-1"><span class="nav-number">3.1.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置文件"><span class="nav-number">3.1.2.</span> <span class="nav-text">配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配合Gevent"><span class="nav-number">3.1.3.</span> <span class="nav-text">配合Gevent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#启动程序"><span class="nav-number">3.1.4.</span> <span class="nav-text">启动程序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-Nginx-做静态资源服务器"><span class="nav-number">3.1.5.</span> <span class="nav-text">使用 Nginx 做静态资源服务器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">4.</span> <span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#可用插件列表"><span class="nav-number">4.1.</span> <span class="nav-text">可用插件列表</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">魏云飞</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">713k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+    <span title="站点总阅读时长">11:53</span>
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.0.4</div>
+<div class="BbeiAn-info"">
+  渝ICP备 -
+  <a href="http://www.beian.miit.gov.cn/">18019763号</a>
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.json";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<script>
+var OriginTitile = document.title;
+ var titleTime;
+ document.addEventListener('visibilitychange', function () {
+     if (document.hidden) {
+         $('[rel="icon"]').attr('href', "/img/TEP.ico");
+         document.title = '╭(°A°`)╮ 页面崩溃啦 ~ ';
+         clearTimeout(titleTime);
+     }
+     else {
+         $('[rel="icon"]').attr('href', "/favicon.ico");
+         document.title = '(ฅ>ω<*ฅ) 噫又好了~' + OriginTitile;
+         titleTime = setTimeout(function () {
+             document.title = OriginTitile;
+         }, 2000);
+     }
+ });
+</script>
+</html>

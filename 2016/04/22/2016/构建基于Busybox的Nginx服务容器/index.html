@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="nginx,busybox,docker,overlay,">
+
+
+<meta name="description" content="简介 用docker容器进行打包服务非常方便 不需要考虑依赖的问题 只要把容器复制到其他有docker daemon的服务器就可以直接启动 并能很方便的利用Cgroup, Namespace技术实现资源控制和资源隔离这篇文档以Nginx为例 其他的像redis mysql php等服务也是可以使用这个方法进行打包为最精简的 只包含必须依赖的服务容器">
+<meta name="keywords" content="nginx,busybox,docker,overlay">
+<meta property="og:type" content="article">
+<meta property="og:title" content="构建基于Busybox的Nginx服务容器">
+<meta property="og:url" content="http://www.yunfwe.cn/2016/04/22/2016/构建基于Busybox的Nginx服务容器/index.html">
+<meta property="og:site_name" content="某科学的最后之作">
+<meta property="og:description" content="简介 用docker容器进行打包服务非常方便 不需要考虑依赖的问题 只要把容器复制到其他有docker daemon的服务器就可以直接启动 并能很方便的利用Cgroup, Namespace技术实现资源控制和资源隔离这篇文档以Nginx为例 其他的像redis mysql php等服务也是可以使用这个方法进行打包为最精简的 只包含必须依赖的服务容器">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2025-07-22T07:12:54.869Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="构建基于Busybox的Nginx服务容器">
+<meta name="twitter:description" content="简介 用docker容器进行打包服务非常方便 不需要考虑依赖的问题 只要把容器复制到其他有docker daemon的服务器就可以直接启动 并能很方便的利用Cgroup, Namespace技术实现资源控制和资源隔离这篇文档以Nginx为例 其他的像redis mysql php等服务也是可以使用这个方法进行打包为最精简的 只包含必须依赖的服务容器">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="某科学的最后之作" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://www.yunfwe.cn/2016/04/22/2016/构建基于Busybox的Nginx服务容器/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>构建基于Busybox的Nginx服务容器 | 某科学的最后之作</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">某科学的最后之作</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">帅的人已经醒来 而丑的人还在沉睡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.yunfwe.cn/2016/04/22/2016/构建基于Busybox的Nginx服务容器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="魏云飞">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="某科学的最后之作">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">构建基于Busybox的Nginx服务容器</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-22T10:12:00+08:00">2016-04-22</time>
+            
+
+            
+            
+              
+                
+              
+            
+
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2025-07-22T15:12:54+08:00">2025-07-22</time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">9.2k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">0:09</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a><font color="#5CACEE">简介</font></h2><blockquote>
+<p>用docker容器进行打包服务非常方便 不需要考虑依赖的问题 只要把容器复制到其他有docker daemon的服务器就可以直接启动 并能很方便的利用Cgroup, Namespace技术实现资源控制和资源隔离<br>这篇文档以Nginx为例 其他的像redis mysql php等服务也是可以使用这个方法进行打包为最精简的 只包含必须依赖的服务容器</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a><font color="#5CACEE">环境</font></h2><blockquote>
+<p>系统是ubuntu server 15.10版 用ubuntu系统作为docker服务的载体 如果非ubuntu15.10发行版 尽量保证内核版本在3.18以上 Nginx是在CentOS 6.7的容器中编译的 之后在ubuntu上完成打包<br>在容器中编译Nginx只是我的个人习惯 不喜欢将主机环境乱安装一些不必要的包 保持清洁就好 编译什么的就交给容器去做吧</p>
+</blockquote>
+<h3 id="主机环境"><a href="#主机环境" class="headerlink" title="主机环境"></a><font color="#CDAA7D">主机环境</font></h3><table>
+<thead>
+<tr>
+<th>身份</th>
+<th style="text-align:center">系统</th>
+<th style="text-align:right">IP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Docker服务</td>
+<td style="text-align:center">ubuntu 15.10</td>
+<td style="text-align:right">172.17.0.1</td>
+</tr>
+<tr>
+<td>Docker容器</td>
+<td style="text-align:center">CentOS 6.7</td>
+<td style="text-align:right">172.17.0.3</td>
+</tr>
+</tbody>
+</table>
+<h3 id="软件环境"><a href="#软件环境" class="headerlink" title="软件环境"></a><font color="#CDAA7D">软件环境</font></h3><table>
+<thead>
+<tr>
+<th>软件名称</th>
+<th style="text-align:center">版本号</th>
+<th style="text-align:right">下载地址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nginx</td>
+<td style="text-align:center">1.9.15</td>
+<td style="text-align:right"><a href="http://nginx.org/download/nginx-1.9.15.tar.gz" target="_blank" rel="noopener"><font color="#AAAAAA">点击下载</font></a></td>
+</tr>
+<tr>
+<td>Docker</td>
+<td style="text-align:center">1.9.1</td>
+<td style="text-align:right"><a href="http://mirrors.aliyun.com/docker-engine/apt/pool/main/d/docker-engine/docker-engine_1.9.1-0~wily_amd64.deb" target="_blank" rel="noopener"><font color="#AAAAAA">点击下载</font></a></td>
+</tr>
+<tr>
+<td>kernel</td>
+<td style="text-align:center">4.2.0</td>
+<td style="text-align:right"><font color="#AAAAAA">系统自带</font></td>
+</tr>
+</tbody>
+</table>
+<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a><font color="#5CACEE">步骤</font></h2><p>以下是打包Nginx服务容器的基本思路</p>
+<ul>
+<li>选用Busybox环境作为基础</li>
+<li>在CentOS 容器中编译Nginx</li>
+<li>将Nginx的运行依赖库和Nginx程序复制到主机环境</li>
+<li>部署到Busybox构建的rootfs中</li>
+<li>导入Docker 查看是否正常运行</li>
+</ul>
+<h3 id="构建Busybox最小容器"><a href="#构建Busybox最小容器" class="headerlink" title="构建Busybox最小容器"></a><font color="#CDAA7D">构建Busybox最小容器</font></h3><blockquote>
+<p>Busybox构建文档：<a href="/2016/04/21/docker/Busybox构建最小容器"><font color="#AAAAAA">点击打开文档内容</font></a><br>构建完毕之后 busybox-1.24.2/_install 就是我们需要当作容器基础的rootfs了 将它复制到随便一个目录 留用</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp -rf busybox-1.24.2/_install/ rootfs</span><br></pre></td></tr></table></figure>
+<h3 id="编译安装Nginx"><a href="#编译安装Nginx" class="headerlink" title="编译安装Nginx"></a><font color="#CDAA7D">编译安装Nginx</font></h3><blockquote>
+<p>Nginx的编译文档：<a href="/2016/03/31/nginx/nginx编译安装"><font color="#AAAAAA">点击打开文档内容</font></a><br>只需要做到文档中make -j4 也就是编译完成就可以了 之后的安装步骤就不按照文档的走了</p>
+</blockquote>
+<h4 id="安装nginx到非默认根"><a href="#安装nginx到非默认根" class="headerlink" title="安装nginx到非默认根"></a><font color="#DDA0DD">安装nginx到非默认根</font></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make DESTDIR=/nginx install</span><br></pre></td></tr></table></figure>
+<p>通过DESTDIR更改安装Nginx的根位置 以/nginx目录作为nginx安装的根</p>
+<pre><code>[root@localhost nginx-1.9.15]# ls /nginx/
+usr  var
+[root@localhost nginx-1.9.15]# tree /nginx/
+/nginx/
+├── usr
+│   └── local
+│       └── nginx
+│           ├── conf
+│           │   ├── fastcgi.conf
+│           │   ├── fastcgi.conf.default
+│           │   ├── fastcgi_params
+│           │   ├── fastcgi_params.default
+│           │   ├── koi-utf
+│           │   ├── koi-win
+│           │   ├── mime.types
+</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /nginx/</span><br><span class="line">mkdir lib lib64                     <span class="comment"># 创建两个依赖库文件夹</span></span><br><span class="line">strip usr/<span class="built_in">local</span>/nginx/sbin/nginx    <span class="comment"># 裁剪nginx二进制的编译跟踪信息 缩减nginx体积</span></span><br></pre></td></tr></table></figure>
+<h4 id="复制Nginx运行依赖库"><a href="#复制Nginx运行依赖库" class="headerlink" title="复制Nginx运行依赖库"></a><font color="#DDA0DD">复制Nginx运行依赖库</font></h4><blockquote>
+<p>接下来查看nginx程序的所有依赖</p>
+</blockquote>
+<pre><code>[root@localhost nginx]# ldd usr/local/nginx/sbin/nginx 
+    linux-vdso.so.1 =&gt;  (0x00007fff3caa3000)
+    libdl.so.2 =&gt; /lib64/libdl.so.2 (0x00007f9bc2ff8000)
+    libpthread.so.0 =&gt; /lib64/libpthread.so.0 (0x00007f9bc2ddb000)
+    libcrypt.so.1 =&gt; /lib64/libcrypt.so.1 (0x00007f9bc2ba3000)
+    libz.so.1 =&gt; /lib64/libz.so.1 (0x00007f9bc298d000)
+    libc.so.6 =&gt; /lib64/libc.so.6 (0x00007f9bc25f9000)
+    /lib64/ld-linux-x86-64.so.2 (0x0000561c3968f000)
+    libfreebl3.so =&gt; /lib64/libfreebl3.so (0x00007f9bc23f5000)
+</code></pre><p>将依赖复制到刚才创建的lib或者lib64目录中 如果这个依赖库在系统的lib目录下 那么就复制到lib目录中<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cp /lib64/libdl.so.2 lib64/</span><br><span class="line">cp /lib64/libpthread.so.0 lib64/</span><br><span class="line">cp /lib64/libcrypt.so.1 lib64/</span><br><span class="line">cp /lib64/libz.so.1 lib64/</span><br><span class="line">cp /lib64/libc.so.6 lib64/</span><br><span class="line">cp /lib64/ld-linux-x86-64.so.2 lib64/</span><br><span class="line">cp /lib64/libfreebl3.so lib64/</span><br></pre></td></tr></table></figure></p>
+<p> 由于Nginx运行需要使用普通用户 所以需要读取passwd文件 读取解析passwd文件需要用到libnss_files.so.2这个库 所以也需要复制这个库到lib64中</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp /lib64/libnss_files.so.2 lib64/</span><br></pre></td></tr></table></figure>
+<p>如果在ubuntu上编译的话libnss_files.so.2位置在/lib/x86_64-linux-gnu/libnss_files.so.2<br>复制完成后lib64目录的内容应该如下所示：</p>
+<pre><code>[root@localhost nginx]# ls lib64/
+ld-linux-x86-64.so.2  libc.so.6   libfreebl3.so      libpthread.so.0
+libcrypt.so.1         libdl.so.2  libnss_files.so.2  libz.so.1
+</code></pre><h3 id="打包Nginx服务容器"><a href="#打包Nginx服务容器" class="headerlink" title="打包Nginx服务容器"></a><font color="#CDAA7D">打包Nginx服务容器</font></h3><blockquote>
+<p>Nginx以及Nginx的运行依赖都已经放到/nginx目录中了 将这个目录移动到和刚才的rootfs同一目录下 然后再创建两个目录 留用</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir build target</span><br></pre></td></tr></table></figure>
+<h4 id="认识overlayFS"><a href="#认识overlayFS" class="headerlink" title="认识overlayFS"></a><font color="#DDA0DD">认识overlayFS</font></h4><blockquote>
+<p>overlay是一种联合挂载的文件系统 可以将几个不同的目录挂载到一个目录中 然后将所有的文件展示出来 而且在挂载的目录中对文件的操作并不会影响到其他目录中实际的文件<br>同时 在新版本的docker中 overlay便是docker容器默认使用的存储驱动 但是overlay在内核大于3.18的版本中才被支持 所以尽量用使用较新内核版本的发行版来玩Docker<br>因为overlay的这些特性 用来辅助制作Nginx服务容器岂不是很方便 因为在挂载的目录中的操作并不会影响基层目录的文件 这样就算误删了文件 也是可以恢复的</p>
+</blockquote>
+<p>现在看起来 应该是这个效果</p>
+<pre><code>root@ubuntu:~# ls -lh
+total 16K
+drwxr-xr-x  9 root root 4.0K Apr 22 12:50 build     # overlay的工作目录
+drwxr-xr-x  6 root root 4.0K Apr 22 15:34 nginx     # 刚才安装的Nginx目录
+drwxr-xr-x 18 root root 4.0K Apr 22 11:52 rootfs    # busybox的目录
+drwxr-xr-x  1 root root 4.0K Apr 22 12:50 target    # 这个就是联合挂载到的目标目录
+</code></pre><p>检查overlay驱动是否已经加载 否则加载overlay驱动<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lsmod |grep overlay</span><br><span class="line">modprobe overlay</span><br></pre></td></tr></table></figure></p>
+<p>如下所示 那么就可以使用overlay文件系统了 </p>
+<pre><code>root@ubuntu:~# lsmod |grep overlay
+overlay                49152  1
+root@ubuntu:~# cat /proc/filesystems |grep overlay
+nodev    overlayfs
+nodev    overlay
+</code></pre><p>用rootfs和nginx做基层 其中rootfs是第一层 如果还有其他目录 依次用冒号隔开 build做为overlay工作目录  /tmp是overlay必须的一个空目录 将lowerdir中的目录都挂载到target目录上<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount -t overlay overlay -o lowerdir=rootfs:nginx,upperdir=build,workdir=/tmp target/</span><br></pre></td></tr></table></figure></p>
+<p>接下来可以看到target目录中 rootfs和nginx目录中的内容同时出现在target目录中</p>
+<pre><code>root@ubuntu:~# ls target/
+bin  etc   lib    linuxrc  mnt   root  sbin  tmp  var
+dev  home  lib64  media    proc  run   sys   usr
+root@ubuntu:~# ls target/bin/busybox 
+target/bin/busybox
+root@ubuntu:~# ls target/usr/local/nginx/sbin/nginx 
+target/usr/local/nginx/sbin/nginx
+</code></pre><p>如果系统刚好不支持overlay文件系统的话 思想原理是相同的 直接将rootfs和nginx目录中的文件都复制到target中吧</p>
+<h4 id="Chroot进行根切换"><a href="#Chroot进行根切换" class="headerlink" title="Chroot进行根切换"></a><font color="#DDA0DD">Chroot进行根切换</font></h4><blockquote>
+<p>接下来就是配置Nginx的运行环境了 这样才能保证Nginx打包为容器后能正常的运行<br>通过chroot工具切换当前根到target目录中 这也算文件系统隔离一种的方式</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chroot target sh</span><br></pre></td></tr></table></figure>
+<p>可以看到 进入到了一个不同的shell中 ls / 竟然发现了linuxrc文件 现在已经将根切换到target目录中了</p>
+<pre><code>/ # ls /
+bin      etc      lib      linuxrc  mnt      root     sbin     tmp      var
+dev      home     lib64    media    proc     run      sys      usr
+</code></pre><h4 id="根据执行Nginx的报错进行配置"><a href="#根据执行Nginx的报错进行配置" class="headerlink" title="根据执行Nginx的报错进行配置"></a><font color="#DDA0DD">根据执行Nginx的报错进行配置</font></h4><p>接下来的操作在这个根中进行 配置Nginx的运行环境 这些操作都是通过不断的执行nginx程序 查看nginx的报错总结的</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">adduser nginx                       <span class="comment"># 添加nginx用户 </span></span><br><span class="line">mkdir -p /var/tmp/nginx/client/     <span class="comment"># 创建nginx运行需要的目录</span></span><br><span class="line">mkdir -p /var/www/html              <span class="comment"># 以后将使用这个路径作为Nginx网页根目录</span></span><br><span class="line">ln -s /usr/<span class="built_in">local</span>/nginx/sbin/nginx /usr/sbin/            <span class="comment"># 添加nginx软链接到环境变量中</span></span><br><span class="line">ln -s /usr/<span class="built_in">local</span>/nginx/conf/nginx.conf /etc/nginx.conf  <span class="comment"># 添加配置文件软连接到/etc目录</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'&lt;h1&gt;hello nginx&lt;/h1&gt;'</span> &gt; /var/www/html/index.html  <span class="comment"># 创建一个索引文件</span></span><br></pre></td></tr></table></figure>
+<p>再次运行nginx程序 这时候遇到了ginx: [emerg] open(“/dev/null”) failed的错误 原因是打不开这个设备文件 这个只能通过启动为一个Docker容器来解决了</p>
+<pre><code>/ # /usr/local/nginx/sbin/nginx 
+nginx: [emerg] open(&quot;/dev/null&quot;) failed (2: No such file or directory)
+</code></pre><h4 id="修改Nginx配置文件"><a href="#修改Nginx配置文件" class="headerlink" title="修改Nginx配置文件"></a><font color="#DDA0DD">修改Nginx配置文件</font></h4><p>剩下的就是修改nginx的配置文件了</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/nginx.conf</span><br></pre></td></tr></table></figure>
+<pre><code>第一行添加 daemon off; 让nginx前台运行 这个必须添加
+http{}中添加 autoindex on; 运行目录索引 可以根据实际情况添加
+http{
+  server{
+    location / {
+        root   /var/www/html;           # root改为/var/www/html 可以根据实际情况更改
+        index  index.html index.htm;
+    }
+  }
+}
+</code></pre><h4 id="将目录打包为Docker容器"><a href="#将目录打包为Docker容器" class="headerlink" title="将目录打包为Docker容器"></a><font color="#DDA0DD">将目录打包为Docker容器</font></h4><p>输入exit或者键入 Ctrl+d 就可以退出chroot 回到正常的根中了 接下来 将数据打包为Docker容器 可以看到 大小仅仅8M<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> target/</span><br><span class="line">tar -cf /dev/stdout *|docker import - nginx:1.9.15</span><br></pre></td></tr></table></figure></p>
+<pre><code>root@ubuntu:~/target# docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+nginx               1.9.15              99089cedcc48        3 seconds ago       8.071 MB
+</code></pre><h4 id="启动容器-检查是否成功"><a href="#启动容器-检查是否成功" class="headerlink" title="启动容器 检查是否成功"></a><font color="#DDA0DD">启动容器 检查是否成功</font></h4><p>然后后台启动这个容器 并且查看容器IP 通过curl命令检查nginx是否正常运行 可以看到 成功返回 hello nginx<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --name nginx nginx:1.9.15 nginx</span><br><span class="line">docker inspect --format <span class="string">'&#123;&#123;.NetworkSettings.IPAddress&#125;&#125;'</span> nginx</span><br></pre></td></tr></table></figure></p>
+<pre><code>root@ubuntu:~/target# docker run -d --name nginx nginx:1.9.15 nginx
+0db0d45152948339fb0c9a23e8dfba6798c650e24075d725ba2d3021eb3b801b
+root@ubuntu:~/target# docker inspect --format &apos;{{.NetworkSettings.IPAddress}}&apos; nginx
+172.17.0.8
+root@ubuntu:~/target# curl 172.17.0.8
+&lt;h1&gt;hello nginx&lt;/h1&gt;
+root@ubuntu:~/target#
+</code></pre><p>这样 一个非常小 但是可以提供完整功能的Nginx服务容器就打包完成了 </p>
+<h4 id="overlayFS文件误删的恢复"><a href="#overlayFS文件误删的恢复" class="headerlink" title="overlayFS文件误删的恢复"></a><font color="#DDA0DD">overlayFS文件误删的恢复</font></h4><p>如果在制作这个容器的过程中 不幸误删了target目录中的文件 还记的build这个文件吗<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -rf linuxrc</span><br></pre></td></tr></table></figure></p>
+<pre><code>root@ubuntu:~/target# ls -l ../build/linuxrc 
+c--------- 1 root root 0, 0 Apr 22 17:28 ../build/linuxrc
+</code></pre><p>可以看到 build目录中出现了一个主次设备号都为0的字符设备 只要删除了这个字符设备 文件就恢复了<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -rf ../build/linuxrc</span><br></pre></td></tr></table></figure></p>
+<pre><code>root@ubuntu:~/target# ls
+bin  etc   lib    linuxrc  mnt   root  sbin  tmp  var
+dev  home  lib64  media    proc  run   sys   usr
+</code></pre><h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a><font color="#5CACEE">附录</font></h2><h3 id="将Nginx容器镜像保存为文件"><a href="#将Nginx容器镜像保存为文件" class="headerlink" title="将Nginx容器镜像保存为文件"></a><font color="#CDAA7D">将Nginx容器镜像保存为文件</font></h3><blockquote>
+<p>如果想把这个容器共享给其他人使用 除了使用push到仓库中 还可以直接通过文件的方式共享</p>
+</blockquote>
+<h4 id="配置一个默认启动命令"><a href="#配置一个默认启动命令" class="headerlink" title="配置一个默认启动命令"></a><font color="#DDA0DD">配置一个默认启动命令</font></h4><blockquote>
+<p>导入这个Nginx服务容器之后 每次启动都需要手动输入nginx命令 这样显的比较麻烦 可以通过Dockerfile的方式给这个容器配置一个默认的启动命令</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim Dockerfile</span><br></pre></td></tr></table></figure>
+<pre><code>键入以下内容：
+root@ubuntu:~# cat Dockerfile 
+FROM nginx:1.9.15
+CMD nginx
+
+nginx就是启动的命令 如果命令还带有参数 可以直接写出 例如 CMD nginx -s reload
+</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t nginx .         <span class="comment"># 给新镜像配置一个标签 记得不要忘记了最后的 .</span></span><br></pre></td></tr></table></figure>
+<pre><code>root@ubuntu:~# docker build -t nginx .
+Sending build context to Docker daemon 25.09 MB
+Step 1 : FROM nginx:1.9.15
+ ---&gt; 99089cedcc48
+Step 2 : CMD nginx
+ ---&gt; Running in 12b1a81d553c
+ ---&gt; 114ba21e8f1c
+Removing intermediate container 12b1a81d553c
+Successfully built 114ba21e8f1c
+root@ubuntu:~# docker run -d nginx:latest
+0f3f39dd3aea5a16b10a470ffecca716b31d0deab5420b07ee86bd1180bc2256
+</code></pre><p>可以看到 启动这个新容器已经不需要输入nginx命令了 其实还有一个方法可以更改默认启动命令 通过直接修改镜像的配置文件<br>可以看到 nginx:1.9.15镜像的ID是99089cedcc48 这只是完整ID的一部分 配置信息保存在/var/lib/docker/graph中</p>
+<pre><code>root@ubuntu:~# docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+nginx               1.9.15              99089cedcc48        48 minutes ago      8.071 MB
+</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /var/lib/docker/graph</span><br><span class="line"><span class="built_in">cd</span> 99089cedcc48*</span><br><span class="line">vim json</span><br></pre></td></tr></table></figure>
+<p>这时就打开了这个镜像的配置文件 Cmd字段就是默认命令 还可以顺便改下comment信息</p>
+<pre><code>&quot;comment&quot;:&quot;nginx 1.9.15&quot;,       # comment字段改为你想表达的信息
+&quot;Cmd&quot;:[&quot;yunfwe&quot;],               # Cmd字段有两个 第一个是作者信息
+&quot;Cmd&quot;:[&quot;nginx&quot;],                # 第二个才是启动命令
+
+如果运行命令有其他参数的话 用逗号隔开 例如 &quot;Cmd&quot;:[&quot;nginx&quot;,&quot;-s&quot;,&quot;reload&quot;],
+这样就相当于 nginx -s reload 了
+</code></pre><p>接下来使用docker history nginx:1.9.11 查看信息</p>
+<pre><code>可以看到 CREATED BY 还有 COMMENT 是自己写的信息了
+root@ubuntu:~# docker history 99089cedcc48
+IMAGE               CREATED             CREATED BY          SIZE                COMMENT
+99089cedcc48        58 minutes ago      yunfwe              8.071 MB           nginx 1.9.15
+
+顺便可以看到运行命令也已经是nginx了
+root@ubuntu:~# docker inspect --format {{.Config.Cmd}} nginx:1.9.15
+{[nginx]}
+</code></pre><p>这两种修改默认启动命令方法的一个重要区别是 第二种在原本的镜像上修改 是不会产生新的层的 而用Dockerfile修改 相当于新建了一个层 这个层提供了默认启动命令 不信可以使用docker history验证一下</p>
+<h4 id="保存为文件"><a href="#保存为文件" class="headerlink" title="保存为文件"></a><font color="#DDA0DD">保存为文件</font></h4><blockquote>
+<p>默认docker导出的是个tar归档 这里直接将归档压缩为gz包 文件命名规则是<br>REPOSITORY_TAG-Type.tar.gz<br>其中的Type是标识这个文件是由镜像保存的还是已经生成的容器导出的</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker save nginx:1.9.15 |gzip &gt; nginx_1.9.15-image.tar.gz</span><br></pre></td></tr></table></figure>
+<p>要恢复的话也很简单 docker支持直接从gz压缩包中恢复<br>导入新的镜像 这个镜像的标签可能会丢失 但是id号还在 给这个id好重新打个标签</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker load &lt; nginx_1.9.15-image.tar.gz</span><br><span class="line">docker tag 99089cedcc48 nginx:1.9.15</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/nginx/" rel="tag"><i class="fa fa-tag"></i> nginx</a>
+          
+            <a href="/tags/busybox/" rel="tag"><i class="fa fa-tag"></i> busybox</a>
+          
+            <a href="/tags/docker/" rel="tag"><i class="fa fa-tag"></i> docker</a>
+          
+            <a href="/tags/overlay/" rel="tag"><i class="fa fa-tag"></i> overlay</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/21/2016/Busybox构建最小容器/" rel="next" title="Busybox构建最小容器">
+                <i class="fa fa-chevron-left"></i> Busybox构建最小容器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/16/2016/nginx编译参数详解/" rel="prev" title="Nginx编译参数详解">
+                Nginx编译参数详解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="魏云飞">
+            
+              <p class="site-author-name" itemprop="name">魏云飞</p>
+              <p class="site-description motion-element" itemprop="description">帅的人已经醒来 而丑的人还在沉睡</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">61</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/yunfwe" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主机环境"><span class="nav-number">2.1.</span> <span class="nav-text">主机环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#软件环境"><span class="nav-number">2.2.</span> <span class="nav-text">软件环境</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#步骤"><span class="nav-number">3.</span> <span class="nav-text">步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构建Busybox最小容器"><span class="nav-number">3.1.</span> <span class="nav-text">构建Busybox最小容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译安装Nginx"><span class="nav-number">3.2.</span> <span class="nav-text">编译安装Nginx</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装nginx到非默认根"><span class="nav-number">3.2.1.</span> <span class="nav-text">安装nginx到非默认根</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#复制Nginx运行依赖库"><span class="nav-number">3.2.2.</span> <span class="nav-text">复制Nginx运行依赖库</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#打包Nginx服务容器"><span class="nav-number">3.3.</span> <span class="nav-text">打包Nginx服务容器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#认识overlayFS"><span class="nav-number">3.3.1.</span> <span class="nav-text">认识overlayFS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Chroot进行根切换"><span class="nav-number">3.3.2.</span> <span class="nav-text">Chroot进行根切换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#根据执行Nginx的报错进行配置"><span class="nav-number">3.3.3.</span> <span class="nav-text">根据执行Nginx的报错进行配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修改Nginx配置文件"><span class="nav-number">3.3.4.</span> <span class="nav-text">修改Nginx配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#将目录打包为Docker容器"><span class="nav-number">3.3.5.</span> <span class="nav-text">将目录打包为Docker容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#启动容器-检查是否成功"><span class="nav-number">3.3.6.</span> <span class="nav-text">启动容器 检查是否成功</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#overlayFS文件误删的恢复"><span class="nav-number">3.3.7.</span> <span class="nav-text">overlayFS文件误删的恢复</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">4.</span> <span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#将Nginx容器镜像保存为文件"><span class="nav-number">4.1.</span> <span class="nav-text">将Nginx容器镜像保存为文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#配置一个默认启动命令"><span class="nav-number">4.1.1.</span> <span class="nav-text">配置一个默认启动命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#保存为文件"><span class="nav-number">4.1.2.</span> <span class="nav-text">保存为文件</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">魏云飞</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">713k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+    <span title="站点总阅读时长">11:53</span>
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.0.4</div>
+<div class="BbeiAn-info"">
+  渝ICP备 -
+  <a href="http://www.beian.miit.gov.cn/">18019763号</a>
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.json";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<script>
+var OriginTitile = document.title;
+ var titleTime;
+ document.addEventListener('visibilitychange', function () {
+     if (document.hidden) {
+         $('[rel="icon"]').attr('href', "/img/TEP.ico");
+         document.title = '╭(°A°`)╮ 页面崩溃啦 ~ ';
+         clearTimeout(titleTime);
+     }
+     else {
+         $('[rel="icon"]').attr('href', "/favicon.ico");
+         document.title = '(ฅ>ω<*ฅ) 噫又好了~' + OriginTitile;
+         titleTime = setTimeout(function () {
+             document.title = OriginTitile;
+         }, 2000);
+     }
+ });
+</script>
+</html>

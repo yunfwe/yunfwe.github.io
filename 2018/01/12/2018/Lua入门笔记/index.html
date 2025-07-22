@@ -1,0 +1,1999 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="Lua,">
+
+
+<meta name="description" content="简介 Lua是一门脚本语言 其设计目的是为了嵌入应用程序中，从而为应用程序提供灵活的扩展和定制功能。Lua由标准C编写而成，几乎在所有操作系统和平台上都可以编译，运行。Lua并没有提供强大的库，这是由它的定位决定的。所以Lua不适合作为开发独立应用程序的语言。Lua 有一个同时进行的JIT项目，提供在特定平台上的即时编译功能。">
+<meta name="keywords" content="Lua">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lua入门笔记">
+<meta property="og:url" content="http://www.yunfwe.cn/2018/01/12/2018/Lua入门笔记/index.html">
+<meta property="og:site_name" content="某科学的最后之作">
+<meta property="og:description" content="简介 Lua是一门脚本语言 其设计目的是为了嵌入应用程序中，从而为应用程序提供灵活的扩展和定制功能。Lua由标准C编写而成，几乎在所有操作系统和平台上都可以编译，运行。Lua并没有提供强大的库，这是由它的定位决定的。所以Lua不适合作为开发独立应用程序的语言。Lua 有一个同时进行的JIT项目，提供在特定平台上的即时编译功能。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.yunfwe.cn/uploads/photos/1518315679054.jpg">
+<meta property="og:updated_time" content="2025-07-22T07:12:54.869Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Lua入门笔记">
+<meta name="twitter:description" content="简介 Lua是一门脚本语言 其设计目的是为了嵌入应用程序中，从而为应用程序提供灵活的扩展和定制功能。Lua由标准C编写而成，几乎在所有操作系统和平台上都可以编译，运行。Lua并没有提供强大的库，这是由它的定位决定的。所以Lua不适合作为开发独立应用程序的语言。Lua 有一个同时进行的JIT项目，提供在特定平台上的即时编译功能。">
+<meta name="twitter:image" content="http://www.yunfwe.cn/uploads/photos/1518315679054.jpg">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="某科学的最后之作" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://www.yunfwe.cn/2018/01/12/2018/Lua入门笔记/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>Lua入门笔记 | 某科学的最后之作</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">某科学的最后之作</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">帅的人已经醒来 而丑的人还在沉睡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.yunfwe.cn/2018/01/12/2018/Lua入门笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="魏云飞">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="某科学的最后之作">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Lua入门笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T14:00:00+08:00">2018-01-12</time>
+            
+
+            
+            
+              
+                
+              
+            
+
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2025-07-22T15:12:54+08:00">2025-07-22</time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Lua/" itemprop="url" rel="index"><span itemprop="name">Lua</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">9.5k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">0:10</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="/uploads/photos/1518315679054.jpg" rel="gallery_cmde8g1xk004qpijx7q2p6tms" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="/uploads/photos/1518315679054.jpg" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a><font color="#5CACEE">简介</font></h2><blockquote>
+<p>Lua是一门脚本语言 其设计目的是为了嵌入应用程序中，从而为应用程序提供灵活的扩展和定制功能。Lua由标准C编写而成，几乎在所有操作系统和平台上都可以编译，运行。Lua并没有提供强大的库，这是由它的定位决定的。所以Lua不适合作为开发独立应用程序的语言。Lua 有一个同时进行的JIT项目，提供在特定平台上的即时编译功能。</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="Lua特征"><a href="#Lua特征" class="headerlink" title="Lua特征"></a><font color="#CDAA7D">Lua特征</font></h3><ul>
+<li>轻量级 使用标准C语言开发 编译后才100多K</li>
+<li>可拓展 lua没有庞大的标准库，但是可以灵活使用宿主语言的功能</li>
+<li>支持面向过程和函数式编程</li>
+<li>自动内存管理 闭包 提供多线程（更像是协程）</li>
+</ul>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a><font color="#5CACEE">应用场景</font></h2><ul>
+<li>游戏开发</li>
+<li>独立应用脚本</li>
+<li>Web应用脚本</li>
+<li>程序拓展或插件（Nginx, MySQL proxy）</li>
+<li>安全系统 如入侵检测系统</li>
+</ul>
+<h2 id="Lua安装"><a href="#Lua安装" class="headerlink" title="Lua安装"></a><font color="#5CACEE">Lua安装</font></h2><h3 id="Linux编译安装lua"><a href="#Linux编译安装lua" class="headerlink" title="Linux编译安装lua"></a><font color="#CDAA7D">Linux编译安装lua</font></h3><p>依赖readline.h ubuntu系统安装libreadline-dev </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget http://www.lua.org/ftp/lua-5.3.4.tar.gz</span><br><span class="line">tar xf lua-5.3.4.tar.gz</span><br><span class="line">cd lua-5.3.4</span><br><span class="line">make linux</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<pre><code>cd src &amp;&amp; install -p -m 0755 lua luac /usr/local/bin
+cd src &amp;&amp; install -p -m 0644 lua.h luaconf.h lualib.h lauxlib.h lua.hpp /usr/local/include
+cd src &amp;&amp; install -p -m 0644 liblua.a /usr/local/lib
+cd doc &amp;&amp; install -p -m 0644 lua.1 luac.1 /usr/local/man/man1
+</code></pre><p>Lua向系统安装了这些文件 接下来就可以使用Lua命令了</p>
+<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a><font color="#5CACEE">Hello World</font></h2><p>用hello world作为lua第一个脚本的开始</p>
+<p>lua也有一个交互式解释器 也可以写为后缀为.lua的文件来执行代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim hello.lua</span><br></pre></td></tr></table></figure>
+<p>写入</p>
+<pre><code>print(&quot;Hello world!&quot;)
+</code></pre><p>执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lua hello.lua</span><br></pre></td></tr></table></figure></p>
+<h2 id="Lua的注释"><a href="#Lua的注释" class="headerlink" title="Lua的注释"></a><font color="#5CACEE">Lua的注释</font></h2><h3 id="单行注释"><a href="#单行注释" class="headerlink" title="单行注释"></a><font color="#CDAA7D">单行注释</font></h3><p>单行注释是两个减号</p>
+<pre><code>-- 单行注释
+</code></pre><h3 id="多行注释"><a href="#多行注释" class="headerlink" title="多行注释"></a><font color="#CDAA7D">多行注释</font></h3><pre><code>--[[
+多行注释
+多行注释
+--]]
+</code></pre><h3 id="标示符"><a href="#标示符" class="headerlink" title="标示符"></a><font color="#CDAA7D"><font color="#5CACEE">标示符</font></font></h3><p>Lua中的标示符和其他语言的标示符都基本一致</p>
+<h2 id="关键字"><a href="#关键字" class="headerlink" title="关键字"></a><font color="#5CACEE">关键字</font></h2><table>
+<thead>
+<tr>
+<th>关键字</th>
+<th>关键字</th>
+<th>关键字</th>
+<th>关键字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>and</td>
+<td>break</td>
+<td>do</td>
+<td>else</td>
+</tr>
+<tr>
+<td>elseif</td>
+<td>end</td>
+<td>false</td>
+<td>for</td>
+</tr>
+<tr>
+<td>function</td>
+<td>if</td>
+<td>in</td>
+<td>local</td>
+</tr>
+<tr>
+<td>nil</td>
+<td>not</td>
+<td>or</td>
+<td>repeat</td>
+</tr>
+<tr>
+<td>return</td>
+<td>then</td>
+<td>true</td>
+<td>until</td>
+</tr>
+<tr>
+<td>while</td>
+</tr>
+</tbody>
+</table>
+<p>Lua中的约定：以下划线开头的大写字母 被保留用于Lua的内部全局变量</p>
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a><font color="#5CACEE">数据类型</font></h2><p>Lua有8个基本类型</p>
+<table>
+<thead>
+<tr>
+<th>数据类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nil</td>
+<td>表示无效值 空值</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>只有两个值：true和false</td>
+</tr>
+<tr>
+<td>number</td>
+<td>表示双精度类型的实浮点数</td>
+</tr>
+<tr>
+<td>string</td>
+<td>字符串 可以用单引号也可以双引号</td>
+</tr>
+<tr>
+<td>function</td>
+<td>由C或者Lua编写的函数</td>
+</tr>
+<tr>
+<td>userdata</td>
+<td>表示任意存储在变量中的C数据结构</td>
+</tr>
+<tr>
+<td>thread</td>
+<td>表示执行的独立线程，用于执行协同程序</td>
+</tr>
+<tr>
+<td>table</td>
+<td>Lua 中的表（table）其实是一个”关联数组”</td>
+</tr>
+</tbody>
+</table>
+<p>使用type函数测试给定的值是什么类型 比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">print(type(1))</span><br><span class="line">print(type(&quot;hello&quot;))</span><br><span class="line">print(type(false))</span><br><span class="line">print(type(&#123;&#125;))</span><br></pre></td></tr></table></figure></p>
+<h3 id="nil-空"><a href="#nil-空" class="headerlink" title="nil (空)"></a><font color="#CDAA7D">nil (空)</font></h3><p>nil类型表示没有任何有效值 nil类型只有一个值:nil</p>
+<p>将全局变量或table表里的变量赋值nil 相当于删除了这个变量</p>
+<h3 id="boolean-布尔"><a href="#boolean-布尔" class="headerlink" title="boolean (布尔)"></a><font color="#CDAA7D">boolean (布尔)</font></h3><p>boolean型只有两个值：true 和 false</p>
+<p><strong>Lua只把false和nil看作是假 其他都为真！！！就算是0也是真！！！</strong></p>
+<h3 id="number-数字"><a href="#number-数字" class="headerlink" title="number (数字)"></a><font color="#CDAA7D">number (数字)</font></h3><p>Lua的number只有一种类型：double类型 所有的数字都是double类型的</p>
+<h3 id="string-字符串"><a href="#string-字符串" class="headerlink" title="string (字符串)"></a><font color="#CDAA7D">string (字符串)</font></h3><p>单行字符串可以用双引号或者单引号表示<br>多行字符串用 [[string]] 表示 相当于python的三引号</p>
+<p><strong>如果一个数字型的字符串与数字进行运算 Lua会将字符串转为number！与JavaScript相反</strong></p>
+<p>Lua的字符串拼接使用”..” 两个点 比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">print(&quot;str&quot;..1)</span><br><span class="line">print(2 ..3 ..4)</span><br></pre></td></tr></table></figure></p>
+<p>如果两个数字做字符串拼接 数字后面一定要带个空格 否则解释器会解释错</p>
+<p>Lua使用#来计算字符串的长度 就像是python的len()一样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">str = &quot;Hello world!&quot;</span><br><span class="line">print(#str)</span><br><span class="line">print(#&quot;lua&quot;)</span><br></pre></td></tr></table></figure></p>
+<h3 id="table-表"><a href="#table-表" class="headerlink" title="table (表)"></a><font color="#CDAA7D">table (表)</font></h3><p>Lua的table类型比较有意思 像是python的字典，列表，集合的合体<br>table类型的索引可以是数字 也可以是字符串<br><strong>Lua的数字索引是从1开始的！！！</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tbl1 = &#123;&#125;</span><br><span class="line">tbl2 = &#123;&quot;a&quot;,&quot;b&quot;,&quot;c&quot;&#125;</span><br><span class="line">tbl3 = &#123;a=1,b=2&#125;</span><br><span class="line">print(tbl2[1])</span><br><span class="line">print(tbl3[&quot;a&quot;])</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">a = &#123;&#125;</span><br><span class="line">a[&quot;key&quot;] = &quot;value&quot;</span><br><span class="line">a[1] = 2</span><br><span class="line">print(a[&quot;key&quot;])</span><br><span class="line">print(a[1])</span><br></pre></td></tr></table></figure>
+<p>Lua取table中的数据可以用[] 如果key是字符串类型 还可以用.<br>比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tbl1 = &#123;key=&quot;a&quot;&#125;</span><br><span class="line">print(tbl1.key)</span><br></pre></td></tr></table></figure></p>
+<h3 id="function-函数"><a href="#function-函数" class="headerlink" title="function (函数)"></a><font color="#CDAA7D">function (函数)</font></h3><p>Lua的函数跟JavaScript的函数很像 用function声明 还可以当作参数传给其他函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">function map(fn, tab)</span><br><span class="line">    count = 1</span><br><span class="line">    ltab = &#123;&#125;</span><br><span class="line">    for k,v in pairs(tab) do</span><br><span class="line">            ltab[k] = fn(v)</span><br><span class="line">    end</span><br><span class="line">    return ltab</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">map(function(x)</span><br><span class="line">        return x*x</span><br><span class="line">    end,</span><br><span class="line">    &#123;2,3,4,5&#125;)</span><br><span class="line">    </span><br><span class="line">for k,v in pairs(rst) do</span><br><span class="line">    print(&quot;new: &quot;..k..&quot;=&quot;..v)</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<h3 id="thread-线程"><a href="#thread-线程" class="headerlink" title="thread (线程)"></a><font color="#CDAA7D">thread (线程)</font></h3><p>Lua里的线程其实就是协程</p>
+<h3 id="userdata-自定义类型"><a href="#userdata-自定义类型" class="headerlink" title="userdata (自定义类型)"></a><font color="#CDAA7D">userdata (自定义类型)</font></h3><p>userdata 是一种用户自定义数据，用于表示一种由应用程序或 C/C++ 语言库所创建的类型，可以将任意 C/C++ 的任意数据类型的数据（通常是 struct 和 指针）存储到 Lua 变量中调用。</p>
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a><font color="#5CACEE">变量</font></h2><p>默认情况下 Lua的变量总是全局的 不需要声明就可以直接赋值。访问一个不存在的变量会返回nil，想删除一个变量 将其赋值为nil就可以了<br><br><br>Lua有三种变量：全局变量 本地变量 表中的域<br>Lua除非用local声明为局部变量 否则都为全局变量</p>
+<p><br><br>应该尽量使用局部变量</p>
+<ul>
+<li>避免变量冲突</li>
+<li>访问局部变量的速度更快</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">o = 10              --&gt; 全局变量</span><br><span class="line">function say()</span><br><span class="line">   local o = 100    --&gt; 局部变量</span><br><span class="line">   print(o)</span><br><span class="line">end</span><br><span class="line">print(o)</span><br></pre></td></tr></table></figure>
+<h3 id="变量赋值"><a href="#变量赋值" class="headerlink" title="变量赋值"></a><font color="#CDAA7D">变量赋值</font></h3><p>Lua的变量赋值也比较灵活<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">a,b,c = 1,2,3   --&gt; a=1,b=2,c=3</span><br><span class="line">a,b = b,a       --&gt; swap a for b</span><br><span class="line">a,b = 1,2,3     --&gt; a=1,b=2 3 was drop</span><br><span class="line">a,b,c = 1,2     --&gt; a=1,b=2,c=nil</span><br><span class="line">print(a,b,c)</span><br></pre></td></tr></table></figure></p>
+<h3 id="Lua循环"><a href="#Lua循环" class="headerlink" title="Lua循环"></a><font color="#CDAA7D"><font color="#5CACEE">Lua循环</font></font></h3><h3 id="while-循环"><a href="#while-循环" class="headerlink" title="while 循环"></a><font color="#CDAA7D">while 循环</font></h3><pre><code>while (condition)
+do
+    statements
+end
+</code></pre><h3 id="for-循环"><a href="#for-循环" class="headerlink" title="for 循环"></a><font color="#CDAA7D">for 循环</font></h3><h4 id="数值for循环"><a href="#数值for循环" class="headerlink" title="数值for循环"></a><font color="#DDA0DD">数值for循环</font></h4><pre><code>for var=exp1,exp2,exp3 do
+    statements
+end
+</code></pre><p>var从exp1变化到exp2，每次变化以exp3为步长递增var，并执行一次”执行体”。exp3是可选的，如果不指定，默认为1。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for i=10,1,-1 do</span><br><span class="line">    print(i)</span><br><span class="line">end</span><br></pre></td></tr></table></figure></p>
+<h4 id="泛型for循环"><a href="#泛型for循环" class="headerlink" title="泛型for循环"></a><font color="#DDA0DD">泛型for循环</font></h4><p>泛型for循环通过一个迭代器函数来遍历所有值</p>
+<pre><code>for k,v in pairs(table) do
+    statements
+end
+
+for i,v in ipairs(list) do
+    statements
+end
+
+在lua中pairs与ipairs两个迭代器的用法相近，但有一点是不一样的：
+
+pairs可以遍历表中所有的key，并且除了迭代器本身以及遍历表本身还可以返回nil;
+
+但是ipairs则不能返回nil,只能返回数字0，如果遇到nil则退出。它只能遍历到表中出现的第一个不是整数的key
+</code></pre><h3 id="repeat…until-循环"><a href="#repeat…until-循环" class="headerlink" title="repeat…until 循环"></a><font color="#CDAA7D">repeat…until 循环</font></h3><p>类似于C的do while循环 先做后判断</p>
+<pre><code>repeat
+    statements
+until(condition)
+</code></pre><h3 id="break-跳出循环"><a href="#break-跳出循环" class="headerlink" title="break 跳出循环"></a><font color="#CDAA7D">break 跳出循环</font></h3><p>如果遇到break 就终止循环 很不幸的是 Lua没有continue，但是可以用嵌套循环模拟</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">for i = 1, 10 do</span><br><span class="line">    repeat</span><br><span class="line">        if i == 5 then</span><br><span class="line">            break</span><br><span class="line">        end</span><br><span class="line">        print(i)</span><br><span class="line">    until true</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<h2 id="流程控制"><a href="#流程控制" class="headerlink" title="流程控制"></a><font color="#5CACEE">流程控制</font></h2><h3 id="if-语句"><a href="#if-语句" class="headerlink" title="if 语句"></a><font color="#CDAA7D">if 语句</font></h3><pre><code>if (condition)
+then
+    statements
+end
+</code></pre><h3 id="if…else-语句"><a href="#if…else-语句" class="headerlink" title="if…else 语句"></a><font color="#CDAA7D">if…else 语句</font></h3><pre><code>if (condition)
+then
+    statements
+else
+    statements
+end
+</code></pre><h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a><font color="#5CACEE">函数</font></h2><p>Lua的函数定义格式如下</p>
+<pre><code>scope function name(arg1,arg2,...)
+    statements
+    return result
+
+scope 定义函数作用域
+name  函数名
+arg   参数
+statements  函数内部语句
+return  返回值
+</code></pre><h3 id="多返回值"><a href="#多返回值" class="headerlink" title="多返回值"></a><font color="#CDAA7D">多返回值</font></h3><p>Lua可以一次返回多个值 同样需要多个参数来接收</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">s,e = string.find(&quot;www.hinote.ga&quot;,&quot;hinote&quot;)</span><br><span class="line">print(s,e)</span><br></pre></td></tr></table></figure>
+<h3 id="可变参数"><a href="#可变参数" class="headerlink" title="可变参数"></a><font color="#CDAA7D">可变参数</font></h3><p>将Lua的参数放入一个叫arg的表中 #arg计算有多少个arg的值<br>用”…”来表示函数有可变参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function args(...)</span><br><span class="line">    local arg = &#123;...&#125;</span><br><span class="line">    print(#arg)</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<h2 id="Lua-运算符"><a href="#Lua-运算符" class="headerlink" title="Lua 运算符"></a><font color="#5CACEE">Lua 运算符</font></h2><p>设定A=10, B=20</p>
+<h3 id="算数运算符"><a href="#算数运算符" class="headerlink" title="算数运算符"></a><font color="#CDAA7D">算数运算符</font></h3><table>
+<thead>
+<tr>
+<th>操作符</th>
+<th>描述</th>
+<th>实例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>+</td>
+<td>加法</td>
+<td>A+B=30</td>
+</tr>
+<tr>
+<td>-</td>
+<td>减法</td>
+<td>A-B=-10</td>
+</tr>
+<tr>
+<td>*</td>
+<td>乘法</td>
+<td>A*B=200</td>
+</tr>
+<tr>
+<td>/</td>
+<td>除法</td>
+<td>B/A=2</td>
+</tr>
+<tr>
+<td>%</td>
+<td>取余</td>
+<td>B%A=0</td>
+</tr>
+<tr>
+<td>^</td>
+<td>乘幂</td>
+<td>A^2=100</td>
+</tr>
+</tbody>
+</table>
+<h3 id="关系运算符"><a href="#关系运算符" class="headerlink" title="关系运算符"></a><font color="#CDAA7D">关系运算符</font></h3><table>
+<thead>
+<tr>
+<th>操作符</th>
+<th>描述</th>
+<th>实例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>==</td>
+<td>等于</td>
+<td>(A == B) 为 false</td>
+</tr>
+<tr>
+<td>~=</td>
+<td>不等于</td>
+<td>(A ~= B) 为 true</td>
+</tr>
+<tr>
+<td>&gt;</td>
+<td>大于</td>
+<td>(A &gt; B) 为 false</td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>小于</td>
+<td>(A &lt; B) 为 true</td>
+</tr>
+<tr>
+<td>>=</td>
+<td>大于等于</td>
+<td>(A &gt;= B) 返回 false</td>
+</tr>
+<tr>
+<td>&lt;=</td>
+<td>小于等于</td>
+<td>(A &lt;= B) 返回 true</td>
+</tr>
+</tbody>
+</table>
+<h3 id="逻辑运算符"><a href="#逻辑运算符" class="headerlink" title="逻辑运算符"></a><font color="#CDAA7D">逻辑运算符</font></h3><p>A=true, B=false</p>
+<table>
+<thead>
+<tr>
+<th>操作符</th>
+<th>描述</th>
+<th>实例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>and</td>
+<td>逻辑与操作符</td>
+<td>(A and B) 为 false</td>
+</tr>
+<tr>
+<td>or</td>
+<td>逻辑或操作符</td>
+<td>(A or B) 为 true</td>
+</tr>
+<tr>
+<td>not</td>
+<td>逻辑非操作符</td>
+<td>not(A and B) 为 true</td>
+</tr>
+</tbody>
+</table>
+<h3 id="其他运算符"><a href="#其他运算符" class="headerlink" title="其他运算符"></a><font color="#CDAA7D">其他运算符</font></h3><p>A=”Hello”, B=”World”<br>|操作符|描述|实例|<br>|-|-|-|<br>|..|连接两个字符串|A..B 返回 “Hello World”|<br>|#|返回字符串或表的长度|#A 返回 5|</p>
+<h3 id="算数优先级"><a href="#算数优先级" class="headerlink" title="算数优先级"></a><font color="#CDAA7D">算数优先级</font></h3><pre><code>^
+not    - (unary)
+*      /
++      -
+..
+&lt;      &gt;      &lt;=     &gt;=     ~=     ==
+and
+or
+</code></pre><h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a><font color="#5CACEE">字符串</font></h2><h3 id="字符串常用方法"><a href="#字符串常用方法" class="headerlink" title="字符串常用方法"></a><font color="#CDAA7D">字符串常用方法</font></h3><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>string.upper</td>
+<td>字符串转为全大写</td>
+</tr>
+<tr>
+<td>string.lower</td>
+<td>字符串转为全小写</td>
+</tr>
+<tr>
+<td>string.gsub</td>
+<td>字符串替换</td>
+</tr>
+<tr>
+<td>string.find</td>
+<td>字符串查找</td>
+</tr>
+<tr>
+<td>string.reverse</td>
+<td>字符串反转</td>
+</tr>
+<tr>
+<td>string.format</td>
+<td>格式化字符串</td>
+</tr>
+<tr>
+<td>string.char</td>
+<td>将ascii转为字符串</td>
+</tr>
+<tr>
+<td>string.byte</td>
+<td>将字符串转为ascii</td>
+</tr>
+<tr>
+<td>string.len</td>
+<td>计算字符串长度</td>
+</tr>
+<tr>
+<td>string.rep</td>
+<td>返回字符串的N个拷贝</td>
+</tr>
+<tr>
+<td>..</td>
+<td>连接两个字符串</td>
+</tr>
+<tr>
+<td>string.gmatch</td>
+<td>迭代器的方式匹配正则表达式</td>
+</tr>
+<tr>
+<td>string.match</td>
+<td>只寻找源字符串的第一个匹配</td>
+</tr>
+</tbody>
+</table>
+<h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a><font color="#5CACEE">数组</font></h2><h3 id="一维数组"><a href="#一维数组" class="headerlink" title="一维数组"></a><font color="#CDAA7D">一维数组</font></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr = &#123;&quot;Hello&quot;, &quot;World&quot;&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="多维数组"><a href="#多维数组" class="headerlink" title="多维数组"></a><font color="#CDAA7D">多维数组</font></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr = &#123;&quot;Hello&quot;,&#123;&quot;Hello&quot;,&quot;Lua&quot;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a><font color="#5CACEE">迭代器</font></h2><h3 id="泛型for迭代器"><a href="#泛型for迭代器" class="headerlink" title="泛型for迭代器"></a><font color="#CDAA7D">泛型for迭代器</font></h3><p>泛型 for 在自己内部保存迭代函数，实际上它保存三个值：迭代函数、状态常量、控制变量。</p>
+<p>泛型 for 迭代器提供了集合的 key/value 对，语法格式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for k, v in pairs(t) do</span><br><span class="line">    print(k, v)</span><br><span class="line">end</span><br></pre></td></tr></table></figure></p>
+<p>下面我们看看泛型 for 的执行过程：</p>
+<ul>
+<li>首先，初始化，计算in后面表达式的值，表达式应该返回泛型 for 需要的三个值：迭代函数、状态常量、控制变量；与多值赋值一样，如果表达式返回的结果个数不足三个会自动用nil补足，多出部分会被忽略。</li>
+<li>第二，将状态常量和控制变量作为参数调用迭代函数（注意：对于for结构来说，状态常量没有用处，仅仅在初始化时获取他的值并传递给迭代函数）。</li>
+<li>第三，将迭代函数返回的值赋给变量列表。</li>
+<li>第四，如果返回的第一个值为nil循环结束，否则执行循环体。</li>
+<li>第五，回到第二步再次调用迭代函数</li>
+</ul>
+<h3 id="无状态迭代器"><a href="#无状态迭代器" class="headerlink" title="无状态迭代器"></a><font color="#CDAA7D">无状态迭代器</font></h3><p>无状态的迭代器是指不保留任何状态的迭代器，因此在循环中我们可以利用无状态迭代器避免创建闭包花费额外的代价。</p>
+<p>每一次迭代，迭代函数都是用两个变量（状态常量和控制变量）的值作为参数被调用，一个无状态的迭代器只利用这两个值可以获取下一个元素。<br>这种无状态迭代器的典型的简单的例子是ipairs，它遍历数组的每一个元素</p>
+<h3 id="多状态迭代器"><a href="#多状态迭代器" class="headerlink" title="多状态迭代器"></a><font color="#CDAA7D">多状态迭代器</font></h3><p>很多情况下，迭代器需要保存多个状态信息而不是简单的状态常量和控制变量，最简单的方法是使用闭包，还有一种方法就是将所有的状态信息封装到table内，将table作为迭代器的状态常量，因为这种情况下可以将所有的信息存放在table内，所以迭代函数通常不需要第二个参数。</p>
+<h2 id="table-表-1"><a href="#table-表-1" class="headerlink" title="table (表)"></a><font color="#5CACEE">table (表)</font></h2><p>table是Lua的一种数据结构来帮助我们创建不同的数据类型<br>Lua也是通过table来解决模块、包、和对象的</p>
+<h3 id="表的常用操作"><a href="#表的常用操作" class="headerlink" title="表的常用操作"></a><font color="#CDAA7D">表的常用操作</font></h3><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>table.concat</td>
+<td>类似于python字符串的join</td>
+</tr>
+<tr>
+<td>table.insert</td>
+<td>在数组的指定位置插入一个值</td>
+</tr>
+<tr>
+<td>table.remove</td>
+<td>移除数组中的一个值</td>
+</tr>
+<tr>
+<td>table.sort</td>
+<td>对给定的table升序排序</td>
+</tr>
+</tbody>
+</table>
+<h3 id="模块与包"><a href="#模块与包" class="headerlink" title="模块与包"></a><font color="#CDAA7D"><font color="#5CACEE">模块与包</font></font></h3><p>Lua5.1开始 加入了标准的模块管理机制<br>Lua的模块是由变量和函数等元素组成的table, 最后返回这个table就可以了<br><br><br>test.lua<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">module = &#123;&#125;</span><br><span class="line">function module.max(x,y)</span><br><span class="line">    if (x &gt; y) then</span><br><span class="line">        return x</span><br><span class="line">    else</span><br><span class="line">        return y</span><br><span class="line">    end</span><br><span class="line">end</span><br><span class="line">return module</span><br></pre></td></tr></table></figure></p>
+<p>引入也很简单<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">require(&quot;test&quot;)</span><br><span class="line">module.max(2,3)         --&gt; 引入的是模块return的名字</span><br><span class="line">test = require(&quot;test&quot;)  --&gt; 也可以这样将模块重命名</span><br><span class="line">test.max(2,3)</span><br></pre></td></tr></table></figure></p>
+<h3 id="模块加载路径"><a href="#模块加载路径" class="headerlink" title="模块加载路径"></a><font color="#CDAA7D">模块加载路径</font></h3><p>Lua内使用package.path可以看到默认的搜索路径<br>如果找不到lua模块 则会去调用C库 使用package.cpath可以查看</p>
+<p>也可以使用环境变量LUA_PATH来设置lua的搜索路径<br>C库的环境变量是LUA_CPATH</p>
+<h2 id="元表-Matatable"><a href="#元表-Matatable" class="headerlink" title="元表 (Matatable)"></a><font color="#5CACEE">元表 (Matatable)</font></h2><p>感觉像是python类的魔法方法，可以自己修改table的各种行为，比如两个table相加，又有点像JavaScript的原型链</p>
+<p>高级话题 以后再研究</p>
+<h2 id="协程"><a href="#协程" class="headerlink" title="协程"></a><font color="#5CACEE">协程</font></h2><p>Lua 协同程序(coroutine)与线程比较类似：拥有独立的堆栈，独立的局部变量，独立的指令指针，同时又与其它协同程序共享全局变量和其它大部分东西。</p>
+<h3 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a><font color="#CDAA7D">基本语法</font></h3><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>coroutine.create</td>
+<td>创建coroutine,参数是一个函数</td>
+</tr>
+<tr>
+<td>coroutine.resume</td>
+<td>重启coroutine，和create配合使用</td>
+</tr>
+<tr>
+<td>coroutine.yield</td>
+<td>挂起coroutine，将coroutine设置为挂起状态</td>
+</tr>
+<tr>
+<td>coroutine.status</td>
+<td>查看coroutine的状态</td>
+</tr>
+<tr>
+<td>coroutine.wrap</td>
+<td>也是创建一个coroutine</td>
+</tr>
+<tr>
+<td>coroutine.running</td>
+<td>返回正在运行的coroutine</td>
+</tr>
+</tbody>
+</table>
+<p>高级话题 用到的时候再研究</p>
+<h2 id="文件IO"><a href="#文件IO" class="headerlink" title="文件IO"></a><font color="#5CACEE">文件IO</font></h2><p>Lua的IO库用于读取和处理文件 分为简单模式和完全模式</p>
+<ul>
+<li>简单模式 拥有一个当前输入和输出文件，并且提供针对文件的相关操作</li>
+<li>它以一种面对对象的形式，将所有的文件操作定义为文件句柄的方法</li>
+</ul>
+<p><br><br>打开文件操作语句如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">file = io.open (filename [, mode])</span><br></pre></td></tr></table></figure></p>
+<p>其中mode和python的文件打开方式一摸一样 不再多说</p>
+<h3 id="简单模式"><a href="#简单模式" class="headerlink" title="简单模式"></a><font color="#CDAA7D">简单模式</font></h3><h4 id="读取文件内容"><a href="#读取文件内容" class="headerlink" title="读取文件内容"></a><font color="#DDA0DD">读取文件内容</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">file = io.open(&quot;/etc/passwd&quot;,&quot;r&quot;)</span><br><span class="line">io.input(file)      --&gt; 设置输入文件为file</span><br><span class="line">io.read(10)         --&gt; 读取10个字节 默认是读取一行</span><br><span class="line">io.close(file)      --&gt; 关闭文件</span><br></pre></td></tr></table></figure>
+<h4 id="写入文件内容"><a href="#写入文件内容" class="headerlink" title="写入文件内容"></a><font color="#DDA0DD">写入文件内容</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">file = io.open(&quot;/tmp/lua&quot;,&quot;a&quot;)  --&gt; 如果是w模式 文件存在则会清空文件</span><br><span class="line">io.output(file)</span><br><span class="line">io.write(&quot;Hello\n&quot;)</span><br><span class="line">io.close(file)</span><br></pre></td></tr></table></figure>
+<h4 id="io-read有多种参数"><a href="#io-read有多种参数" class="headerlink" title="io.read有多种参数"></a><font color="#DDA0DD">io.read有多种参数</font></h4><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>“*n”</td>
+<td>读取一个数字并返回它</td>
+</tr>
+<tr>
+<td>“*a”</td>
+<td>读取全部内容</td>
+</tr>
+<tr>
+<td>“*l”</td>
+<td>读取下一行 默认行为</td>
+</tr>
+<tr>
+<td>number</td>
+<td>按照字节读取</td>
+</tr>
+</tbody>
+</table>
+<h4 id="其他的io方法"><a href="#其他的io方法" class="headerlink" title="其他的io方法"></a><font color="#DDA0DD">其他的io方法</font></h4><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>io.tmpfile</td>
+<td>返回一个临时文件 “a”模式打开</td>
+</tr>
+<tr>
+<td>io.type(file)</td>
+<td>检测obj是否是个可用的文件句柄</td>
+</tr>
+<tr>
+<td>io.flush</td>
+<td>向文件写入缓冲中的所有数据</td>
+</tr>
+<tr>
+<td>io.lines</td>
+<td>返回一个迭代函数 每次调用返回一行</td>
+</tr>
+</tbody>
+</table>
+<h3 id="完全模式"><a href="#完全模式" class="headerlink" title="完全模式"></a><font color="#CDAA7D">完全模式</font></h3><p>通常我们会在同一时间处理多个文件 简单模式就不够用了</p>
+<h4 id="文件读写"><a href="#文件读写" class="headerlink" title="文件读写"></a><font color="#DDA0DD">文件读写</font></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">f1 = io.open(&quot;/etc/passwd&quot;,&quot;r&quot;)</span><br><span class="line">f1:read()     --&gt; 没看错 就是:  </span><br><span class="line">f1:close()</span><br><span class="line">f2 = io.open(&quot;/tmp/lua&quot;,&quot;w&quot;)</span><br><span class="line">f2:write(&quot;Hi!\n&quot;)</span><br><span class="line">f2:close()</span><br></pre></td></tr></table></figure>
+<h4 id="其他方法"><a href="#其他方法" class="headerlink" title="其他方法"></a><font color="#DDA0DD">其他方法</font></h4><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file:seek</td>
+<td>获取和设置当前文件指针</td>
+</tr>
+<tr>
+<td>file:flush</td>
+<td>将缓冲区输入写入到文件</td>
+</tr>
+</tbody>
+</table>
+<h2 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a><font color="#5CACEE">错误处理</font></h2><h3 id="assert-和-error"><a href="#assert-和-error" class="headerlink" title="assert 和 error"></a><font color="#CDAA7D">assert 和 error</font></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function add(a,b)</span><br><span class="line">   assert(type(a) == &quot;number&quot;, &quot;a 不是一个数字&quot;)</span><br><span class="line">   assert(type(b) == &quot;number&quot;, &quot;b 不是一个数字&quot;)</span><br><span class="line">   return a+b</span><br><span class="line">end</span><br><span class="line">add(10)</span><br></pre></td></tr></table></figure>
+<p>实例中assert首先检查第一个参数，若没问题，assert不做任何事情；否则，assert以第二个参数作为错误信息抛出。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function add(a,b)</span><br><span class="line">   error(&quot;错误了&quot;)</span><br><span class="line">   return a+b</span><br><span class="line">end</span><br><span class="line">add(10)</span><br></pre></td></tr></table></figure></p>
+<p>error更像是python的raise 主动抛出一个异常</p>
+<h3 id="pcall-和-xpcall"><a href="#pcall-和-xpcall" class="headerlink" title="pcall 和 xpcall"></a><font color="#CDAA7D">pcall 和 xpcall</font></h3><p>Lua中处理错误，可以使用函数pcall来包装需要执行的代码。</p>
+<p>pcall传入需要运行的函数和函数的参数，如果函数运行的有错误就返回false 否则返回true 所以可以用if进行判断和处理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pcall(function(i) print(i) end, 33)</span><br><span class="line">pcall(function(i) print(i) error(&quot;error&quot;) end, 33)</span><br></pre></td></tr></table></figure>
+<p>xpcall可以接收一个错误处理函数来查看错误发生时的调用栈</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xpcall(function(i) print(i) error(&apos;error..&apos;) end, function() print(debug.traceback()) end, 33)</span><br></pre></td></tr></table></figure>
+<p>xpacall的第二个参数是传入了一个错误处理函数 可以在这个函数中使用debug库获取错误的额外信息了</p>
+<ul>
+<li>debug.debug 提供一个Lua提示符 让用户来检查错误的原因</li>
+<li>debug.traceback 根据调用栈来构建一个扩展的错误信息</li>
+</ul>
+<h2 id="debug-调试"><a href="#debug-调试" class="headerlink" title="debug 调试"></a><font color="#5CACEE">debug 调试</font></h2><blockquote>
+<p>未完待续。。。</p>
+</blockquote>
+<h2 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a><font color="#5CACEE">垃圾回收</font></h2><blockquote>
+<p>未完待续。。。</p>
+</blockquote>
+<h2 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a><font color="#5CACEE">面向对象</font></h2><blockquote>
+<p>未完待续。。。</p>
+</blockquote>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Lua/" rel="tag"><i class="fa fa-tag"></i> Lua</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/02/2018/Leanote开源云笔记搭建/" rel="next" title="Leanote开源云笔记搭建">
+                <i class="fa fa-chevron-left"></i> Leanote开源云笔记搭建
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/04/2018/Hadoop入门笔记/" rel="prev" title="Hadoop入门笔记">
+                Hadoop入门笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="魏云飞">
+            
+              <p class="site-author-name" itemprop="name">魏云飞</p>
+              <p class="site-description motion-element" itemprop="description">帅的人已经醒来 而丑的人还在沉睡</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">61</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/yunfwe" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lua特征"><span class="nav-number">1.1.</span> <span class="nav-text">Lua特征</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用场景"><span class="nav-number">2.</span> <span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lua安装"><span class="nav-number">3.</span> <span class="nav-text">Lua安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux编译安装lua"><span class="nav-number">3.1.</span> <span class="nav-text">Linux编译安装lua</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello-World"><span class="nav-number">4.</span> <span class="nav-text">Hello World</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lua的注释"><span class="nav-number">5.</span> <span class="nav-text">Lua的注释</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#单行注释"><span class="nav-number">5.1.</span> <span class="nav-text">单行注释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多行注释"><span class="nav-number">5.2.</span> <span class="nav-text">多行注释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标示符"><span class="nav-number">5.3.</span> <span class="nav-text">标示符</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关键字"><span class="nav-number">6.</span> <span class="nav-text">关键字</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据类型"><span class="nav-number">7.</span> <span class="nav-text">数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nil-空"><span class="nav-number">7.1.</span> <span class="nav-text">nil (空)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#boolean-布尔"><span class="nav-number">7.2.</span> <span class="nav-text">boolean (布尔)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#number-数字"><span class="nav-number">7.3.</span> <span class="nav-text">number (数字)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#string-字符串"><span class="nav-number">7.4.</span> <span class="nav-text">string (字符串)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#table-表"><span class="nav-number">7.5.</span> <span class="nav-text">table (表)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#function-函数"><span class="nav-number">7.6.</span> <span class="nav-text">function (函数)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#thread-线程"><span class="nav-number">7.7.</span> <span class="nav-text">thread (线程)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#userdata-自定义类型"><span class="nav-number">7.8.</span> <span class="nav-text">userdata (自定义类型)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变量"><span class="nav-number">8.</span> <span class="nav-text">变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#变量赋值"><span class="nav-number">8.1.</span> <span class="nav-text">变量赋值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lua循环"><span class="nav-number">8.2.</span> <span class="nav-text">Lua循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#while-循环"><span class="nav-number">8.3.</span> <span class="nav-text">while 循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for-循环"><span class="nav-number">8.4.</span> <span class="nav-text">for 循环</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数值for循环"><span class="nav-number">8.4.1.</span> <span class="nav-text">数值for循环</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#泛型for循环"><span class="nav-number">8.4.2.</span> <span class="nav-text">泛型for循环</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#repeat…until-循环"><span class="nav-number">8.5.</span> <span class="nav-text">repeat…until 循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#break-跳出循环"><span class="nav-number">8.6.</span> <span class="nav-text">break 跳出循环</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程控制"><span class="nav-number">9.</span> <span class="nav-text">流程控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#if-语句"><span class="nav-number">9.1.</span> <span class="nav-text">if 语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#if…else-语句"><span class="nav-number">9.2.</span> <span class="nav-text">if…else 语句</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数"><span class="nav-number">10.</span> <span class="nav-text">函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#多返回值"><span class="nav-number">10.1.</span> <span class="nav-text">多返回值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可变参数"><span class="nav-number">10.2.</span> <span class="nav-text">可变参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lua-运算符"><span class="nav-number">11.</span> <span class="nav-text">Lua 运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#算数运算符"><span class="nav-number">11.1.</span> <span class="nav-text">算数运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关系运算符"><span class="nav-number">11.2.</span> <span class="nav-text">关系运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#逻辑运算符"><span class="nav-number">11.3.</span> <span class="nav-text">逻辑运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他运算符"><span class="nav-number">11.4.</span> <span class="nav-text">其他运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算数优先级"><span class="nav-number">11.5.</span> <span class="nav-text">算数优先级</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串"><span class="nav-number">12.</span> <span class="nav-text">字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串常用方法"><span class="nav-number">12.1.</span> <span class="nav-text">字符串常用方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数组"><span class="nav-number">13.</span> <span class="nav-text">数组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一维数组"><span class="nav-number">13.1.</span> <span class="nav-text">一维数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多维数组"><span class="nav-number">13.2.</span> <span class="nav-text">多维数组</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迭代器"><span class="nav-number">14.</span> <span class="nav-text">迭代器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型for迭代器"><span class="nav-number">14.1.</span> <span class="nav-text">泛型for迭代器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无状态迭代器"><span class="nav-number">14.2.</span> <span class="nav-text">无状态迭代器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多状态迭代器"><span class="nav-number">14.3.</span> <span class="nav-text">多状态迭代器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#table-表-1"><span class="nav-number">15.</span> <span class="nav-text">table (表)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#表的常用操作"><span class="nav-number">15.1.</span> <span class="nav-text">表的常用操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块与包"><span class="nav-number">15.2.</span> <span class="nav-text">模块与包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块加载路径"><span class="nav-number">15.3.</span> <span class="nav-text">模块加载路径</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#元表-Matatable"><span class="nav-number">16.</span> <span class="nav-text">元表 (Matatable)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#协程"><span class="nav-number">17.</span> <span class="nav-text">协程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本语法"><span class="nav-number">17.1.</span> <span class="nav-text">基本语法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件IO"><span class="nav-number">18.</span> <span class="nav-text">文件IO</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单模式"><span class="nav-number">18.1.</span> <span class="nav-text">简单模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#读取文件内容"><span class="nav-number">18.1.1.</span> <span class="nav-text">读取文件内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#写入文件内容"><span class="nav-number">18.1.2.</span> <span class="nav-text">写入文件内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#io-read有多种参数"><span class="nav-number">18.1.3.</span> <span class="nav-text">io.read有多种参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他的io方法"><span class="nav-number">18.1.4.</span> <span class="nav-text">其他的io方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完全模式"><span class="nav-number">18.2.</span> <span class="nav-text">完全模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#文件读写"><span class="nav-number">18.2.1.</span> <span class="nav-text">文件读写</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他方法"><span class="nav-number">18.2.2.</span> <span class="nav-text">其他方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#错误处理"><span class="nav-number">19.</span> <span class="nav-text">错误处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#assert-和-error"><span class="nav-number">19.1.</span> <span class="nav-text">assert 和 error</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pcall-和-xpcall"><span class="nav-number">19.2.</span> <span class="nav-text">pcall 和 xpcall</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#debug-调试"><span class="nav-number">20.</span> <span class="nav-text">debug 调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#垃圾回收"><span class="nav-number">21.</span> <span class="nav-text">垃圾回收</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#面向对象"><span class="nav-number">22.</span> <span class="nav-text">面向对象</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">魏云飞</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">713k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+    <span title="站点总阅读时长">11:53</span>
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.0.4</div>
+<div class="BbeiAn-info"">
+  渝ICP备 -
+  <a href="http://www.beian.miit.gov.cn/">18019763号</a>
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.json";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<script>
+var OriginTitile = document.title;
+ var titleTime;
+ document.addEventListener('visibilitychange', function () {
+     if (document.hidden) {
+         $('[rel="icon"]').attr('href', "/img/TEP.ico");
+         document.title = '╭(°A°`)╮ 页面崩溃啦 ~ ';
+         clearTimeout(titleTime);
+     }
+     else {
+         $('[rel="icon"]').attr('href', "/favicon.ico");
+         document.title = '(ฅ>ω<*ฅ) 噫又好了~' + OriginTitile;
+         titleTime = setTimeout(function () {
+             document.title = OriginTitile;
+         }, 2000);
+     }
+ });
+</script>
+</html>

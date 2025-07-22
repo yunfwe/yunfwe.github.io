@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="python,vpn,udp,">
+
+
+<meta name="description" content="简介 了解了OpenVPN之后，发现通过一个UDP隧道来打通NAT网络非常有意思，于是就萌发出使用Python来实现一个类似于OpenVPN的隧道，OpenVPN不仅支持UDP协议还支持TCP协议，但是这里并不会像OpenVPN设计的这么复杂完善，只使用简单的UDP协议和密码认证。也通过这个小程序来更深入的学习下Linux网络相关的知识。">
+<meta name="keywords" content="python,vpn,udp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一起动手写一个VPN">
+<meta property="og:url" content="http://www.yunfwe.cn/2018/05/24/2018/一起动手写一个VPN/index.html">
+<meta property="og:site_name" content="某科学的最后之作">
+<meta property="og:description" content="简介 了解了OpenVPN之后，发现通过一个UDP隧道来打通NAT网络非常有意思，于是就萌发出使用Python来实现一个类似于OpenVPN的隧道，OpenVPN不仅支持UDP协议还支持TCP协议，但是这里并不会像OpenVPN设计的这么复杂完善，只使用简单的UDP协议和密码认证。也通过这个小程序来更深入的学习下Linux网络相关的知识。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.yunfwe.cn/uploads/photos/7a09d50b4.jpg">
+<meta property="og:updated_time" content="2025-07-22T07:12:54.871Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一起动手写一个VPN">
+<meta name="twitter:description" content="简介 了解了OpenVPN之后，发现通过一个UDP隧道来打通NAT网络非常有意思，于是就萌发出使用Python来实现一个类似于OpenVPN的隧道，OpenVPN不仅支持UDP协议还支持TCP协议，但是这里并不会像OpenVPN设计的这么复杂完善，只使用简单的UDP协议和密码认证。也通过这个小程序来更深入的学习下Linux网络相关的知识。">
+<meta name="twitter:image" content="http://www.yunfwe.cn/uploads/photos/7a09d50b4.jpg">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="某科学的最后之作" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://www.yunfwe.cn/2018/05/24/2018/一起动手写一个VPN/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>一起动手写一个VPN | 某科学的最后之作</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">某科学的最后之作</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">帅的人已经醒来 而丑的人还在沉睡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.yunfwe.cn/2018/05/24/2018/一起动手写一个VPN/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="魏云飞">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="某科学的最后之作">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">一起动手写一个VPN</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-24T23:21:00+08:00">2018-05-24</time>
+            
+
+            
+            
+              
+                
+              
+            
+
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2025-07-22T15:12:54+08:00">2025-07-22</time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">15k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">0:15</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="/uploads/photos/7a09d50b4.jpg" rel="gallery_cmde8g1xo005mpijxbdd9uinj" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="/uploads/photos/7a09d50b4.jpg" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
+<p>了解了OpenVPN之后，发现通过一个UDP隧道来打通NAT网络非常有意思，于是就萌发出使用Python来实现一个类似于OpenVPN的隧道，OpenVPN不仅支持UDP协议还支持TCP协议，但是这里并不会像OpenVPN设计的这么复杂完善，只使用简单的UDP协议和密码认证。也通过这个小程序来更深入的学习下Linux网络相关的知识。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>VPN隧道的实现依赖于Linux内核提供的 <code>tun/tap</code> 虚拟网络接口，只要不是太古董级别的Linux系统，或者其他类Unix系统就都可以支持。可以查看是否存在设备文件 <code>/dev/net/tun</code>，如果存在则表示支持 <code>tun/tap</code> 功能，对于早些的Linux内核，设备文件还可能是 <code>/dev/tun</code>。</p>
+<p>其中 <code>tun</code> 是模拟的三层网络设备，只支持三层以上的协议，只能做到点对点隧道，而 <code>tap</code> 则可以模拟二层网络设备，<code>arp</code> 协议等二层协议也是支持的，可以实现多机组成的虚拟局域网。<code>tun</code> 也可以通过数据转发的方式实现互通。</p>
+<p>服务端代码为了更高的性能和不依赖第三方库使用Python3完成，客户端就尽量兼容更多版本的Python。网络使用常用的 <code>tun</code> 虚拟网卡。</p>
+<h2 id="编程"><a href="#编程" class="headerlink" title="编程"></a>编程</h2><p>先来理解一下使用 <code>tun</code> 的VPN是如何实现的呢？简单来说 就是 <code>/dev/net/tun</code> 设备实现了应用层直接处理网络数据包的能力。当使用 <code>/dev/net/tun</code> 创建了虚拟网卡设备后，发到这个网卡的数据包会被 <code>/dev/net/tun</code> 拦截并返回给打开它上上层程序，上层程序可以通过 <code>udp</code>、<code>tcp</code> 甚至 <code>icmp</code> 协议将原始的数据包发送到目标主机。当目标主机通过网络接受到数据包后再写入到 <code>/dev/net/tun</code> 设备中，<code>/dev/net/tun</code> 再将数据包注入到内核的网络协议栈按照正常到达的数据包来处理。VPN大部分采用的是通过 <code>udp</code> 协议发送到对端的，如果是通过 <code>tcp</code> 协议传输，<code>tcp</code> 包内部包裹着另一个 <code>tcp</code> 包，如果发生了丢包重传现象，内部的 <code>tcp</code> 包和外部的 <code>tcp</code> 包可能发生混乱。</p>
+<h3 id="服务端程序"><a href="#服务端程序" class="headerlink" title="服务端程序"></a>服务端程序</h3><blockquote>
+<p>服务端程序使用 Python3 开发，只使用了标准库</p>
+</blockquote>
+<h4 id="导入需要的模块"><a href="#导入需要的模块" class="headerlink" title="导入需要的模块"></a>导入需要的模块</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">from</span> fcntl <span class="keyword">import</span> ioctl</span><br><span class="line"><span class="keyword">from</span> select <span class="keyword">import</span> select</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"><span class="keyword">from</span> ipaddress <span class="keyword">import</span> ip_network</span><br></pre></td></tr></table></figure>
+<p>可能大多数人都熟悉 <code>os</code>, <code>sys</code>, <code>time</code> 这些模块，而对其他的就不太了解了。其中 <code>struct</code> 是一个将Python的数据类型转换为C语言中的数据类型的字节流的模块。<code>fnctl.ioctl</code> 用来对设备的一些特性进行控制，比如这里来设定要启用的虚拟网卡的类型和网卡名称。<code>select</code> 是 <code>I/O多路复用</code> 的一个实现，用来在单线程中高效的利用网络I/O。<code>ipaddress</code> 模块是Python3新增的模块，用来解析IP地址的。</p>
+<h4 id="定义一些常量"><a href="#定义一些常量" class="headerlink" title="定义一些常量"></a>定义一些常量</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">DEBUG = <span class="literal">True</span></span><br><span class="line">PASSWORD = <span class="string">b'4fb88ca224e'</span></span><br><span class="line"></span><br><span class="line">BIND_ADDRESS = <span class="string">'0.0.0.0'</span>,<span class="number">2003</span></span><br><span class="line">NETWORK = <span class="string">'10.0.0.0/24'</span></span><br><span class="line">BUFFER_SIZE = <span class="number">4096</span></span><br><span class="line">MTU = <span class="number">1400</span></span><br><span class="line"></span><br><span class="line">IPRANGE = list(map(str,ip_network(NETWORK)))[<span class="number">1</span>:]</span><br><span class="line">LOCAL_IP = IPRANGE.pop(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">TUNSETIFF = <span class="number">0x400454ca</span></span><br><span class="line">IFF_TUN   = <span class="number">0x0001</span></span><br><span class="line">IFF_TAP   = <span class="number">0x0002</span></span><br></pre></td></tr></table></figure>
+<p>在这里定义了一些常量，比如认证的密码，服务监听的地址，以及整个网络段。其中不太好理解的可能是 <code>TUNSETIFF</code>, <code>IFF_TUN</code> 和 <code>IFF_TAP</code> 这三个常量。这三个常量实际上是定义在 <code>linux/if_tun.h</code> 这个头文件中，因为用Python来实现 <code>tun</code> 隧道 所以也需要使用这三个常量。<code>TUNSETIFF</code> 这个常量是告诉 <code>ioctl</code> 要完成虚拟网卡的注册，而<code>IFF_TUN</code> 和 <code>IFF_TAP</code> 则表示是要使用 <code>tun</code> 类型还是 <code>tap</code> 类型的虚拟网卡。</p>
+<h4 id="创建和启动虚拟网卡"><a href="#创建和启动虚拟网卡" class="headerlink" title="创建和启动虚拟网卡"></a>创建和启动虚拟网卡</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">createTunnel</span><span class="params">(tunName=<span class="string">'tun%d'</span>,tunMode=IFF_TUN)</span>:</span></span><br><span class="line">    tunfd = os.open(<span class="string">"/dev/net/tun"</span>, os.O_RDWR)</span><br><span class="line">    ifn = ioctl(tunfd, TUNSETIFF, struct.pack(<span class="string">b"16sH"</span>, tunName.encode(), tunMode))</span><br><span class="line">    tunName = ifn[:<span class="number">16</span>].decode().strip(<span class="string">"\x00"</span>)</span><br><span class="line">    <span class="keyword">return</span> tunfd,tunName</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">startTunnel</span><span class="params">(tunName,peerIP)</span>:</span></span><br><span class="line">    os.popen(<span class="string">'ifconfig %s %s dstaddr %s mtu %s up'</span> % </span><br><span class="line">                (tunName, LOCAL_IP, peerIP, MTU)).read()</span><br><span class="line">    </span><br><span class="line">now = <span class="keyword">lambda</span> :time.strftime(<span class="string">'[%Y/%m/%d %H:%M:%S] '</span>)</span><br></pre></td></tr></table></figure>
+<p>先看 <code>createTunnel</code> 函数，默认是使用 <code>tun</code> 类型的虚拟网卡，<code>os.open</code> 是更底层的文件读写方式，事实上，常用的 <code>open(&#39;filename&#39;)</code> 方法就是对 <code>os.open</code> 的高级封装，<code>os.O_RDWR</code> 标志以读写模式打开 <code>tun</code> 的设备文件。然后使用 <code>ioctl</code> 来创建一个虚拟网卡，并返回创建成功后的网卡名称，默认是按照 <code>tun0</code>，<code>tun1</code> 依次增加的。</p>
+<p><code>startTunnel</code> 就是用 <code>ifconfig</code> 命令为这个虚拟网卡配置IP地址。<code>MTU</code> 之所以设置为 1400 因为Linux默认网卡的 <code>MTU</code> 是 1500，但是隧道来的数据包还要包裹一层 <code>udp</code> 封装发往对端，如果隧道的 <code>MTU</code> 也设置为 1500 的话，那最终通过 <code>udp</code> 封装后肯定会超出物理网卡的界限，最终会被拆分为两个数据包发送二照成不必要的浪费。 <code>now</code> 是一个 <code>lambda</code> 表达式，给下面的打印调试信息使用。</p>
+<h4 id="VPN的核心实现"><a href="#VPN的核心实现" class="headerlink" title="VPN的核心实现"></a>VPN的核心实现</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Server</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.sessions = []</span><br><span class="line">        self.readables = []</span><br><span class="line">        self.udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</span><br><span class="line">        self.udp.bind(BIND_ADDRESS)</span><br><span class="line">        self.readables.append(self.udp)</span><br><span class="line">        self.tunInfo = &#123;</span><br><span class="line">            <span class="string">'tunName'</span>:<span class="literal">None</span>, <span class="string">'tunfd'</span>:<span class="literal">None</span>, </span><br><span class="line">            <span class="string">'addr'</span>:<span class="literal">None</span>, <span class="string">'tunAddr'</span>:<span class="literal">None</span>, <span class="string">'lastTime'</span>:<span class="literal">None</span></span><br><span class="line">            &#125;</span><br><span class="line">        print(<span class="string">'Server listen on %s:%s...'</span> % BIND_ADDRESS)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getTunByAddr</span><span class="params">(self, addr)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.sessions:</span><br><span class="line">            <span class="keyword">if</span> i[<span class="string">'addr'</span>] == addr: <span class="keyword">return</span> i[<span class="string">'tunfd'</span>]</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getAddrByTun</span><span class="params">(self,tunfd)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.sessions:</span><br><span class="line">            <span class="keyword">if</span> i[<span class="string">'tunfd'</span>] == tunfd: <span class="keyword">return</span> i[<span class="string">'addr'</span>]</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">createSession</span><span class="params">(self, addr)</span>:</span></span><br><span class="line">        tunfd,tunName = createTunnel()</span><br><span class="line">        tunAddr = IPRANGE.pop(<span class="number">0</span>)</span><br><span class="line">        startTunnel(tunName,tunAddr)</span><br><span class="line">        self.sessions.append(</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">'tunName'</span>:tunName, <span class="string">'tunfd'</span>:tunfd, <span class="string">'addr'</span>:addr, </span><br><span class="line">                <span class="string">'tunAddr'</span>:tunAddr, <span class="string">'lastTime'</span>:time.time()</span><br><span class="line">            &#125;</span><br><span class="line">        )</span><br><span class="line">        self.readables.append(tunfd)</span><br><span class="line">        reply = <span class="string">'%s;%s'</span> % (tunAddr,LOCAL_IP)</span><br><span class="line">        self.udp.sendto(reply.encode(), addr)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">delSessionByTun</span><span class="params">(self, tunfd)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> tunfd == <span class="number">-1</span>: <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.sessions:</span><br><span class="line">            <span class="keyword">if</span> i[<span class="string">'tunfd'</span>] == tunfd:</span><br><span class="line">                self.sessions.remove(i)</span><br><span class="line">                IPRANGE.append(i[<span class="string">'tunAddr'</span>])</span><br><span class="line">        self.readables.remove(tunfd)</span><br><span class="line">        os.close(tunfd)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">updateLastTime</span><span class="params">(self, tunfd)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.sessions:</span><br><span class="line">            <span class="keyword">if</span> i[<span class="string">'tunfd'</span>] == tunfd:</span><br><span class="line">                i[<span class="string">'lastTime'</span>] = time.time()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">cleanExpireTun</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> self.sessions:</span><br><span class="line">                <span class="keyword">if</span> (time.time() - i[<span class="string">'lastTime'</span>]) &gt; <span class="number">60</span>:</span><br><span class="line">                    self.delSessionByTun(i[<span class="string">'tunfd'</span>])</span><br><span class="line">                    <span class="keyword">if</span> DEBUG: print(<span class="string">'Session: %s:%s expired!'</span> % i[<span class="string">'addr'</span>])</span><br><span class="line">            time.sleep(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">auth</span><span class="params">(self,addr,data,tunfd)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> data == <span class="string">b'\x00'</span>:</span><br><span class="line">            <span class="keyword">if</span> tunfd == <span class="number">-1</span>:</span><br><span class="line">                self.udp.sendto(<span class="string">b'r'</span>, addr)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                self.updateLastTime(tunfd)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">if</span> data == <span class="string">b'e'</span>:</span><br><span class="line">            <span class="keyword">if</span> self.delSessionByTun(tunfd):</span><br><span class="line">                <span class="keyword">if</span> DEBUG: print(<span class="string">"Client %s:%s is disconnect"</span> % addr)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">if</span> data == PASSWORD:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">if</span> DEBUG: print(<span class="string">'Clinet %s:%s connect failed'</span> % addr)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run_forever</span><span class="params">(self)</span>:</span></span><br><span class="line">        cleanThread = Thread(target=self.cleanExpireTun)</span><br><span class="line">        cleanThread.setDaemon(<span class="literal">True</span>)</span><br><span class="line">        cleanThread.start()</span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            readab = select(self.readables, [], [], <span class="number">1</span>)[<span class="number">0</span>]</span><br><span class="line">            <span class="keyword">for</span> r <span class="keyword">in</span> readab:</span><br><span class="line">                <span class="keyword">if</span> r == self.udp:</span><br><span class="line">                    data, addr = self.udp.recvfrom(BUFFER_SIZE)</span><br><span class="line">                    <span class="keyword">if</span> DEBUG: print(now()+<span class="string">'from    (%s:%s)'</span> % addr, data[:<span class="number">10</span>])</span><br><span class="line">                    <span class="keyword">try</span>:</span><br><span class="line">                        tunfd = self.getTunByAddr(addr)</span><br><span class="line">                        <span class="keyword">try</span>:</span><br><span class="line">                            os.write(tunfd,data)</span><br><span class="line">                        <span class="keyword">except</span> OSError:</span><br><span class="line">                            <span class="keyword">if</span> <span class="keyword">not</span> self.auth(addr,data,tunfd):<span class="keyword">continue</span></span><br><span class="line">                            self.createSession(addr)</span><br><span class="line">                            <span class="keyword">if</span> DEBUG: print(<span class="string">'Clinet %s:%s connect successful'</span> % addr)</span><br><span class="line">                    <span class="keyword">except</span> OSError: <span class="keyword">continue</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="keyword">try</span>:</span><br><span class="line">                        addr = self.getAddrByTun(r)</span><br><span class="line">                        data = os.read(r, BUFFER_SIZE)</span><br><span class="line">                        self.udp.sendto(data,addr)</span><br><span class="line">                        <span class="keyword">if</span> DEBUG: print(now()+<span class="string">'to      (%s:%s)'</span> % addr, data[:<span class="number">10</span>])</span><br><span class="line">                    <span class="keyword">except</span> Exception:</span><br><span class="line">                        <span class="keyword">continue</span></span><br></pre></td></tr></table></figure>
+<p>一步一步的来看，首先定义了一个 <code>Server</code> 的类。在初始化方法 <code>__init__</code> 中，<code>self.sessions = []</code> 用来保存连接的用户会话，<code>self.readables = []</code> 用来保存为每个会话创建的隧道的文件描述符，接着创建了一个 <code>udp</code> 的网络套接字，并将这个套接字加入到 <code>self.readables</code> 中。<code>self.tunInfo</code> 定义了每个会话保存的隧道信息。</p>
+<p>接下来的 <code>getTunByAddr</code> 是通过接受到的 <code>udp</code> 数据包的来源信息找到需要注入到哪条隧道中，<code>getAddrByTun</code> 正好相反，根据从隧道来的数据找到是要通过 <code>udp</code> 发往哪个主机。</p>
+<p><code>createSession</code> 则是客户端连接成功后为它创建一个会话和相应的虚拟网卡，并且将客户端的网卡配置信息通过 <code>udp</code> 发送过去。 <code>delSessionByTun</code> 是用来清理用户会话和虚拟网卡。</p>
+<p><code>updateLastTime</code> 用来在客户端发送来心跳包后更新用户最后一次发送心跳包的时间戳，<code>cleanExpireTun</code> 用来清理已经超过一分钟没有发来心跳包的客户端，认为这个客户端已经失去了连接，但是可能因为网络故障等原因没有正常关闭隧道。</p>
+<p><code>auth</code> 则是对客户端发来的数据进行处理，如何客户端发来 <code>b&#39;\x00&#39;</code> 则表明这是一个心跳包，但是如果并不存在这个心跳包源主机的会话，可能因为网络原因服务端清理了这个客户端的会话，就发送 <code>b&#39;r&#39;</code> 告诉客户端重新认证。否则就更新这个会话的最后心跳包的时间戳。客户端在退出的时候会发送 <code>b&#39;e&#39;</code> 到服务端，然后服务端会主动清理这个客户端的会话。最后会匹配数据包是否是认证密码，如果认证成功了就返回 <code>True</code> 程序会继续处理。</p>
+<p><code>run_forever</code> 是整个服务运转的核心了，首先使用一个新线程启动会话清理方法，然后进入事件循环，使用 <code>select</code> 监听 <code>udp</code> 网络套接字和隧道套接字的可读事件，一旦某个套接字有数据过来了 <code>select</code> 则会返回这个套接字对象，然后判断这个套接字是网络套接字还是隧道套接字，如果是网络套接字则首先尝试将数据写入到客户端所在的隧道中，如果数据内容不是一个正确的网络数据包格式或者没有找到这个客户端地址相关联的隧道，就进入异常处理模式，因为新客户端的连接和心跳包导致进入异常处理的频率是比较小的 所以并不会对整体性能照成很大的影响，如果在一开始就进行数据内容判断的话 就非常影响程序的性能了，因为毕竟接收到的大多都是合法的能写入到隧道的数据包。</p>
+<p>接着如果可读对象是一个隧道文件描述符的话，就找到客户端的网络地址，通过 <code>udp</code> 将读取到的数据包发送给客户端，并且如果出现了任何异常的话 就跳过。</p>
+<h4 id="程序执行入口"><a href="#程序执行入口" class="headerlink" title="程序执行入口"></a>程序执行入口</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        Server().run_forever()</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        print(<span class="string">'Closing vpn server ...'</span>)</span><br></pre></td></tr></table></figure>
+<p>创建一个匿名对象并且启动 <code>run_forever</code> 方法。</p>
+<h3 id="客户端程序"><a href="#客户端程序" class="headerlink" title="客户端程序"></a>客户端程序</h3><blockquote>
+<p>客户端就比较简单了，只需要将网络来的数据写入隧道，隧道来的数据通过网络发送出去</p>
+</blockquote>
+<h4 id="导入需要的模块-1"><a href="#导入需要的模块-1" class="headerlink" title="导入需要的模块"></a>导入需要的模块</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> unicode_literals</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">from</span> fcntl <span class="keyword">import</span> ioctl</span><br><span class="line"><span class="keyword">from</span> select <span class="keyword">import</span> select</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br></pre></td></tr></table></figure>
+<p>因为需要尽可能的支持更多的Python版本，所以需要使用一些兼容性相关的小技巧。</p>
+<h4 id="定义一些常量-1"><a href="#定义一些常量-1" class="headerlink" title="定义一些常量"></a>定义一些常量</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PASSWORD = <span class="string">b'4fb88ca224e'</span></span><br><span class="line"></span><br><span class="line">MTU = <span class="number">1400</span></span><br><span class="line">BUFFER_SIZE = <span class="number">4096</span></span><br><span class="line">KEEPALIVE = <span class="number">10</span></span><br><span class="line"></span><br><span class="line">TUNSETIFF = <span class="number">0x400454ca</span></span><br><span class="line">IFF_TUN   = <span class="number">0x0001</span></span><br><span class="line">IFF_TAP   = <span class="number">0x0002</span></span><br></pre></td></tr></table></figure>
+<p>同服务端，客户端也需要配置隧道，客户端多了一个 <code>KEEPALIVE</code> 的常量，用来定义多久向服务端发送心跳包。</p>
+<h4 id="创建和启动虚拟网卡-1"><a href="#创建和启动虚拟网卡-1" class="headerlink" title="创建和启动虚拟网卡"></a>创建和启动虚拟网卡</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">createTunnel</span><span class="params">(tunName=<span class="string">'tun%d'</span>,tunMode=IFF_TUN)</span>:</span></span><br><span class="line">    tunfd = os.open(<span class="string">"/dev/net/tun"</span>, os.O_RDWR)</span><br><span class="line">    ifn = ioctl(tunfd, TUNSETIFF, struct.pack(<span class="string">b"16sH"</span>, tunName.encode(), tunMode))</span><br><span class="line">    tunName = ifn[:<span class="number">16</span>].decode().strip(<span class="string">"\x00"</span>)</span><br><span class="line">    <span class="keyword">return</span> tunfd,tunName</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">startTunnel</span><span class="params">(tunName, localIP, peerIP)</span>:</span></span><br><span class="line">    os.popen(<span class="string">'ifconfig %s %s dstaddr %s mtu %s up'</span> % </span><br><span class="line">            (tunName, localIP, peerIP, MTU)).read()</span><br></pre></td></tr></table></figure>
+<p><code>startTunnel</code> 有个不同的地方是还需要知道对端（服务端）的隧道IP。</p>
+<h4 id="VPN的核心实现-1"><a href="#VPN的核心实现-1" class="headerlink" title="VPN的核心实现"></a>VPN的核心实现</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Client</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</span><br><span class="line">        self.udp.settimeout(<span class="number">5</span>)</span><br><span class="line">        self.to = SERVER_ADDRESS</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">keepalive</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">_keepalive</span><span class="params">(udp, to)</span>:</span></span><br><span class="line">            <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">                time.sleep(KEEPALIVE)</span><br><span class="line">                udp.sendto(<span class="string">b'\x00'</span>, to)</span><br><span class="line">        k = Thread(target=_keepalive, args=(self.udp, self.to), name=<span class="string">'keepalive'</span>)</span><br><span class="line">        k.setDaemon(<span class="literal">True</span>)</span><br><span class="line">        k.start()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">login</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.udp.sendto(PASSWORD,self.to)</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            data,addr = self.udp.recvfrom(BUFFER_SIZE)</span><br><span class="line">            tunfd,tunName = createTunnel()</span><br><span class="line">            localIP,peerIP = data.decode().split(<span class="string">';'</span>)</span><br><span class="line">            print(<span class="string">'Local ip: %s\tPeer ip: %s'</span> % (localIP,peerIP))</span><br><span class="line">            startTunnel(tunName,localIP,peerIP)</span><br><span class="line">            <span class="keyword">return</span> tunfd</span><br><span class="line">        <span class="keyword">except</span> socket.timeout:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run_forever</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'Start connect to server...'</span>)</span><br><span class="line">        tunfd = self.login()</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> tunfd:</span><br><span class="line">            print(<span class="string">"Connect failed!"</span>)</span><br><span class="line">            sys.exit(<span class="number">0</span>)</span><br><span class="line">        print(<span class="string">'Connect to server successful'</span>)</span><br><span class="line">        self.keepalive()</span><br><span class="line">        readables = [self.udp, tunfd]</span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                readab = select(readables, [], [], <span class="number">10</span>)[<span class="number">0</span>]</span><br><span class="line">            <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">                self.udp.sendto(<span class="string">b'e'</span>, self.to)</span><br><span class="line">                <span class="keyword">raise</span> KeyboardInterrupt</span><br><span class="line">            <span class="keyword">for</span> r <span class="keyword">in</span> readab:</span><br><span class="line">                <span class="keyword">if</span> r == self.udp:</span><br><span class="line">                    data, addr = self.udp.recvfrom(BUFFER_SIZE)</span><br><span class="line">                    <span class="keyword">try</span>:</span><br><span class="line">                        os.write(tunfd, data)</span><br><span class="line">                    <span class="keyword">except</span> OSError:</span><br><span class="line">                        <span class="keyword">if</span> data == <span class="string">b'r'</span>:</span><br><span class="line">                            os.close(tunfd)</span><br><span class="line">                            readables.remove(tunfd)</span><br><span class="line">                            print(<span class="string">'Reconnecting...'</span>)</span><br><span class="line">                            tunfd = self.login()</span><br><span class="line">                            readables.append(tunfd)</span><br><span class="line">                        <span class="keyword">continue</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    data = os.read(tunfd, BUFFER_SIZE)</span><br><span class="line">                    self.udp.sendto(data, self.to)</span><br></pre></td></tr></table></figure>
+<p>和服务端的比较类似，不同的是客户端需要处理的是登陆、从服务端接收到隧道配置信息然后创建和启动隧道和处理服务端发来的 <code>b&#39;r&#39;</code> 重连命令。还会启动一个定期发送心跳包的线程，这个主要是因为在传统的 NAT 模型中，UDP会话可能在短短的几分钟甚至几十秒钟就会被网关设备清理掉，导致VPN隧道断开。而不断地发送心跳包则可以保持网关设备上客户端和服务端的UDP会话。</p>
+<h4 id="程序执行入口-1"><a href="#程序执行入口-1" class="headerlink" title="程序执行入口"></a>程序执行入口</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        SERVER_ADDRESS = (sys.argv[<span class="number">1</span>], int(sys.argv[<span class="number">2</span>]))</span><br><span class="line">        Client().run_forever()</span><br><span class="line">    <span class="keyword">except</span> IndexError:</span><br><span class="line">        print(<span class="string">'Usage: %s [remote_ip] [remote_port]'</span> % sys.argv[<span class="number">0</span>])</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        print(<span class="string">'Closing vpn client ...'</span>)</span><br></pre></td></tr></table></figure>
+<p>这里通过命令行获取客户端要连接的服务端IP和端口，如果参数出错并给出相应的提示信息。</p>
+<h3 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h3><p>在服务端使用Python3运行服务端程序：</p>
+<pre><code>root@ubuntu:~# python3 vpnserver.py 
+Server listen on 0.0.0.0:2003...
+</code></pre><p>服务正常监听，然后客户端启动客户端程序：</p>
+<pre><code>[root@localhost ~]# python vpnclient.py 192.168.4.233 2003
+Start connect to server...
+Local ip: 10.0.0.2    Peer ip: 10.0.0.1
+Connect to server successful
+
+[root@localhost ~]# ifconfig tun0
+tun0      Link encap:UNSPEC  HWaddr 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00  
+        inet addr:10.0.0.2  P-t-P:10.0.0.1  Mask:255.255.255.255
+        UP POINTOPOINT RUNNING NOARP MULTICAST  MTU:1400  Metric:1
+        RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+        TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+        collisions:0 txqueuelen:500 
+        RX bytes:0 (0.0 b)  TX bytes:0 (0.0 b)
+</code></pre><p>客户端连接成功后打印出连接信息，并且可以看到多出来一块 <code>tun0</code> 的虚拟网卡。</p>
+<pre><code>root@ubuntu:~# python3 vpnserver.py 
+Server listen on 0.0.0.0:2003...
+[2018/05/26 13:47:13] from    (192.168.4.6:58502) b&apos;4fb88ca224&apos;
+Clinet 192.168.4.6:58502 connect successful
+[2018/05/26 13:47:23] from    (192.168.4.6:58502) b&apos;\x00&apos;
+[2018/05/26 13:47:33] from    (192.168.4.6:58502) b&apos;\x00&apos;
+[2018/05/26 13:47:43] from    (192.168.4.6:58502) b&apos;\x00&apos;
+[2018/05/26 13:47:53] from    (192.168.4.6:58502) b&apos;\x00&apos;
+[2018/05/26 13:48:03] from    (192.168.4.6:58502) b&apos;\x00&apos;
+[2018/05/26 13:48:13] from    (192.168.4.6:58502) b&apos;\x00&apos;
+[2018/05/26 13:48:23] from    (192.168.4.6:58502) b&apos;\x00&apos;
+[2018/05/26 13:48:33] from    (192.168.4.6:58502) b&apos;\x00&apos;
+[2018/05/26 13:48:43] from    (192.168.4.6:58502) b&apos;\x00&apos;
+
+root@ubuntu:~# ifconfig tun0
+tun0      Link encap:UNSPEC  HWaddr 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00  
+        inet addr:10.0.0.1  P-t-P:10.0.0.2  Mask:255.255.255.255
+        UP POINTOPOINT RUNNING NOARP MULTICAST  MTU:1400  Metric:1
+        RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+        TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+        collisions:0 txqueuelen:500 
+        RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+</code></pre><p>可以看到服务端也打印出客户端连接成功的消息，以及打印出每次从客户端发来的数据包信息。同样也有一条到客户端的虚拟网卡。接着尝试服务端是否可以直接PING通客户端了。</p>
+<pre><code>root@ubuntu:~# ping 10.0.0.2 -c 2 
+PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.
+64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=0.814 ms
+64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=0.569 ms
+
+--- 10.0.0.2 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 999ms
+rtt min/avg/max/mdev = 0.569/0.691/0.814/0.125 ms
+
+[2018/05/26 13:51:40] to      (192.168.4.6:58502) b&apos;\x00\x00\x08\x00E\x00\x00T\x19\xdd&apos;
+[2018/05/26 13:51:40] from    (192.168.4.6:58502) b&apos;\x00\x00\x08\x00E\x00\x00T\x99V&apos;
+[2018/05/26 13:51:41] to      (192.168.4.6:58502) b&apos;\x00\x00\x08\x00E\x00\x00T\x19\xe4&apos;
+[2018/05/26 13:51:41] from    (192.168.4.6:58502) b&apos;\x00\x00\x08\x00E\x00\x00T\x99W&apos;
+</code></pre><p>可以看到隧道是正常的，并且服务端打印出了去的两个ICMP包和回来的两个ICMP包，接着关闭客户端程序。</p>
+<pre><code>[2018/05/26 13:54:45] from    (192.168.4.6:58502) b&apos;e&apos;
+Client 192.168.4.6:58502 is disconnect
+</code></pre><p>服务端接收到了 <code>b&#39;e&#39;</code> 后打印客户端断开连接的消息，接着发现 <code>tun0</code> 这块虚拟网卡也消失了。</p>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><p>服务端程序就完成了，但是还是存在非常多的问题，比如用户认证的安全性，<code>select</code> 的性能和支持的最大客户端数量可以使用更好的 <code>epoll</code> 方式，但是 <code>select</code> 的平台兼容性比较强，如果考虑把程序移植到 Windows 的话可以继续使用（不考虑移植到Windows，但是Windows的tap驱动软件是否提供了这种可能？）。客户端断开后重连IP就会改变，如果能给客户端固定IP就好了，以及没法监控每个客户端的流量和控制客户端的速率。服务端应该采用配置文件的方式来更改运行的参数，并且应该能够使用守护进程的方式运行并处理 <code>kill</code> 命令发送的信号，这样这个程序就比较完善了。</p>
+<p>注意：程序中多次出现的 <code>b&#39;e&#39;</code>, <code>b&#39;r&#39;</code> 这样的字符，这只是表示Python中 <code>Byte</code> 类型的数据。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"><i class="fa fa-tag"></i> python</a>
+          
+            <a href="/tags/vpn/" rel="tag"><i class="fa fa-tag"></i> vpn</a>
+          
+            <a href="/tags/udp/" rel="tag"><i class="fa fa-tag"></i> udp</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/11/2018/愉快的用Vim写代码/" rel="next" title="愉快的用 Vim 写代码">
+                <i class="fa fa-chevron-left"></i> 愉快的用 Vim 写代码
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/03/2018/一步步搭建PXE网络装机/" rel="prev" title="一步步搭建PXE网络装机">
+                一步步搭建PXE网络装机 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="魏云飞">
+            
+              <p class="site-author-name" itemprop="name">魏云飞</p>
+              <p class="site-description motion-element" itemprop="description">帅的人已经醒来 而丑的人还在沉睡</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">61</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/yunfwe" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编程"><span class="nav-number">3.</span> <span class="nav-text">编程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#服务端程序"><span class="nav-number">3.1.</span> <span class="nav-text">服务端程序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#导入需要的模块"><span class="nav-number">3.1.1.</span> <span class="nav-text">导入需要的模块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#定义一些常量"><span class="nav-number">3.1.2.</span> <span class="nav-text">定义一些常量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建和启动虚拟网卡"><span class="nav-number">3.1.3.</span> <span class="nav-text">创建和启动虚拟网卡</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VPN的核心实现"><span class="nav-number">3.1.4.</span> <span class="nav-text">VPN的核心实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#程序执行入口"><span class="nav-number">3.1.5.</span> <span class="nav-text">程序执行入口</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#客户端程序"><span class="nav-number">3.2.</span> <span class="nav-text">客户端程序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#导入需要的模块-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">导入需要的模块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#定义一些常量-1"><span class="nav-number">3.2.2.</span> <span class="nav-text">定义一些常量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建和启动虚拟网卡-1"><span class="nav-number">3.2.3.</span> <span class="nav-text">创建和启动虚拟网卡</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VPN的核心实现-1"><span class="nav-number">3.2.4.</span> <span class="nav-text">VPN的核心实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#程序执行入口-1"><span class="nav-number">3.2.5.</span> <span class="nav-text">程序执行入口</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行结果"><span class="nav-number">3.3.</span> <span class="nav-text">运行结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">4.</span> <span class="nav-text">附录</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">魏云飞</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">713k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+    <span title="站点总阅读时长">11:53</span>
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.0.4</div>
+<div class="BbeiAn-info"">
+  渝ICP备 -
+  <a href="http://www.beian.miit.gov.cn/">18019763号</a>
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.json";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<script>
+var OriginTitile = document.title;
+ var titleTime;
+ document.addEventListener('visibilitychange', function () {
+     if (document.hidden) {
+         $('[rel="icon"]').attr('href', "/img/TEP.ico");
+         document.title = '╭(°A°`)╮ 页面崩溃啦 ~ ';
+         clearTimeout(titleTime);
+     }
+     else {
+         $('[rel="icon"]').attr('href', "/favicon.ico");
+         document.title = '(ฅ>ω<*ฅ) 噫又好了~' + OriginTitile;
+         titleTime = setTimeout(function () {
+             document.title = OriginTitile;
+         }, 2000);
+     }
+ });
+</script>
+</html>

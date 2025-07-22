@@ -1,0 +1,2062 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="linux,lxc,">
+
+
+<meta name="description" content="简介 LXC 是 Linux Container 的简写。Linux Container 是一种内核虚拟化技术，可以提供轻量级的虚拟化以便隔离进程和资源。大名鼎鼎的 Docker 在早期版本使用的底层容器引擎便是 LXC，不过 Docker 的目标是创建应用级容器，而 LXC 的目标是创建系统级容器，所以使用 LXC 更容易获得接近虚拟机的体验。">
+<meta name="keywords" content="linux,lxc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LXC Linux系统容器">
+<meta property="og:url" content="http://www.yunfwe.cn/2019/09/23/2019/LXC Linux系统容器/index.html">
+<meta property="og:site_name" content="某科学的最后之作">
+<meta property="og:description" content="简介 LXC 是 Linux Container 的简写。Linux Container 是一种内核虚拟化技术，可以提供轻量级的虚拟化以便隔离进程和资源。大名鼎鼎的 Docker 在早期版本使用的底层容器引擎便是 LXC，不过 Docker 的目标是创建应用级容器，而 LXC 的目标是创建系统级容器，所以使用 LXC 更容易获得接近虚拟机的体验。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.yunfwe.cn/uploads/photos/e658bd9c296d0e.jpg">
+<meta property="og:updated_time" content="2019-09-26T08:41:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LXC Linux系统容器">
+<meta name="twitter:description" content="简介 LXC 是 Linux Container 的简写。Linux Container 是一种内核虚拟化技术，可以提供轻量级的虚拟化以便隔离进程和资源。大名鼎鼎的 Docker 在早期版本使用的底层容器引擎便是 LXC，不过 Docker 的目标是创建应用级容器，而 LXC 的目标是创建系统级容器，所以使用 LXC 更容易获得接近虚拟机的体验。">
+<meta name="twitter:image" content="http://www.yunfwe.cn/uploads/photos/e658bd9c296d0e.jpg">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="某科学的最后之作" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://www.yunfwe.cn/2019/09/23/2019/LXC Linux系统容器/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>LXC Linux系统容器 | 某科学的最后之作</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">某科学的最后之作</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">帅的人已经醒来 而丑的人还在沉睡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.yunfwe.cn/2019/09/23/2019/LXC Linux系统容器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="魏云飞">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="某科学的最后之作">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">LXC Linux系统容器</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-23T10:12:00+08:00">2019-09-23</time>
+            
+
+            
+            
+              
+                
+              
+            
+
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2019-09-26T16:41:00+08:00">2019-09-26</time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">28k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">0:28</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="/uploads/photos/e658bd9c296d0e.jpg" rel="gallery_cmde8g1xs006jpijxf1v31nco" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="/uploads/photos/e658bd9c296d0e.jpg" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
+<p>LXC 是 Linux Container 的简写。Linux Container 是一种内核虚拟化技术，可以提供轻量级的虚拟化以便隔离进程和资源。大名鼎鼎的 Docker 在早期版本使用的底层容器引擎便是 LXC，不过 Docker 的目标是创建应用级容器，而 LXC 的目标是创建系统级容器，所以使用 LXC 更容易获得接近虚拟机的体验。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>LXC 也是利用了 Linux 内核的 cgroup 和 namespace 特性来实现容器的资源隔离，因此也对 Linux 的内核版本有较高的要求。这里使用 <code>Ubuntu 18.04 Server</code> 作为容器的宿主机，内核版本为 <code>4.15.0-58-generic</code></p>
+<h2 id="教程"><a href="#教程" class="headerlink" title="教程"></a>教程</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><h4 id="安装命令行工具"><a href="#安装命令行工具" class="headerlink" title="安装命令行工具"></a>安装命令行工具</h4><p>安装非常简单，在 Ubuntu 上使用 <code>apt-get install lxc</code> 即可。<code>lxc</code> 包里包含了所有的命令，之后就可以看到系统多了很多 <code>lxc-</code> 开头的命令。</p>
+<pre><code>root@localhost:~# lxc-
+lxc-attach         lxc-checkpoint     lxc-create         lxc-freeze         lxc-snapshot       lxc-unfreeze       lxc-wait
+lxc-autostart      lxc-config         lxc-destroy        lxc-info           lxc-start          lxc-unshare        
+lxc-cgroup         lxc-console        lxc-device         lxc-ls             lxc-stop           lxc-update-config  
+lxc-checkconfig    lxc-copy           lxc-execute        lxc-monitor        lxc-top            lxc-usernsexec
+</code></pre><p>LXC 安装成功后会自动创建一个叫 lxcbr0 的网桥，如下：</p>
+<pre><code>lxcbr0: flags=4099&lt;UP,BROADCAST,MULTICAST&gt;  mtu 1500
+        inet 10.0.2.1  netmask 255.255.255.0  broadcast 0.0.0.0
+        ether 00:16:3e:00:00:00  txqueuelen 1000  (Ethernet)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+</code></pre><p>之后运行的容器的虚拟网卡都会接入到这个网桥了。LXC 还为这个网桥配置了一个 DHCP 服务，配置文件在 <code>/etc/dnsmasq.d/lxc</code>。这样容器支持 DHCP 的话就可以直接获取到可用的 IP 地址了。</p>
+<h3 id="快速开始"><a href="#快速开始" class="headerlink" title="快速开始"></a>快速开始</h3><h4 id="创建容器"><a href="#创建容器" class="headerlink" title="创建容器"></a>创建容器</h4><p><code>lxc</code> 安装后 在 <code>/usr/share/lxc/templates</code> 为我们提供了几个容器安装的模板： </p>
+<ul>
+<li><code>lxc-download</code>：通过网络获取容器镜像来创建容器。</li>
+<li><code>lxc-local</code>：通过本地已有的镜像来创建容器。</li>
+<li><code>lxc-busybox</code>：使用 busybox 来创建最基本的容器。</li>
+<li><code>lxc-oci</code>：通过 oci 标准的镜像来创建容器。</li>
+</ul>
+<p>创建容器通过使用 <code>lxc-create</code> 命令来完成，此命令会调用指定的模板来完成容器的创建，我们先通过 <code>lxc-busybox</code> 这个模板创建一个最简单的容器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lxc-create -t busybox -n busybox</span><br></pre></td></tr></table></figure>
+<p><code>lxc-create</code> 命令通过 <code>-t</code> 参数指定要使用的模板，<code>-n</code> 参数指定创建的容器的名称。之后使用 <code>lxc-ls</code> 可以看到所有已经创建的容器，所有的容器默认都保存在 <code>/var/lib/lxc</code> 中。</p>
+<pre><code>root@localhost:~# ls /var/lib/lxc/
+busybox
+root@localhost:~# ls /var/lib/lxc/busybox/
+config  rootfs
+root@localhost:~# ls /var/lib/lxc/busybox/rootfs/
+bin      dev  home  lib64  null  ram0  sbin     sys  tty   tty1  urandom  var
+console  etc  lib   mnt    proc  root  selinux  tmp  tty0  tty5  usr      zero
+root@localhost:~#
+</code></pre><p>每个容器对应 <code>/var/lib/lxc</code> 下的每个目录，目录内存放着这个容器的配置文件和根文件系统。<code>lxc-create</code> 还可以指定使用 <code>lvm</code>、<code>Ceph RBD</code>、<code>zfs</code>、<code>loop</code> 文件系统来作为容器的根目录，默认使用的是 <code>dir</code> 的方式与宿主机共享文件系统。目录的方式胜在简单，但是却无法支持其他文件系统带来的高级特性，比如磁盘配额、快照等。</p>
+<h4 id="启动容器"><a href="#启动容器" class="headerlink" title="启动容器"></a>启动容器</h4><p>使用 <code>lxc-info</code> 命令可以查看指定容器的状态，使用 <code>lxc-start</code> 来启动容器：</p>
+<pre><code>root@localhost:~# lxc-info busybox
+Name:           busybox
+State:          STOPPED
+root@localhost:~# lxc-start busybox
+root@localhost:~# lxc-info busybox
+Name:           busybox
+State:          RUNNING
+PID:            5288
+CPU use:        0.01 seconds
+BlkIO use:      0 bytes
+Memory use:     1.77 MiB
+KMem use:       1.40 MiB
+Link:           veth7F3KFW
+TX bytes:      1.51 KiB
+RX bytes:      1.87 KiB
+Total bytes:   3.37 KiB
+root@localhost:~#
+</code></pre><p>容器启动后的第一个进程的 ID 是 5288，查看此进程的父进程可以看到是一个内核进程：</p>
+<pre><code>root@localhost:~# cat /proc/5288/status |grep PPid
+PPid:    5281
+root@localhost:~# ps 5281
+PID TTY      STAT   TIME COMMAND
+5281 ?        Ss     0:00 [lxc monitor] /var/lib/lxc busybox
+root@localhost:~# 
+</code></pre><h4 id="连接到容器"><a href="#连接到容器" class="headerlink" title="连接到容器"></a>连接到容器</h4><p>容器启动后，我们可以通过 <code>lxc-attach</code> 命令来运行容器内的命令，默认会运行容器内的 shell 来供我们操作容器。</p>
+<pre><code>root@localhost:~# lxc-attach busybox 
+
+BusyBox v1.27.2 (Ubuntu 1:1.27.2-2ubuntu3.2) built-in shell (ash)
+Enter &apos;help&apos; for a list of built-in commands.
+
+~ # ifconfig
+eth0      Link encap:Ethernet  HWaddr 00:16:3E:88:E3:4A  
+        inet6 addr: fe80::216:3eff:fe88:e34a/64 Scope:Link
+        UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+        RX packets:25 errors:0 dropped:0 overruns:0 frame:0
+        TX packets:15 errors:0 dropped:0 overruns:0 carrier:0
+        collisions:0 txqueuelen:1000 
+        RX bytes:2526 (2.4 KiB)  TX bytes:1962 (1.9 KiB)
+
+lo        Link encap:Local Loopback  
+        inet addr:127.0.0.1  Mask:255.0.0.0
+        inet6 addr: ::1/128 Scope:Host
+        UP LOOPBACK RUNNING  MTU:65536  Metric:1
+        RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+        TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+        collisions:0 txqueuelen:1000 
+        RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+~ # 
+</code></pre><p>进入容器后就可以执行容器内的所有命令了，可以看到，容器默认分配了一个 <code>eth0</code> 的网卡，但是并没有获取到 IP 地址。LXC 容器会尽量让一个容器就像是一个虚拟机一样，因此在容器内可以自主的配置 IP，甚至使用 reboot 命令重启容器都可以。接下来给容器分配一个 IP 地址，然后看看是否可以与主机互访。</p>
+<p>容器内操作：</p>
+<pre><code>~ # ifconfig eth0 10.0.2.100
+~ # ip ro add default via 10.0.2.1
+~ # ping 180.76.76.76
+PING 180.76.76.76 (180.76.76.76): 56 data bytes
+64 bytes from 180.76.76.76: seq=0 ttl=127 time=4.649 ms
+64 bytes from 180.76.76.76: seq=1 ttl=127 time=7.460 ms
+64 bytes from 180.76.76.76: seq=2 ttl=127 time=4.998 ms
+64 bytes from 180.76.76.76: seq=3 ttl=127 time=4.852 ms
+
+--- 180.76.76.76 ping statistics ---
+4 packets transmitted, 4 packets received, 0% packet loss
+round-trip min/avg/max = 4.649/5.489/7.460 ms
+~ # 
+</code></pre><p>需要注意的是，给容器分配的 IP 地址要和宿主机的 <code>lxcbr0</code> 网桥的地址在同一网段，并且容器内将默认网关设置为宿主机网桥的 IP 即可实现容器内联网。接着执行 <code>telnetd</code> 命令允许在外部通过 <code>telnet</code> 程序远程连接到此容器。</p>
+<p>宿主机已经可以 <code>ping</code> 通容器：</p>
+<pre><code>root@localhost:~# ping -c 4 10.0.2.100
+PING 10.0.2.100 (10.0.2.100) 56(84) bytes of data.
+64 bytes from 10.0.2.100: icmp_seq=1 ttl=64 time=0.046 ms
+64 bytes from 10.0.2.100: icmp_seq=2 ttl=64 time=0.058 ms
+64 bytes from 10.0.2.100: icmp_seq=3 ttl=64 time=0.047 ms
+64 bytes from 10.0.2.100: icmp_seq=4 ttl=64 time=0.045 ms
+
+--- 10.0.2.100 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3070ms
+rtt min/avg/max/mdev = 0.045/0.049/0.058/0.005 ms
+root@localhost:~#
+</code></pre><p>除了使用 <code>lxc-attach</code> 还可以使用 <code>lxc-console</code> 来登陆容器，此命令会连接到容器内 Linux 的控制台，所以必须提供必要的用户名和密码才可以登陆进容器内部。</p>
+<p>更改容器内密码：</p>
+<pre><code>~ # passwd
+passwd: no record of root in /etc/shadow, using /etc/passwd
+Changing password for root
+New password: 
+Bad password: too weak
+Retype password: 
+passwd: password for root changed by root
+~ # 
+</code></pre><p>宿主机使用 <code>lxc-console</code> 来登陆容器：</p>
+<pre><code>root@localhost:~# lxc-console busybox
+
+Connected to tty 1
+Type &lt;Ctrl+a q&gt; to exit the console, &lt;Ctrl+a Ctrl+a&gt; to enter Ctrl+a itself
+
+busybox login: root
+Password: 
+
+BusyBox v1.27.2 (Ubuntu 1:1.27.2-2ubuntu3.2) built-in shell (ash)
+Enter &apos;help&apos; for a list of built-in commands.
+
+~ # 
+</code></pre><p>可以看到，成功输入用户名和密码后也进入了容器。</p>
+<h4 id="停止并删除容器"><a href="#停止并删除容器" class="headerlink" title="停止并删除容器"></a>停止并删除容器</h4><p>使用 <code>lxc-stop</code> 来停止容器，使用 <code>lxc-destroy</code> 来彻底删除容器。</p>
+<pre><code>root@localhost:~# lxc-stop busybox
+root@localhost:~# lxc-destroy busybox
+lxc-destroy: busybox: tools/lxc_destroy.c: main: 271 Destroyed container busybox
+root@localhost:~#
+</code></pre><p>需要注意的是，如果想直接删除一个正在运行的容器，可以使用 <code>lxc-destroy -f</code> 来强制删除。</p>
+<h3 id="容器管理"><a href="#容器管理" class="headerlink" title="容器管理"></a>容器管理</h3><blockquote>
+<p>在快速开始一章中，已经体验了 LXC 的基本用法，下面的章节将会讲解如何对容器进行更高级的管理，让容器运行的更像是虚拟机一样。</p>
+</blockquote>
+<h4 id="创建容器-1"><a href="#创建容器-1" class="headerlink" title="创建容器"></a>创建容器</h4><p>容器的创建分两种，一种是由 root 用户创建的特权容器，一种是由普通用户创建的非特权容器。非特权容器有一些限制，比如无法创建设备节点等。而在特权模式下，让 Docker 运行在 LXC 中，甚至 LXC 嵌套 LXC 运行都成了可能。下面所有的例子创建的都是特权容器。</p>
+<h5 id="获取镜像模板"><a href="#获取镜像模板" class="headerlink" title="获取镜像模板"></a>获取镜像模板</h5><p>busybox 只提供了一个极小的更适合用于嵌入式 Linux 的基本文件系统，下面就看看如何使用 LXC 运行 CentOS、Ubuntu 等完整的 Linux 发行版吧！</p>
+<p>例如，想要运行一个基于 CentOS 发行版的容器，首先需要下载 CentOS 的容器镜像模板，之后需要运行容器时，会自动从下载好的模板解压出容器的根文件系统到指定的 <code>lvm</code>、<code>zfs</code>、<code>loop</code> 或者 <code>dir</code> 等存储设备，并启动容器。</p>
+<p>LXC 提供了 <code>lxc-download</code> 模板来通过网络获取容器镜像：</p>
+<pre><code>root@localhost:~# lxc-create -t download -n ubuntu-1604
+Setting up the GPG keyring
+Downloading the image index
+---
+DIST    RELEASE    ARCH    VARIANT    BUILD
+---
+alpine    3.10    amd64    default    20190923_13:00
+alpine    3.10    arm64    default    20190923_13:00
+.
+.
+.
+---
+
+Distribution: 
+ubuntu
+Release: 
+xenial
+Architecture: 
+amd64
+
+Downloading the image index
+Downloading the rootfs
+Downloading the metadata
+The image cache is now ready
+Unpacking the rootfs
+
+---
+You just created an Ubuntu xenial amd64 (20190923_07:42) container.
+
+To enable SSH, run: apt install openssh-server
+No default root or user password are set by LXC.
+</code></pre><p>命令执行后会列出所有镜像的索引，接着会让你输入要下载的发行版、版本号、架构信息。经过片刻等待，Ubuntu 16.04 的容器就创建成功了。所有下载的镜像都缓存在 <code>/var/cache/lxc/download</code> 中，下一次创建此镜像模板的容器时就不会再次通过网络下载了。</p>
+<p>也可以使用 <code>lxc-create -t download --help</code> 来查看模板支持的一些命令，例如安装 CentOS 7 过程可以省略为 <code>lxc-create -t download -n centos7 -- -d centos -r 7 -a amd64</code>。需要注意的是命令行当中的 <code>--</code> 参数，此参数之后的参数才会会当作模板参数传递给模板。</p>
+<h5 id="启动容器-1"><a href="#启动容器-1" class="headerlink" title="启动容器"></a>启动容器</h5><p>接着启动此容器，并验证是否是 Ubuntu 16.04 的发行版：</p>
+<pre><code>root@localhost:~# lxc-start ubuntu-1604
+root@localhost:~# lxc-attach ubuntu-1604
+root@ubuntu-1604:~# python3 -m platform
+Linux-4.15.0-58-generic-x86_64-with-Ubuntu-16.04-xenial
+root@ubuntu-1604:~#
+</code></pre><p><code>lxc-start</code> 默认在后台启动容器，如果想切换至前端启动，可以使用 <code>-F</code> 参数，同时容器启动过程中的一些控制台输出也会被打印出来了。</p>
+<h4 id="远程连接容器"><a href="#远程连接容器" class="headerlink" title="远程连接容器"></a>远程连接容器</h4><p>LXC 没有提供远程连接容器的方式，如果打算为 LXC 写一套 Web 管理工具，并想实现在 Web 端操作容器，可以采用将 <code>lxc-attach</code> 或者 <code>lxc-console</code> 的输入输出通过 <code>WebSocket</code> 的方式与前端通信。</p>
+<p>或者通过 SSH 的方式远程连接到容器，这样就需要在每个容器内配置 SSH 服务。例如在刚才创建好的容器中安装 SSH 服务：</p>
+<pre><code>root@ubuntu-1604:~# apt-get install openssh-server -y
+root@ubuntu-1604:~# netstat -anpt
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      610/sshd        
+tcp6       0      0 :::22                   :::*                    LISTEN      610/sshd        
+root@ubuntu-1604:~#
+</code></pre><p>由于新启动的容器还是空密码，所以还需要设置一个密码才可以登录：</p>
+<pre><code>root@ubuntu-1604:~# passwd
+Enter new UNIX password: 
+Retype new UNIX password: 
+passwd: password updated successfully
+root@ubuntu-1604:~#
+</code></pre><p>允许使用 root 用户登录并重启服务：</p>
+<pre><code>sed -i &apos;s/^PermitRootLogin prohibit-password/PermitRootLogin yes/g&apos; /etc/ssh/sshd_config
+service ssh restart
+</code></pre><p>这样就可以在宿主机上通过 ssh 连接到容器了，如果想在局域网内也可以 ssh 连接到容器，可以将 <code>lxcbr0</code> 与物理网卡桥接起来，并配置局域网的 IP 地址。</p>
+<h4 id="容器资源限制"><a href="#容器资源限制" class="headerlink" title="容器资源限制"></a>容器资源限制</h4><p>对于虚拟机来说，在创建虚拟机时为虚拟机分配的内存大小 就是对虚拟机能使用的内存的限制。对于容器而言，限制容器可使用的硬件资源 都是通过 cgroup 来实现的。</p>
+<p>LXC 提供了 <code>lxc-cgroup</code> 命令来操作容器的控制组，默认容器是没有任何限制的。</p>
+<h5 id="限制内存使用"><a href="#限制内存使用" class="headerlink" title="限制内存使用"></a>限制内存使用</h5><p>在容器内使用 <code>free -m</code> 命令查看内存使用情况：</p>
+<pre><code>root@ubuntu-1604:~# free -m
+            total        used        free      shared  buff/cache   available
+Mem:           3921          18        3802           8          99        3902
+Swap:          3920           0        3920
+root@ubuntu-1604:~#
+</code></pre><p>可以看到总内存是和宿主机内存相同的，接下来使用 <code>lxc-cgroup</code> 来限制内存的使用：</p>
+<p>宿主机上执行：</p>
+<pre><code>root@ubuntu-1604:~# lxc-cgroup ubuntu-1604 memory.limit_in_bytes 256M
+</code></pre><p>容器内查看：</p>
+<pre><code>root@ubuntu-1604:~# free -m
+            total        used        free      shared  buff/cache   available
+Mem:            256          18         137           8          99         237
+Swap:          3920           0        3920
+root@ubuntu-1604:~#
+</code></pre><p>可以看到允许使用的最大内存已经变成了 256M。但是这样只是临时更改了容器允许使用的内存，在容器重启后限制就会消失，如果想在重启重启后也保持这样的限制，可以更改每个容器的配置文件。</p>
+<p>例如容器 ubuntu-1604 的配置文件就在 <code>/var/lib/lxc/ubuntu-1604/config</code> 在文件的最后添加如下内容：</p>
+<pre><code>lxc.cgroup.memory.limit_in_bytes = 512M
+</code></pre><p>接着使用 <code>lxc-stop ubuntu-1604</code> 和 <code>lxc-start ubuntu-1604</code> 停止并启动容器，直接在容器内使用 <code>reboot</code> 命令是无效的。</p>
+<pre><code>root@localhost:~# lxc-attach ubuntu-1604
+root@ubuntu-1604:~# free -m
+            total        used        free      shared  buff/cache   available
+Mem:            512          11         492           8           8         500
+Swap:          3920           0        3920
+root@ubuntu-1604:~#
+</code></pre><p>容器重启后可用内存变为了 512M。对于交换分区，我们也可以通过 cgroup 来限制其使用，其限制字段名为 <code>memory.memsw.limit_in_bytes</code>，但是限制交换分区使用后通过 <code>free</code> 命令看到的依旧是宿主机的交换分区大小。</p>
+<h5 id="限制CPU使用"><a href="#限制CPU使用" class="headerlink" title="限制CPU使用"></a>限制CPU使用</h5><p>与内存限制的简单粗暴不同，对于 CPU 资源的限制复杂了一些，因为 CPU 有不同维度的限制条件，例如仅允许容器运行在 CPU 的某个核心上，或者仅允许容器在一段时间内获取多久的 CPU 执行时间片。这里只简单的限制容器可以在哪几个核心上使用。</p>
+<p>宿主机上执行：</p>
+<pre><code>root@ubuntu-1604:~# lxc-cgroup ubuntu-1604 cpuset.cpus &quot;0,1&quot;
+</code></pre><p>表示仅允许容器使用 CPU 的第 0 个和第 1 个核心。容器内查看：</p>
+<pre><code>root@ubuntu-1604:~# cat /proc/cpuinfo |grep processor
+processor    : 0
+processor    : 1
+root@ubuntu-1604:~#
+</code></pre><p>容器内只可以看到 CPU 的两个核心了。同样，如果想要在容器重启后限制依然生效，可以修改容器的配置文件 新增以下内容：</p>
+<pre><code>lxc.cgroup.cpuset.cpus = &quot;0,1&quot;
+</code></pre><h5 id="限制存储空间"><a href="#限制存储空间" class="headerlink" title="限制存储空间"></a>限制存储空间</h5><p>如果容器的存储使用的是 <code>dir</code> 则与宿主机共享存储，如果使用了 <code>lvm</code>、<code>zfs</code> 等文件系统则可以通过给容器分配独立的分区方式来限制容器可用的存储空间。这里使用 <code>loop</code> 设备模拟硬盘分区的方式来限制容器存储使用。</p>
+<p>创建使用 <code>loop</code> 设备的容器并启动：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lxc-create -B loop -t download -n ubuntu-1604-loop --fssize 1G -- -d ubuntu -r xenial -a amd64</span><br><span class="line">lxc-start ubuntu-1604-loop</span><br></pre></td></tr></table></figure>
+<p>可以看到，<code>dir</code> 和 <code>loop</code> 的区别如下：</p>
+<pre><code>root@localhost:~# ls /var/lib/lxc/ubuntu-1604
+config  rootfs
+root@localhost:~# ls /var/lib/lxc/ubuntu-1604-loop/
+config  rootdev  rootfs
+root@localhost:~# cat /var/lib/lxc/ubuntu-1604/config |grep rootfs
+lxc.rootfs.path = dir:/var/lib/lxc/ubuntu-1604/rootfs
+root@localhost:~# cat /var/lib/lxc/ubuntu-1604-loop/config |grep rootfs
+lxc.rootfs.path = loop:/var/lib/lxc/ubuntu-1604-loop/rootdev
+root@localhost:~# ls /var/lib/lxc/ubuntu-1604-loop/rootfs
+root@localhost:~# ls -lh /var/lib/lxc/ubuntu-1604-loop/rootdev 
+-rw------- 1 root root 1.1G Sep 25 03:36 /var/lib/lxc/ubuntu-1604-loop/rootdev
+root@localhost:~#
+</code></pre><p>虽然 <code>ubuntu-1604-loop</code> 容器依然保留了 <code>rootfs</code> 目录，但内容确是空的。容器内也可以看到根文件系统的总空间只有 1G 了：</p>
+<pre><code>root@localhost:~# lxc-attach ubuntu-1604-loop 
+root@ubuntu-1604-loop:~# df -hT
+Filesystem     Type   Size  Used Avail Use% Mounted on
+/dev/loop0     ext4   976M  372M  537M  41% /
+none           tmpfs  492K     0  492K   0% /dev
+tmpfs          tmpfs  2.0G     0  2.0G   0% /dev/shm
+tmpfs          tmpfs  2.0G  8.1M  2.0G   1% /run
+tmpfs          tmpfs  5.0M     0  5.0M   0% /run/lock
+tmpfs          tmpfs  2.0G     0  2.0G   0% /sys/fs/cgroup
+root@ubuntu-1604-loop:~#
+</code></pre><h5 id="网卡接口限速"><a href="#网卡接口限速" class="headerlink" title="网卡接口限速"></a>网卡接口限速</h5><p>对容器网卡流量进行限制使用了 Linux 内核的流量控制功能，通过 <code>tc</code> 命令进行管理。<code>tc</code> 命令的操作比较复杂，所幸有人封装好了对接口进行限速的脚本并开源到了 Github 上，我们只需要下载下来使用就可以了。</p>
+<p>宿主机上安装 <code>wondershaper</code> 工具：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/magnific0/wondershaper.git</span><br><span class="line">cp wondershaper/wondershaper /usr/<span class="built_in">local</span>/sbin/</span><br></pre></td></tr></table></figure>
+<p><code>windershaper</code> 工具使用非常简单，使用 <code>-a</code> 参数指定网卡接口名称，<code>-c</code> 清理所有规则，<code>-d</code> 限制下载速率，<code>-u</code> 限制上传速率，单位是 <code>Kbps</code>。需要注意的是 Linux 并不能很准确的控制下载速度，而且对于提供服务的容器或虚拟机而言，一般需要限制的是上传速率。</p>
+<pre><code>root@localhost:~# wondershaper
+USAGE: /usr/local/sbin/wondershaper [-hcs] [-a &lt;adapter&gt;] [-d &lt;rate&gt;] [-u &lt;rate&gt;]
+
+Limit the bandwidth of an adapter
+
+OPTIONS:
+-h           Show this message
+-a &lt;adapter&gt; Set the adapter
+-d &lt;rate&gt;    Set maximum download rate (in Kbps) and/or
+-u &lt;rate&gt;    Set maximum upload rate (in Kbps)
+-p           Use presets in /etc/conf.d/wondershaper.conf
+-c           Clear the limits from adapter
+-s           Show the current status of adapter
+-v           Show the current version
+
+MODES:
+wondershaper -a &lt;adapter&gt; -d &lt;rate&gt; -u &lt;rate&gt;
+wondershaper -c -a &lt;adapter&gt;
+wondershaper -s -a &lt;adapter&gt;
+
+EXAMPLES:
+wondershaper -a eth0 -d 1024 -u 512
+wondershaper -a eth0 -u 512
+wondershaper -c -a eth0
+
+root@localhost:~#
+</code></pre><p>接着找到要限制流量的容器对应的网卡接口 并限制容器的上行速度为 <code>1Mbps</code>：</p>
+<pre><code>root@localhost:~# lxc-info ubuntu-1604 | egrep &quot;IP|Link&quot;
+IP:             10.0.2.238
+Link:           vethQFAM44
+root@localhost:~# wondershaper -a vethQFAM44 -c
+root@localhost:~# wondershaper -a vethQFAM44 -d 1024
+root@localhost:~# 
+</code></pre><p>我也不清楚为什么设置容器的上行速率使用的是 <code>-d</code> 参数，实际测试发现此参数能控制容器的上传速率。</p>
+<p>在容器内运行一个 Web 服务进行测试：</p>
+<pre><code>root@localhost:~# lxc-attach ubuntu-1604
+root@ubuntu-1604:~# dd if=/dev/zere of=img bs=1M count=128
+dd: failed to open &apos;/dev/zere&apos;: No such file or directory
+root@ubuntu-1604:~# dd if=/dev/zero of=img bs=1M count=128
+128+0 records in
+128+0 records out
+134217728 bytes (134 MB, 128 MiB) copied, 0.0789097 s, 1.7 GB/s
+root@ubuntu-1604:~# python3 -m http.server 80
+Serving HTTP on 0.0.0.0 port 80 ...
+</code></pre><p>宿主机上使用 <code>wget</code> 命令下载测试：</p>
+<pre><code>root@localhost:~# wget http://10.0.2.238/img 
+--2019-09-25 08:47:46--  http://10.0.2.238/img
+Connecting to 10.0.2.238:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 134217728 (128M) [application/octet-stream]
+Saving to: ‘img’
+
+img        0%[                     ]   1.04M   120KB/s    eta 18m 4s
+</code></pre><p>可以看到，速度保持在了 <code>1Mbps</code> 下。</p>
+<h4 id="挂起和恢复容器"><a href="#挂起和恢复容器" class="headerlink" title="挂起和恢复容器"></a>挂起和恢复容器</h4><p>正在运行中的容器可以随时暂停和恢复，使用 <code>lxc-freeze</code> 命令挂起一个容器，此时容器内所有正在运行的程序都将被强制挂起：</p>
+<pre><code>root@localhost:~# lxc-freeze ubuntu-1604
+root@localhost:~# ps aux |grep python3
+root       7921  0.0  0.4  55988 17520 pts/4    D+   07:33   0:01 python3 -m http.server 80
+root       8222  0.0  0.0  13136  1104 pts/2    S+   09:07   0:00 grep --color=auto python3
+root@localhost:~# cat /proc/7921/status |grep State
+State:    D (disk sleep)
+root@localhost:~# kill -9 7921
+root@localhost:~# cat /proc/7921/status |grep State
+State:    D (disk sleep)
+root@localhost:~#
+</code></pre><p>可以看到，刚才容器内运行的 python 进程已经是不可中断的休眠状态了，此时即使使用 <code>kill -9</code> 也依然无法杀掉此状态的进程。使用 <code>lxc-unfreeze</code> 解除容器的挂起状态：</p>
+<pre><code>root@localhost:~# lxc-unfreeze ubuntu-1604
+root@localhost:~# cat /proc/7921/status |grep State
+cat: /proc/7921/status: No such file or directory
+root@localhost:~#
+</code></pre><p>在容器内可以看到 python 进程已经退出，并显示 <code>Killed</code>，看来 <code>kill -9</code> 可能会迟到，但永远不会缺席。</p>
+<h4 id="容器状态监控"><a href="#容器状态监控" class="headerlink" title="容器状态监控"></a>容器状态监控</h4><p>LXC 有三个命令工具提供了容器状态监控，分别是 <code>lxc-monitor</code>、<code>lxc-top</code>、<code>lxc-wait</code>。</p>
+<h5 id="lxc-monitor"><a href="#lxc-monitor" class="headerlink" title="lxc-monitor"></a>lxc-monitor</h5><p>这个命令可以监控单个或多个容器的状态变化，例如监听所有名称以 <code>ubuntu</code> 开头的容器状态：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lxc-monitor ubuntu*</span><br></pre></td></tr></table></figure>
+<p>接着打开另外一个终端，重启一个容器：</p>
+<pre><code>root@localhost:~# lxc-stop ubuntu-1604-loop
+root@localhost:~# lxc-start ubuntu-1604-loop
+root@localhost:~#
+</code></pre><p>可以看到，<code>lxc-monitor</code> 输出了被监听的容器的状态变化：</p>
+<pre><code>root@localhost:~# lxc-monitor ubuntu*
+&apos;ubuntu-1604-loop&apos; exited with status [0]
+&apos;ubuntu-1604-loop&apos; changed state to [STOPPING]
+&apos;ubuntu-1604-loop&apos; changed state to [STOPPED]
+&apos;ubuntu-1604-loop&apos; changed state to [STARTING]
+&apos;ubuntu-1604-loop&apos; changed state to [RUNNING]
+</code></pre><h5 id="lxc-wait"><a href="#lxc-wait" class="headerlink" title="lxc-wait"></a>lxc-wait</h5><p>此命令是等待容器到达某一状态后便退出。</p>
+<pre><code>root@localhost:~# lxc-wait ubuntu-1604-loop -s RUNNING
+root@localhost:~# lxc-wait ubuntu-1604-loop -s STOPPED
+</code></pre><p><code>ubuntu-1604-loop</code> 容器已经是运行状态，所以命令直接就退出了，而等待容器状态变化为 <code>STOPPED</code> 是，命令发送了阻塞。接着停止此容器，可以看到 <code>lxc-wait</code> 发现被监控容器是 <code>STOPPED</code> 状态后就退出了。</p>
+<p>如果想同时监听多个状态，可以使用 <code>lxc-wait ubuntu-1604-loop -s &quot;RUNNING|STOPPED&quot;</code> 这种方式。</p>
+<h5 id="lxc-top"><a href="#lxc-top" class="headerlink" title="lxc-top"></a>lxc-top</h5><p>此命令可以查看所有容器的运行状态</p>
+<pre><code>Container                   CPU          CPU          CPU                                BlkIO        Mem       KMem
+Name                       Used          Sys         User                    Total(Read/Write)       Used       Used
+ubuntu-1604                0.39         0.25         0.10         4.00 KiB(  0.00   /4.00 KiB)  17.83 MiB   4.53 MiB
+ubuntu-1604-loop           2.24         1.48         0.28      54.32 MiB(54.14 MiB/180.00 KiB)  72.16 MiB   6.16 MiB
+TOTAL 2 of 2               2.63         1.73         0.38      54.32 MiB(54.14 MiB/184.00 KiB)  89.99 MiB  10.68 MiB
+root@localhost:~#
+</code></pre><h4 id="网卡管理"><a href="#网卡管理" class="headerlink" title="网卡管理"></a>网卡管理</h4><h5 id="网卡配置项"><a href="#网卡配置项" class="headerlink" title="网卡配置项"></a>网卡配置项</h5><p>容器启动后默认只有一个可用的 eth0 网卡接口，查看容器的配置文件可以找到网卡相关的配置项：</p>
+<pre><code>cat /var/lib/lxc/ubuntu-1604/config
+...
+# Network configuration
+lxc.net.0.type = veth
+lxc.net.0.link = lxcbr0
+lxc.net.0.flags = up
+lxc.net.0.hwaddr = 00:16:3e:bc:27:d1
+...
+</code></pre><p>网卡相关配置如下：</p>
+<ul>
+<li><code>lxc.net.0.type</code>：第 0 块网卡的类型，如果是第二块网卡，则为 <code>lxc.net.1.type</code> 可选类型如下：<ul>
+<li><code>empty</code>：不创建网卡，容器仅有 lo 网卡</li>
+<li><code>veth</code>：创建一个对等网卡，该网卡的一端分配给容器，另一端与 <code>lxc.net.0.link</code> 指定的网桥桥接</li>
+<li><code>vlan</code>：创建一个由 <code>lxc.net.0.link</code> 指定的虚拟局域网接口分配给容器，vlan的标识符可由 <code>lxc.net.0.vlan.id</code> 指定</li>
+<li><code>phys</code>：将 <code>lxc.net.0.link</code> 指定的网卡接口分配给容器。</li>
+<li><code>macvlan</code>：创建一个 <code>macvlan</code> 接口，该接口和由 <code>lxc.net.0.link</code> 指定的接口相连接</li>
+</ul>
+</li>
+<li><code>lxc.net.0.name</code>：指定虚拟网卡接口的名称，默认是 eth 开头。</li>
+<li><code>lxc.net.0.link</code>：指定进行真实网络通信的网卡。</li>
+<li><code>lxc.net.0.flags</code>：指定网卡的状态，<code>up</code> 激活接口，<code>down</code> 关闭接口。</li>
+<li><code>lxc.net.0.hwaddr</code>：指定虚拟网卡的 MAC 地址，默认情况该值会自动分配。</li>
+</ul>
+<h5 id="分配物理网卡给容器"><a href="#分配物理网卡给容器" class="headerlink" title="分配物理网卡给容器"></a>分配物理网卡给容器</h5><p>为容器新增一块虚拟网卡非常简单，只需要模范示例配置，将其中的 0 改为 1 就会新增一块 <code>eth1</code> 的网卡了，下面试试直接分配一块物理网卡给容器，需要先保证宿主机有一块额外的物理网卡，如果是虚拟机可以先为宿主机新增一块。</p>
+<p>将以下内容追加到容器配置文件，将物理网卡分配给容器：</p>
+<pre><code>lxc.net.1.type = phys
+lxc.net.1.link = ens35
+lxc.net.1.flags = up
+</code></pre><p><code>ens35</code> 是宿主机上第二块物理网卡的名称，不同的 Linux 环境网卡接口名称也不尽相同。然后重启被修改的容器：</p>
+<pre><code>root@localhost:~# lxc-stop ubuntu-1604 &amp;&amp; lxc-start ubuntu-1604
+root@localhost:~# lxc-attach ubuntu-1604
+root@ubuntu-1604:~# ifconfig
+ens35     Link encap:Ethernet  HWaddr 00:0c:29:95:b4:7b  
+        inet6 addr: fe80::20c:29ff:fe95:b47b/64 Scope:Link
+        UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+        RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+        TX packets:9 errors:0 dropped:0 overruns:0 carrier:0
+        collisions:0 txqueuelen:1000 
+        RX bytes:0 (0.0 B)  TX bytes:726 (726.0 B)
+
+eth0      Link encap:Ethernet  HWaddr 00:16:3e:bc:27:d1  
+        inet addr:10.0.2.238  Bcast:10.0.2.255  Mask:255.255.255.0
+        inet6 addr: fe80::216:3eff:febc:27d1/64 Scope:Link
+        UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+        RX packets:13 errors:0 dropped:0 overruns:0 frame:0
+        TX packets:12 errors:0 dropped:0 overruns:0 carrier:0
+        collisions:0 txqueuelen:1000 
+        RX bytes:1519 (1.5 KB)  TX bytes:1452 (1.4 KB)
+
+lo        Link encap:Local Loopback  
+        inet addr:127.0.0.1  Mask:255.0.0.0
+        inet6 addr: ::1/128 Scope:Host
+        UP LOOPBACK RUNNING  MTU:65536  Metric:1
+        RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+        TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+        collisions:0 txqueuelen:1000 
+        RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+root@ubuntu-1604:~#
+</code></pre><p>可以看到容器内部也可以使用这块网卡了，接着为此网卡配置一个静态 IP，看看从外部是否可以直接访问：</p>
+<pre><code>root@ubuntu-1604:~# ifconfig ens35 10.0.1.11/24
+root@ubuntu-1604:~#
+</code></pre><p>需要注意的是，这个 IP 必须是此物理网卡所在网段的 IP 才可以。在 Windows 下直接访问容器：</p>
+<pre><code>Microsoft Windows [版本 10.0.18362.356]
+(c) 2019 Microsoft Corporation。保留所有权利。
+
+C:\Users\yunfwe\Desktop&gt;ssh root@10.0.1.11
+The authenticity of host &apos;10.0.1.11 (10.0.1.11)&apos; can&apos;t be established.
+ECDSA key fingerprint is SHA256:WGzRElNn4jypkZLIwVzDcqbDDi7vqCb29UyAPbC8Oqs.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added &apos;10.0.1.11&apos; (ECDSA) to the list of known hosts.
+root@10.0.1.11&apos;s password:
+Welcome to Ubuntu 16.04.6 LTS (GNU/Linux 4.15.0-58-generic x86_64)
+
+* Documentation:  https://help.ubuntu.com
+* Management:     https://landscape.canonical.com
+* Support:        https://ubuntu.com/advantage
+Last login: Wed Sep 25 01:58:44 2019
+root@ubuntu-1604:~#
+</code></pre><h5 id="桥接物理网卡"><a href="#桥接物理网卡" class="headerlink" title="桥接物理网卡"></a>桥接物理网卡</h5><p>直接分配物理网卡虽然实现了在外部直接访问宿主机内部的容器了，但是显然太浪费资源，每一个容器都要分配一个物理网卡。我们可以在宿主机创建一个网桥，然后将物理网卡接入到网桥内，之后再将容器的虚拟网卡也接入到网桥，这样就可以实现桥接模式了。</p>
+<p>首先删除之前为容器分配物理网卡的配置项并重启容器，然后在宿主机上新增网桥，并将第二块物理网卡加入到网桥中。</p>
+<p>宿主机执行：</p>
+<pre><code>root@localhost:~# brctl addbr netbr0 
+root@localhost:~# brctl addif netbr0 ens35
+root@localhost:~# ifconfig netbr0 up
+root@localhost:~# ifconfig ens35 up
+root@localhost:~# brctl show
+bridge name    bridge id        STP enabled    interfaces
+lxcbr0        8000.00163e000000    no        vethA75TNV
+                                        vethWL2CSX
+netbr0        8000.000c2995b47b    no        ens35
+root@localhost:~#
+</code></pre><p>lxcbr0 是 LXC 自动帮我们创建的网桥，网桥内已经有两个接口，对端便是两个容器的 eth0 网卡。接下来我们可以重新创建一个容器，然后将容器配置文件中的 <code>lxc.net.0.link</code> 改为我们新创建的网桥，或者在现有的容器中新增一块虚拟网卡，然后连接到网桥上。</p>
+<p>修改容器配置文件，新增如下配置：</p>
+<pre><code>lxc.net.1.type = veth
+lxc.net.1.link = netbr0
+lxc.net.1.flags = up
+</code></pre><p>重启此容器并查看 netbr0 网桥已经有多少个接口：</p>
+<pre><code>root@localhost:~# lxc-stop ubuntu-1604 &amp;&amp; lxc-start ubuntu-1604
+root@localhost:~# brctl show
+bridge name    bridge id        STP enabled    interfaces
+lxcbr0        8000.00163e000000    no        vethA75TNV
+                                        vethGHBNA6
+netbr0        8000.000c2995b47b    no        ens35
+                                        veth479Q5D
+root@localhost:~#
+</code></pre><p>为容器内接口分配 IP 并远程连接：</p>
+<pre><code>root@localhost:~# lxc-attach ubuntu-1604
+root@ubuntu-1604:~# ifconfig eth1 10.0.1.11/24
+root@ubuntu-1604:~# ifconfig eth1
+eth1      Link encap:Ethernet  HWaddr 66:15:70:46:7e:bf  
+        inet addr:10.0.1.11  Bcast:10.0.1.255  Mask:255.255.255.0
+        inet6 addr: fe80::6415:70ff:fe46:7ebf/64 Scope:Link
+        UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+        RX packets:44 errors:0 dropped:0 overruns:0 frame:0
+        TX packets:22 errors:0 dropped:0 overruns:0 carrier:0
+        collisions:0 txqueuelen:1000 
+        RX bytes:4625 (4.6 KB)  TX bytes:1588 (1.5 KB)
+
+root@ubuntu-1604:~#
+</code></pre><p>Windows 上远程连接成功：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;ssh root@10.0.1.11
+root@10.0.1.11&apos;s password:
+Welcome to Ubuntu 16.04.6 LTS (GNU/Linux 4.15.0-58-generic x86_64)
+
+* Documentation:  https://help.ubuntu.com
+* Management:     https://landscape.canonical.com
+* Support:        https://ubuntu.com/advantage
+Last login: Thu Sep 26 03:01:21 2019 from 10.0.1.1
+root@ubuntu-1604:~#
+</code></pre><p>当前网桥的配置是临时生效的，如果需要开机自动配置 还请查看你当前所使用的发行版的网络管理器如何配置网桥。</p>
+<h4 id="设备管理"><a href="#设备管理" class="headerlink" title="设备管理"></a>设备管理</h4><p>LXC 提供了 <code>lxc-device</code> 命令将宿主机的硬件设备直接分配给容器。其实运用到的技术是 cgroup 的设备白名单和在容器内创建设备相应的设备文件。</p>
+<p><code>lxc-device</code> 命令的使用非常简单，使用 <code>add</code> 直接指定要将宿主机 <code>/dev</code> 目录下的哪个设备分配给容器就可以了，删除可以使用 <code>del</code></p>
+<h5 id="分配硬盘分区到容器"><a href="#分配硬盘分区到容器" class="headerlink" title="分配硬盘分区到容器"></a>分配硬盘分区到容器</h5><p>宿主机执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lxc-device ubuntu-1604 add /dev/sda2</span><br></pre></td></tr></table></figure>
+<p>容器内查看：</p>
+<pre><code>root@localhost:~# lxc-attach ubuntu-1604
+root@ubuntu-1604:~# ls /dev/sda2 
+/dev/sda2
+root@ubuntu-1604:~# mount /dev/sda2 /mnt/
+root@ubuntu-1604:~# ls /mnt/
+bin   cdrom  etc   initrd.img      lib    lost+found  mnt  proc  run   snap  swap.img  tmp  var      vmlinuz.old
+boot  dev    home  initrd.img.old  lib64  media       opt  root  sbin  srv   sys       usr  vmlinuz
+root@ubuntu-1604:~#
+</code></pre><h5 id="分配-tunnel-设备到容器"><a href="#分配-tunnel-设备到容器" class="headerlink" title="分配 tunnel 设备到容器"></a>分配 tunnel 设备到容器</h5><p>默认在容器内是没有 <code>/dev/net/tun</code> 设备文件的，因此一大部分的 VPN 应用都无法在容器内正常运行。利用 <code>lxc-device</code> 命令可以很方便的将 tunnel 设备分配给容器：<code>lxc-device ubuntu-1604 add /dev/net/tun</code>，但是用这种方法在容器重启后分配的设备文件将失效。</p>
+<p>我们可以在配置文件中指定容器允许的设备文件白名单，容器在启动过程中会默认分配一些设备文件，在容器的配置文件中有一行是 <code>lxc.include = /usr/share/lxc/config/common.conf</code> 打开此文件，可以看到这些默认会创建的设备文件：</p>
+<pre><code>## Allow specific devices
+### /dev/null
+lxc.cgroup.devices.allow = c 1:3 rwm
+### /dev/zero
+lxc.cgroup.devices.allow = c 1:5 rwm
+### /dev/full
+lxc.cgroup.devices.allow = c 1:7 rwm
+### /dev/tty
+lxc.cgroup.devices.allow = c 5:0 rwm
+### /dev/console
+lxc.cgroup.devices.allow = c 5:1 rwm
+### /dev/ptmx
+lxc.cgroup.devices.allow = c 5:2 rwm
+### /dev/random
+lxc.cgroup.devices.allow = c 1:8 rwm
+### /dev/urandom
+lxc.cgroup.devices.allow = c 1:9 rwm
+### /dev/pts/*
+lxc.cgroup.devices.allow = c 136:* rwm
+### fuse
+lxc.cgroup.devices.allow = c 10:229 rwm
+</code></pre><p>Linux tunnel 设备号是 <code>c 10 200</code>，如果我们需要在将来创建的容器都默认分配 tunnel 设备，可以直接修改 <code>/usr/share/lxc/config/common.conf</code>，否则只修改容器的配置文件即可：</p>
+<p>容器配置文件最后添加以下内容：</p>
+<pre><code>### tunnel 
+lxc.cgroup.devices.allow = c 10:200 rwm
+</code></pre><p>现在只是允许了容器内使用 <code>/dev/net/tun</code> 设备，容器并不会自动创建此设备文件，我们可以在容器的 <code>/etc/rc.local</code> 中写入创建设备文件的命令来完成启动容器后自动创建。</p>
+<p>编辑容器内的 <code>/etc/rc.local</code> 在最后的 <code>exit 0</code> 之前写入以下内容：</p>
+<pre><code>mkdir /dev/net -p
+mknod /dev/net/tun c 10 200
+</code></pre><p>然后重启容器：</p>
+<pre><code>root@localhost:~# lxc-stop ubuntu-1604 &amp;&amp; lxc-start ubuntu-1604
+root@localhost:~# lxc-attach ubuntu-1604
+root@ubuntu-1604:~# ls /dev/net/tun
+/dev/net/tun
+root@ubuntu-1604:~#
+</code></pre><h4 id="目录挂载"><a href="#目录挂载" class="headerlink" title="目录挂载"></a>目录挂载</h4><p>如果想在多个容器内共享同一个目录，可以采用挂载宿主机同一目录的方式。</p>
+<p>首先在宿主机创建一个目录用于容器见共享：</p>
+<pre><code>root@localhost:~# mkdir /data
+root@localhost:~# echo hello &gt; /data/world
+root@localhost:~#
+</code></pre><p>修改容器配置文件，新增如下内容：</p>
+<pre><code>lxc.mount.entry = /data data none rw,bind,create=dir 0 0
+</code></pre><p><code>lxc.mount.entry</code> 的写法跟 <code>/etc/fstab</code> 的写法一样，上面的内容就是将宿主机的 <code>/data</code> 目录挂载到容器内的 <code>/data</code> 目录，容器内的路径开头不可以写 <code>/</code> 否则会无法挂载。<code>rw,bind,create=dir</code> 是挂载选项，表示以读写方式挂载，如果容器内文件夹不存在则自动创建。</p>
+<pre><code>root@localhost:~# lxc-stop ubuntu-1604 &amp;&amp; lxc-start ubuntu-1604
+root@localhost:~# lxc-attach ubuntu-1604
+root@ubuntu-1604:~# ls /data
+world
+root@ubuntu-1604:~# cat /data/world 
+hello
+root@ubuntu-1604:~# 
+</code></pre><p>我们还可以利用挂载的特性，将设备文件直接挂载到容器内，比如上面的 tunnel 设备文件还可以用以下方式自动挂载：</p>
+<pre><code>lxc.mount.entry = /dev/net/tun dev/net/tun none rw,bind,create=file 0 0
+</code></pre><h4 id="容器权限"><a href="#容器权限" class="headerlink" title="容器权限"></a>容器权限</h4><p>在 Linux2.2 内核开始将超级用户的权限分为若干独立的子权限，每个子权限可独立的禁止或者打开，注意，一旦剥夺了根用户的某一权限，那么除非重启系统，否则无法恢复该权限。下面对这些权限进行简单的介绍： </p>
+<ul>
+<li><code>CAP_CHOWN</code>：允许改变文件的所有权 </li>
+<li><code>CAP_DAC_OVERRIDE</code>：忽略对文件的所有 DAC 访问限制 </li>
+<li><code>CAP_DAC_READ_SEARCH</code>：忽略所有对读、搜索操作的限制 </li>
+<li><code>CAP_FOWNER</code>：如果文件属于进程的 UID，就取消对文件的限制 </li>
+<li><code>CAP_FSETID</code>：允许设置 setuid 位 </li>
+<li><code>CAP_KILL</code>：允许对不属于自己的进程发送信号 </li>
+<li><code>CAP_SETGID</code>：允许改变组 ID </li>
+<li><code>CAP_SETUID</code>：允许改变用户 ID </li>
+<li><code>CAP_SETPCAP</code>：允许向其它进程转移能力以及删除其它进程的任意能力 </li>
+<li><code>CAP_LINUX_IMMUTABLE</code>：允许修改文件的不可修改 (IMMUTABLE) 和只添加 (APPEND-ONLY) 属性 </li>
+<li><code>CAP_NET_BIND_SERVICE</code>： 允许绑定到小于 1024 的端口 </li>
+<li><code>CAP_NET_BROADCAST</code>：允许网络广播和多播访问 </li>
+<li><code>CAP_NET_ADMIN</code>：允许执行网络管理任务：接口、防火墙和路由等。 </li>
+<li><code>CAP_NET_RAW</code>：允许使用原始 (raw) 套接字 </li>
+<li><code>CAP_IPC_LOCK</code>：允许锁定共享内存片段 </li>
+<li><code>CAP_IPC_OWNER</code>： 忽略 IPC 所有权检查 </li>
+<li><code>CAP_SYS_MODULE</code>： 插入和删除内核模块 </li>
+<li><code>CAP_SYS_RAWIO</code>：允许对 ioperm/iopl 的访问 </li>
+<li><code>CAP_SYS_CHROOT</code>：允许使用 chroot() 系统调用 </li>
+<li><code>CAP_SYS_PTRACE</code>：允许跟踪任何进程 </li>
+<li><code>CAP_SYS_PACCT</code>：允许配置进程记帐 (process accounting) </li>
+<li><code>CAP_SYS_ADMIN</code>：允许执行系统管理任务：加载/卸载文件系统、设置磁盘配额、开/关交换设备和文件等。 </li>
+<li><code>CAP_SYS_BOOT</code>：允许重新启动系统 </li>
+<li><code>CAP_SYS_NICE</code>：允许提升优先级，设置其它进程的优先级 </li>
+<li><code>CAP_SYS_RESOURCE</code>：忽略资源限制 </li>
+<li><code>CAP_SYS_TIME</code>：允许改变系统时钟 </li>
+<li><code>CAP_SYS_TTY_CONFIG</code>：允许配置 TTY 设备 </li>
+<li><code>CAP_MKNOD</code>：允许使用 mknod() 系统调用 </li>
+<li><code>CAP_LEASE</code>：Allow taking of leases on files </li>
+</ul>
+<p>容器的配置文件提供了 <code>lxc.cap.drop</code> 来允许我们运行的容器抛弃某些权限，例如我们要抛弃容器的创建设备文件和更改 IP 地址的权限，追加以下配置到容器的配置文件：</p>
+<pre><code>lxc.cap.drop =  mknod net_admin
+</code></pre><p>权限的名称不需要写开头的 <code>CAP_</code> 使用小写即可，接着重启容器：</p>
+<pre><code>root@localhost:~# lxc-stop ubuntu-1604 &amp;&amp; lxc-start ubuntu-1604
+root@localhost:~# lxc-attach ubuntu-1604
+root@ubuntu-1604:~# ifconfig eth1 10.0.1.11/24
+SIOCSIFADDR: Operation not permitted
+SIOCSIFFLAGS: Operation not permitted
+SIOCSIFNETMASK: Operation not permitted
+root@ubuntu-1604:~# mknod test c 10 200
+mknod: test: Operation not permitted
+root@ubuntu-1604:~#
+</code></pre><h4 id="容器开机自启"><a href="#容器开机自启" class="headerlink" title="容器开机自启"></a>容器开机自启</h4><p>容器默认在系统启动时不会自动启动，但是提供了 <code>lxc-autostart</code> 命令来帮我们启动所有设置了开机自启的容器。 我们可以在容器的配置文件中添加以下内容来让容器自启动：</p>
+<pre><code>lxc.start.auto = 1
+lxc.start.delay = 10
+lxc.group = onboot
+</code></pre><p><code>lxc.start.auto</code> 表示允许自启。<code>lxc.start.delay</code> 表示启动延迟，在处理互相依赖的容器中，启动延迟会比较有用。<code>lxc.group</code> 表示定义启动组，这样就可以通过 <code>lxc-autostart -g onboot</code> 来启动所有属于 <code>onboot</code> 组的容器了。</p>
+<p>当设置好容器开机自启动后，将 <code>lxc-autostart</code> 命令添加到宿主机的 <code>/etc/rc.local</code> 中，这样就可以实现开机时自动启动容器了。</p>
+<h4 id="容器备份"><a href="#容器备份" class="headerlink" title="容器备份"></a>容器备份</h4><p>可以在停掉或冻结要备份的容器后直接对 <code>/var/lib/lxc/</code> 下的容器目录进行归档备份，如果想克隆容器，直接将容器目录复制一份，然后改下复制后的容器配置文件中的网卡配置相关冲突的地方即可。</p>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><p>LXC 工具集的使用上还是比较原始简单，还有个更好用的 LXC 管理工具：LXD。该工具类似于 Docker，启动一个守护进程，然后通过 <code>lxc</code> 命令对容器和镜像进行管理，并提供了更灵活的配置和更完善的官方文档。还有容器快照、热迁移等高级功能。</p>
+<ul>
+<li>LXD官方文档：<a href="https://lxd.readthedocs.io/en/latest/" target="_blank" rel="noopener">https://lxd.readthedocs.io/en/latest/</a></li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag"><i class="fa fa-tag"></i> linux</a>
+          
+            <a href="/tags/lxc/" rel="tag"><i class="fa fa-tag"></i> lxc</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/27/2019/Supervisor 进程管理工具/" rel="next" title="Supervisor 进程管理工具">
+                <i class="fa fa-chevron-left"></i> Supervisor 进程管理工具
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/16/2019/Linux IO多路复用/" rel="prev" title="Linux IO多路复用">
+                Linux IO多路复用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="魏云飞">
+            
+              <p class="site-author-name" itemprop="name">魏云飞</p>
+              <p class="site-description motion-element" itemprop="description">帅的人已经醒来 而丑的人还在沉睡</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">61</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/yunfwe" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#教程"><span class="nav-number">3.</span> <span class="nav-text">教程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">3.1.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装命令行工具"><span class="nav-number">3.1.1.</span> <span class="nav-text">安装命令行工具</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#快速开始"><span class="nav-number">3.2.</span> <span class="nav-text">快速开始</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#创建容器"><span class="nav-number">3.2.1.</span> <span class="nav-text">创建容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#启动容器"><span class="nav-number">3.2.2.</span> <span class="nav-text">启动容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#连接到容器"><span class="nav-number">3.2.3.</span> <span class="nav-text">连接到容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#停止并删除容器"><span class="nav-number">3.2.4.</span> <span class="nav-text">停止并删除容器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#容器管理"><span class="nav-number">3.3.</span> <span class="nav-text">容器管理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#创建容器-1"><span class="nav-number">3.3.1.</span> <span class="nav-text">创建容器</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#获取镜像模板"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">获取镜像模板</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#启动容器-1"><span class="nav-number">3.3.1.2.</span> <span class="nav-text">启动容器</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#远程连接容器"><span class="nav-number">3.3.2.</span> <span class="nav-text">远程连接容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#容器资源限制"><span class="nav-number">3.3.3.</span> <span class="nav-text">容器资源限制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#限制内存使用"><span class="nav-number">3.3.3.1.</span> <span class="nav-text">限制内存使用</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#限制CPU使用"><span class="nav-number">3.3.3.2.</span> <span class="nav-text">限制CPU使用</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#限制存储空间"><span class="nav-number">3.3.3.3.</span> <span class="nav-text">限制存储空间</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#网卡接口限速"><span class="nav-number">3.3.3.4.</span> <span class="nav-text">网卡接口限速</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#挂起和恢复容器"><span class="nav-number">3.3.4.</span> <span class="nav-text">挂起和恢复容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#容器状态监控"><span class="nav-number">3.3.5.</span> <span class="nav-text">容器状态监控</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#lxc-monitor"><span class="nav-number">3.3.5.1.</span> <span class="nav-text">lxc-monitor</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#lxc-wait"><span class="nav-number">3.3.5.2.</span> <span class="nav-text">lxc-wait</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#lxc-top"><span class="nav-number">3.3.5.3.</span> <span class="nav-text">lxc-top</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#网卡管理"><span class="nav-number">3.3.6.</span> <span class="nav-text">网卡管理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#网卡配置项"><span class="nav-number">3.3.6.1.</span> <span class="nav-text">网卡配置项</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#分配物理网卡给容器"><span class="nav-number">3.3.6.2.</span> <span class="nav-text">分配物理网卡给容器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#桥接物理网卡"><span class="nav-number">3.3.6.3.</span> <span class="nav-text">桥接物理网卡</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设备管理"><span class="nav-number">3.3.7.</span> <span class="nav-text">设备管理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#分配硬盘分区到容器"><span class="nav-number">3.3.7.1.</span> <span class="nav-text">分配硬盘分区到容器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#分配-tunnel-设备到容器"><span class="nav-number">3.3.7.2.</span> <span class="nav-text">分配 tunnel 设备到容器</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#目录挂载"><span class="nav-number">3.3.8.</span> <span class="nav-text">目录挂载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#容器权限"><span class="nav-number">3.3.9.</span> <span class="nav-text">容器权限</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#容器开机自启"><span class="nav-number">3.3.10.</span> <span class="nav-text">容器开机自启</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#容器备份"><span class="nav-number">3.3.11.</span> <span class="nav-text">容器备份</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">4.</span> <span class="nav-text">附录</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">魏云飞</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">713k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+    <span title="站点总阅读时长">11:53</span>
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.0.4</div>
+<div class="BbeiAn-info"">
+  渝ICP备 -
+  <a href="http://www.beian.miit.gov.cn/">18019763号</a>
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.json";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<script>
+var OriginTitile = document.title;
+ var titleTime;
+ document.addEventListener('visibilitychange', function () {
+     if (document.hidden) {
+         $('[rel="icon"]').attr('href', "/img/TEP.ico");
+         document.title = '╭(°A°`)╮ 页面崩溃啦 ~ ';
+         clearTimeout(titleTime);
+     }
+     else {
+         $('[rel="icon"]').attr('href', "/favicon.ico");
+         document.title = '(ฅ>ω<*ฅ) 噫又好了~' + OriginTitile;
+         titleTime = setTimeout(function () {
+             document.title = OriginTitile;
+         }, 2000);
+     }
+ });
+</script>
+</html>

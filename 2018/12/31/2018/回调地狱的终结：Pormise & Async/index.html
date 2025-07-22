@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="javascript,">
+
+
+<meta name="description" content="简介 由于 JavaScript 是一门单线程，事件驱动的语言，因此异步编程方式是它一个非常重要的特性。无论是客户端的 JavaScript 还是服务端的 JavaScript 在处理 HTTP请求响应、事件监听、文件读取等操作时都避不开回调，如果异步的事件需要嵌套执行，那么回调给代码结构和可读性简直带来了灾难，这个被后人称之为：回调地狱。">
+<meta name="keywords" content="javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="回调地狱的终结：Pormise &amp; Async">
+<meta property="og:url" content="http://www.yunfwe.cn/2018/12/31/2018/回调地狱的终结：Pormise & Async/index.html">
+<meta property="og:site_name" content="某科学的最后之作">
+<meta property="og:description" content="简介 由于 JavaScript 是一门单线程，事件驱动的语言，因此异步编程方式是它一个非常重要的特性。无论是客户端的 JavaScript 还是服务端的 JavaScript 在处理 HTTP请求响应、事件监听、文件读取等操作时都避不开回调，如果异步的事件需要嵌套执行，那么回调给代码结构和可读性简直带来了灾难，这个被后人称之为：回调地狱。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.yunfwe.cn/uploads/photos/s8fae3f3a.jpg">
+<meta property="og:updated_time" content="2018-12-30T16:00:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="回调地狱的终结：Pormise &amp; Async">
+<meta name="twitter:description" content="简介 由于 JavaScript 是一门单线程，事件驱动的语言，因此异步编程方式是它一个非常重要的特性。无论是客户端的 JavaScript 还是服务端的 JavaScript 在处理 HTTP请求响应、事件监听、文件读取等操作时都避不开回调，如果异步的事件需要嵌套执行，那么回调给代码结构和可读性简直带来了灾难，这个被后人称之为：回调地狱。">
+<meta name="twitter:image" content="http://www.yunfwe.cn/uploads/photos/s8fae3f3a.jpg">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="某科学的最后之作" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://www.yunfwe.cn/2018/12/31/2018/回调地狱的终结：Pormise & Async/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>回调地狱的终结：Pormise & Async | 某科学的最后之作</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">某科学的最后之作</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">帅的人已经醒来 而丑的人还在沉睡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.yunfwe.cn/2018/12/31/2018/回调地狱的终结：Pormise & Async/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="魏云飞">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="某科学的最后之作">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">回调地狱的终结：Pormise & Async</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-31T00:00:00+08:00">2018-12-31</time>
+            
+
+            
+            
+              
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/JavaScript/" itemprop="url" rel="index"><span itemprop="name">JavaScript</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">23k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">0:23</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="/uploads/photos/s8fae3f3a.jpg" rel="gallery_cmde8g1xq0061pijxx0ff5uwx" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="/uploads/photos/s8fae3f3a.jpg" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
+<p>由于 JavaScript 是一门单线程，事件驱动的语言，因此异步编程方式是它一个非常重要的特性。无论是客户端的 JavaScript 还是服务端的 JavaScript 在处理 HTTP请求响应、事件监听、文件读取等操作时都避不开回调，如果异步的事件需要嵌套执行，那么回调给代码结构和可读性简直带来了灾难，这个被后人称之为：回调地狱。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><blockquote>
+<p>由于大多数浏览器环境不支持 async/await 这些 ES8 提案才支持的语法，因此 JavaScript 执行环境选择 Node.js。浏览器不支持包含 ES7/ES8 的语法特性的代码，可以通过 Babel 等工具转为低版本 JavaScript 语法运行。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>软件</th>
+<th>版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>操作系统</td>
+<td>Windows 10</td>
+</tr>
+<tr>
+<td>Node.js</td>
+<td>v10.13.0</td>
+</tr>
+</tbody>
+</table>
+<h2 id="教程"><a href="#教程" class="headerlink" title="教程"></a>教程</h2><h3 id="经典回调问题"><a href="#经典回调问题" class="headerlink" title="经典回调问题"></a>经典回调问题</h3><p>JavaScript 中对异步事件处理是通过给异步事件传递处理函数的方式，也就是回调（callback）来完成，下面看一个例子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">"fs"</span>)</span><br><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment">    以 utf-8 编码打开当前目录下 aaa.txt 文件。</span></span><br><span class="line"><span class="comment">    如果回调函数执行失败，则打印失败原因，否则打印文件内容。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">fs.readFile(<span class="string">"aaa.txt"</span>, <span class="string">"utf-8"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err, data</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(err.message)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(data)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>这是一个经典的 JavaScript 处理异步事件的方法，我们将对数据的后续处理写成函数传递给 <code>fs.readFile</code> 方法，文件读取成功后 <code>fs.readFile</code> 会自动调用我们传递给它的函数。</p>
+<p>现在我们需要进行秩序的读取三个甚至更多的文件，只有在 <code>aaa.txt</code> 读取完成后再继续读取 <code>bbb.txt</code>，接着再读取 <code>ccc.txt</code>。传统的解决方案应该会写出下面的代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">"fs"</span>)</span><br><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment">    以 utf-8 编码打开当前目录下 aaa.txt 文件。</span></span><br><span class="line"><span class="comment">    如果回调函数执行失败，则打印失败原因，否则打印文件内容。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">fs.readFile(<span class="string">"aaa.txt"</span>, <span class="string">"utf-8"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err, data</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(err.message)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(data)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 继续读取 bbb.txt</span></span><br><span class="line">    fs.readFile(<span class="string">"bbb.txt"</span>, <span class="string">"utf-8"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err, data</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (err) &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(err.message)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(data)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 继续读取 ccc.txt</span></span><br><span class="line">        fs.readFile(<span class="string">"ccc.txt"</span>, <span class="string">"utf-8"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err, data</span>)</span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (err) &#123;</span><br><span class="line">                <span class="built_in">console</span>.log(err.message)</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="built_in">console</span>.log(data)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>如果还要继续读取更多的文件，并对文件内容进行操作，那之后的代码也都要写在回调函数中，会造成嵌套越来越多。这样对代码的可读性和日后的维护都带来了很大挑战。</p>
+<p>随着 JavaScript 能干的事情越来越多，人们已经不满足只用它来处理一些简单的事情了，当随着代码越来越多，项目工程越来越大，JavaScript 的不断发展中，势必会寻找一些解决方案来应对这些问题。</p>
+<p>之前最流行的是 2009 年 12 月发布的 ES5 标准，终于在 2015 年的 6 月 ES6 发布了，这是个历经 6 年沉淀出的版本，给 JavaScript 带来了大量的新特性并保持了向下的兼容，其中对异步回调地狱的解决方案：<code>Promise</code> 就是这个版本带来的特性之一。</p>
+<p>JavaScript 设计时的缺陷，历史包袱等原因，后面新的版本带来新特性的同时，又要对之前代码保持兼容，现在 JavaScript 各种功能重复又不相同的 API 也让人一言难尽。。。</p>
+<h3 id="当代的-Promise"><a href="#当代的-Promise" class="headerlink" title="当代的 Promise"></a>当代的 Promise</h3><p><code>Promise</code>：承诺的意思，你可以通过 <code>Promise</code> 封装一个异步事件，并且在事件创建后再将回调函数传递给 <code>Promise</code>，而 <code>Promise</code> 则向你承诺异步事件有结果的时候，会调用之后传给 <code>Promise</code> 的处理函数。而传统的回调，是在事件创建之初就一并将回调函数传递过去的。</p>
+<h4 id="Promise-基本概念"><a href="#Promise-基本概念" class="headerlink" title="Promise 基本概念"></a>Promise 基本概念</h4><p>在浏览器环境或者 Node.js 环境中，<code>Promise</code> 是一个全局的构造函数。<code>Promise</code> 构造函数接受一个函数作为参数，我们需要封装的异步事件，就是写在这个函数中的。这个函数的主要作用只是为了封装异步事件为一个 <code>Promise</code> 对象，那么异步事件的正常结果和异次结果又该如何处理呢？</p>
+<p>答案是这个函数会接收两个函数作为参数，一个用来处理正常结果的，一个用来处理异次结果。大致样子如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> promise = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="comment">/* 异步操作成功 */</span>) &#123;</span><br><span class="line">        resolve(data)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        reject(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p><code>resolve</code> 和 <code>reject</code> 这里都只是形参，当一个 <code>Promise</code> 对象创建的时候，传递的函数就立即执行了。函数的执行会产生三种状态：<code>pending</code>、<code>fulfilled</code>、<code>rejected</code>。</p>
+<ul>
+<li><code>pending</code>：异步事件初始化，还没有结果的时候。</li>
+<li><code>fulfilled</code>：在函数中调用 <code>resolve</code> 方法后将触发 <code>Promise</code> 对象的状态更改为 <code>fulfilled</code>，表示异步事件正常结束。</li>
+<li><code>rejected</code>：当异步事件抛出异常时，我们调用这个函数将触发 <code>Promise</code> 对象的状态更改为 <code>rejected</code>，表示异步事件异常结束。</li>
+</ul>
+<p>之后我们就可以给 <code>Promise</code> 绑定 <code>fulfilled</code> 和 <code>rejected</code> 状态的回调函数了，我们通过 <code>Promise.prototype.then()</code> 函数来将 <code>fulfilled</code> 和 <code>rejected</code> 状态的处理函数传递进去：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">promise.then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 当 Promise 的状态变为 fulfilled 的时候执行的回调</span></span><br><span class="line">    <span class="built_in">console</span>.log(data)</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 当 Promise 的状态变为 rejected 的时候执行的回调</span></span><br><span class="line">    <span class="built_in">console</span>.log(err)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>在封装 <code>Promise</code> 对象中通过 <code>resolve(data)</code> 可以将异步事件返回的数据传递出去，然后由 <code>.then()</code> 的第一个回调函数来接收，因此我们就可以将对异步事件结果的处理过程写在 <code>.then()</code> 的第一个回调函数中了。同理，对异常结果的处理在 <code>.then()</code> 的第二个回调函数中处理。</p>
+<p>如果不需要对异常情况进行处理，对异常处理的回调函数在 <code>.then()</code> 中是可以省略的，也就是说，可以只给 <code>.then()</code> 传递一个正常结果处理的回调即可。</p>
+<h4 id="Promise-初体验"><a href="#Promise-初体验" class="headerlink" title="Promise 初体验"></a>Promise 初体验</h4><p>说了这么多，现在就看看怎么把之前出现的读取文件的例子用 <code>Promise</code> 改造一下，看看和传统的回调嵌套有什么本质上的不同。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">"fs"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> promise = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>)</span>&#123;</span><br><span class="line">    fs.readFile(<span class="string">"aaa.txt"</span>, <span class="string">"utf-8"</span>, (err, data)=&gt;&#123;</span><br><span class="line">        <span class="comment">/* </span></span><br><span class="line"><span class="comment">            由于作用域的原因，如果给 readFile 的回调使用 function()，</span></span><br><span class="line"><span class="comment">            那么将无法访问 resolve 和 reject 方法了。</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">        <span class="keyword">if</span> (err) &#123;</span><br><span class="line">            reject(err)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            resolve(data)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">promise.then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 处理成功读取到文件内容的回调函数</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'文件内容：'</span> + data)</span><br><span class="line">&#125;,<span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 处理读取文件异常的回调函数</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'失败原因：'</span> + err.message)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>当文件正常读取后的执行结果：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node app.js
+文件内容：Hello! this is aaa.txt
+</code></pre><p>当文件不存在的执行结果：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node app.js
+失败原因：ENOENT: no such file or directory, open &apos;C:\Users\yunfwe\Desktop\aaa.txt&apos;
+</code></pre><p>结果与我们预料的相同，接下来读取多个文件，我们总不能为每个文件都单独写一串封装为 <code>Promise</code> 对象的代码吧，最好的做法是用一个构造函数，传给这个函数不同的文件名称，然后自动为我们返回一个封装好的 <code>Promise</code> 对象：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">readFile</span>(<span class="params">fileName</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>)</span>&#123;</span><br><span class="line">        fs.readFile(fileName, <span class="string">"utf-8"</span>, (err, data)=&gt;&#123;</span><br><span class="line">            <span class="comment">/* </span></span><br><span class="line"><span class="comment">                由于作用域的原因，如果给 readFile 的回调使用 function()，</span></span><br><span class="line"><span class="comment">                那么将无法访问 resolve 和 reject 方法了。</span></span><br><span class="line"><span class="comment">            */</span></span><br><span class="line">            <span class="keyword">if</span> (err) &#123;</span><br><span class="line">                reject(err)</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                resolve(data)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们创建了一个新的 <code>readFile</code> 函数，这个函数会根据不同的文件名，自动返回一个封装好的 <code>Promise</code> 对象。如果我们想并发的读取多个文件，大可以这样来写：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">readFile(<span class="string">"aaa.txt"</span>).then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;...&#125;)</span><br><span class="line">readFile(<span class="string">"bbb.txt"</span>).then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;...&#125;)</span><br><span class="line">readFile(<span class="string">"ccc.txt"</span>).then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;...&#125;)</span><br></pre></td></tr></table></figure>
+<p>但是这并不能满足我们读完 <code>aaa.txt</code> 再继续往下读取的意愿，那么我们可以让第一个文件的处理结束后，返回第二个文件的 <code>Promise</code> 对象，然后通过 <code>.then()</code> 进行链式调用的方法依次读取：</p>
+<div><div class="fold_hider"><div class="close hider_title"> 点击显示/隐藏代码</div></div><div class="fold">
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">"fs"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">readFile</span>(<span class="params">fileName</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>)</span>&#123;</span><br><span class="line">        fs.readFile(fileName, <span class="string">"utf-8"</span>, (err, data)=&gt;&#123;</span><br><span class="line">            <span class="comment">/* </span></span><br><span class="line"><span class="comment">                由于作用域的原因，如果给 readFile 的回调使用 function()，</span></span><br><span class="line"><span class="comment">                那么将无法访问 resolve 和 reject 方法了。</span></span><br><span class="line"><span class="comment">            */</span></span><br><span class="line">            <span class="keyword">if</span> (err) &#123;</span><br><span class="line">                reject(err)</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                resolve(data)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">readFile(<span class="string">"aaa.txt"</span>)</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 处理 aaa.txt</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'文件内容：'</span> + data)</span><br><span class="line">    <span class="keyword">return</span> readFile(<span class="string">"bbb.txt"</span>)</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'失败原因：'</span> + err.message)</span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 处理 bbb.txt</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'文件内容：'</span> + data)</span><br><span class="line">    <span class="keyword">return</span> readFile(<span class="string">"ccc.txt"</span>)</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'失败原因：'</span> + err.message)</span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 处理 ccc.txt</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'文件内容：'</span> + data)</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'失败原因：'</span> + err.message)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+</div></div>
+<p>当文件都正常读取的情况下：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node app.js
+文件内容：Hello! this is aaa.txt
+文件内容：Hello! this is bbb.txt
+文件内容：Hello! this is ccc.txt
+</code></pre><p>这中写法，即使我们要读取再多的文件，也只需要依次往下排列代码就行了，并不需要对代码进行嵌套，也更不存在回调地狱的问题了。但是如果遇到一个文件读取失败呢？可达鸭眉头一皱发现事情并不简单</p>
+<p><code>bbb.txt</code> 读取失败的情况：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node app.js
+文件内容：Hello! this is aaa.txt
+失败原因：ENOENT: no such file or directory, open &apos;C:\Users\yunfwe\Desktop\bbb.txt&apos;
+文件内容：undefined
+</code></pre><p>因为 <code>bbb.txt</code> 不存在，所以 <code>Promise</code> 里触发了 <code>fulfilled</code> 状态，那么执行的就是错误处理的方法，然而在错误处理的方法中，我们并没有返回读取下一个文件的 <code>Promise</code> 对象。解决方法也很简单，就是在每一个 <code>Promise</code> 的异常处理函数中也返回下一个 <code>Promise</code>。。。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">readFile(<span class="string">"aaa.txt"</span>)</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 处理 aaa.txt</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'文件内容：'</span> + data)</span><br><span class="line">    <span class="keyword">return</span> readFile(<span class="string">"bbb.txt"</span>)</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'失败原因：'</span> + err.message)</span><br><span class="line">    <span class="keyword">return</span> readFile(<span class="string">"bbb.txt"</span>)</span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 处理 bbb.txt</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'文件内容：'</span> + data)</span><br><span class="line">    <span class="keyword">return</span> readFile(<span class="string">"ccc.txt"</span>)</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'失败原因：'</span> + err.message)</span><br><span class="line">    <span class="keyword">return</span> readFile(<span class="string">"ccc.txt"</span>)</span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 处理 ccc.txt</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'文件内容：'</span> + data)</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'失败原因：'</span> + err.message)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node app.js
+文件内容：Hello! this is aaa.txt
+失败原因：ENOENT: no such file or directory, open &apos;C:\Users\yunfwe\Desktop\bbb.txt&apos;
+文件内容：Hello! this is ccc.txt
+</code></pre><h4 id="Promise-异常处理"><a href="#Promise-异常处理" class="headerlink" title="Promise 异常处理"></a>Promise 异常处理</h4><p>正常情况下，一把都是有关联的异步操作才会使用 <code>Promise</code> 来链起来执行，因为下一个异步操作可能会依赖于上一个异步操作的结果，如果其中一个异步操作失败，那么剩下的就没继续执行下去的意义了。如果我们为每个 <code>Promise</code> 对象都指定了异常处理回调，链中的某一个 <code>Promise</code> 即使触发了异常，整个链依然会继续执行下去的，虽然结果并不是我们想要的。</p>
+<p>我们更希望的是，当某一个 <code>Promise</code> 发生异常的时候，就立即终止整个 <code>Promise</code> 链的执行，我们可以统一使用 <code>Promise.prototype.catch()</code> 来捕获异常并终止整个链。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">readFile(<span class="string">"aaa.txt"</span>)</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 处理 aaa.txt</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'文件内容：'</span> + data)</span><br><span class="line">    <span class="keyword">return</span> readFile(<span class="string">"bbb.txt"</span>)</span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 处理 bbb.txt</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'文件内容：'</span> + data)</span><br><span class="line">    <span class="keyword">return</span> readFile(<span class="string">"ccc.txt"</span>)</span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 处理 ccc.txt</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'文件内容：'</span> + data)</span><br><span class="line">&#125;)</span><br><span class="line">.catch(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(err.message)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>执行结果：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node app.js
+文件内容：Hello! this is aaa.txt
+ENOENT: no such file or directory, open &apos;C:\Users\yunfwe\Desktop\bbb.txt&apos;
+</code></pre><p><code>bbb.txt</code> 文件不存在，<code>.catch()</code> 捕获了这个异常并终止了接下来的执行。如果在 <code>.then()</code> 中产生的异常也会被 <code>.catch()</code> 捕获。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">readFile(<span class="string">"aaa.txt"</span>)</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 处理 aaa.txt</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'文件内容：'</span> + data)</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">"手动触发的异常"</span>)</span><br><span class="line">    <span class="keyword">return</span> readFile(<span class="string">"bbb.txt"</span>)</span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 处理 bbb.txt</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'文件内容：'</span> + data)</span><br><span class="line">    <span class="keyword">return</span> readFile(<span class="string">"ccc.txt"</span>)</span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 处理 ccc.txt</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'文件内容：'</span> + data)</span><br><span class="line">&#125;)</span><br><span class="line">.catch(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(err.message)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node app.js
+文件内容：Hello! this is aaa.txt
+手动触发的异常
+</code></pre><p>因此一般总是建议在 <code>Promise</code> 的后面跟上一个 <code>.catch()</code> 来处理已知的或者意料之外的异常。当然，你依然可以在 <code>.catch()</code> 中也返回一个 <code>Promise</code> 对象，然后继续用 <code>.then()</code> 进行其他的逻辑处理。<code>Promise</code> 最直接的好处就是链式调用。</p>
+<h4 id="Promise-的其他用法"><a href="#Promise-的其他用法" class="headerlink" title="Promise 的其他用法"></a>Promise 的其他用法</h4><p>这里举例说明 <code>Pormise</code> 的几个其他常用的方法，其他更详细的 <code>Pormise</code> 用法可以查阅 MDN web docs：<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="_blank" rel="noopener">Pormise</a></p>
+<h5 id="Pormise-all"><a href="#Pormise-all" class="headerlink" title="Pormise.all()"></a>Pormise.all()</h5><p><code>Pormise.all()</code> 接收一个由多个 <code>Promise</code> 对象组成的数组，只有这个数据里所有的 <code>Promise</code> 对象都完成的时候才会去调用 <code>.then()</code> 方法，否则有一个失败，那么整体就是 <code>rejected</code>：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">"fs"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">readFile</span>(<span class="params">fileName</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>)</span>&#123;</span><br><span class="line">        fs.readFile(fileName, <span class="string">"utf-8"</span>, (err, data)=&gt;&#123;</span><br><span class="line">            <span class="keyword">if</span> (err) &#123;</span><br><span class="line">                reject(err)</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                resolve(data)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.all([readFile(<span class="string">"aaa.txt"</span>), readFile(<span class="string">"bbb.txt"</span>), readFile(<span class="string">"ccc.txt"</span>)])</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data)</span><br><span class="line">&#125;)</span><br><span class="line">.catch(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(err.message)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>正常情况下返回的是个包含结果集的数组：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node app.js
+[ &apos;Hello! this is aaa.txt&apos;,
+  &apos;Hello! this is bbb.txt&apos;,
+  &apos;Hello! this is ccc.txt&apos; ]
+</code></pre><p>如果有一个异常，则会触发 <code>.catch()</code>：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node app.js
+ENOENT: no such file or directory, open &apos;C:\Users\yunfwe\Desktop\bbb.txt&apos;
+</code></pre><h5 id="Pormise-race"><a href="#Pormise-race" class="headerlink" title="Pormise.race()"></a>Pormise.race()</h5><p>与 <code>Pormise.all()</code> 用法相似，但是结果不同，<code>Pormise.race()</code> 中只要有一个 <code>Pormise</code> 对象率先改变状态（不管完成还是失败），那 <code>Pormise.race()</code> 之后 <code>.then()</code> 就都是对这一个改变状态了的 <code>Pormise</code> 的处理。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.race([readFile(<span class="string">"aaa.txt"</span>), readFile(<span class="string">"bbb.txt"</span>), readFile(<span class="string">"ccc.txt"</span>)])</span><br><span class="line">.then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data)</span><br><span class="line">&#125;)</span><br><span class="line">.catch(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(err.message)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p><code>aaa.txt</code> 先完成读取，所以只返回了 <code>aaa.txt</code> 的数据：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node app.js
+Hello! this is aaa.txt
+</code></pre><p>判断一个文件是否存在比读取文件内容快得多，所以 <code>bbb.txt</code> 不存在的情况下率先改变成了 <code>rejected</code> 状态：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node app.js
+ENOENT: no such file or directory, open &apos;C:\Users\yunfwe\Desktop\bbb.txt&apos;
+</code></pre><p>基于 <code>Pormise.race()</code> 的性质，我们可以给浏览器的 Ajax 请求添加超时的功能：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Pormise.race([$ajax.get(<span class="string">"/api"</span>), <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)(<span class="params">resolve, reject</span>)</span>&#123;</span><br><span class="line">        setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> reject(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'request timeout'</span>)), <span class="number">5000</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+<p>这样如果 <code>$ajax</code> 没有在 5 秒之内完成的话，<code>setTimeout</code> 就会将状态率先改为 <code>rejected</code> 了。</p>
+<h3 id="未来的-Async"><a href="#未来的-Async" class="headerlink" title="未来的 Async"></a>未来的 Async</h3><p>之所以说 <code>async</code> 是未来的，是因为 ES8 的标准才引入了 <code>async</code> 关键字，<code>async</code> 是 <code>Generator</code> 的语法糖，而 <code>Generator</code> 是 ES6 提供的一种异步编程解决方案。以后使用 <code>async</code> 越来越多一定是个趋势。</p>
+<p><code>async</code> 配合 <code>await</code> 可以让异步的代码看起来和同步的一样，并且可以使用 <code>try</code> 和 <code>catch</code> 来捕捉异步事件产生的异常。想了解这两个需要先熟悉什么是 <code>Generator</code>。</p>
+<h4 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h4><h5 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h5><p><code>Generator</code>（生成器）是用于将一个函数变成 <code>Generator</code> 函数，这种函数的执行过程和普通函数不太一样，普通函数使用 <code>return</code> 返回值，而 <code>Generator</code> 函数中还可以使用 <code>yield</code> 返回值，并且 <code>yield</code> 还可以在函数内使用多次。<code>return</code> 返回值后整个函数就完成执行了，而 <code>yield</code> 只表示这个函数暂停了，下一次继续驱动 <code>Generator</code> 函数运行的时候，就会从上次暂停的地方继续运行。下面看一个简单的例子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">"hello"</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">"world"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意申明一个 <code>Generator</code> 函数和普通函数的不同，<code>Generator</code> 函数需要在 <code>function</code> 和函数名中间加上一个 <code>*</code>，加在哪里并不重要，<code>function *gen()</code> 和 <code>function*gen()</code> 都可以，但是推荐使用 <code>function* gen()</code> 这种方式。接着使用两个 <code>yield</code> 返回了两个字符串，下面看看如何运行这种函数：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node
+&gt; function* gen(){
+...     yield &quot;hello&quot;
+...     yield &quot;world&quot;
+... }
+undefined
+&gt; let f = gen()
+undefined
+&gt; f
+Object [Generator] {}
+&gt; f.next()
+{ value: &apos;hello&apos;, done: false }
+&gt; f.next()
+{ value: &apos;world&apos;, done: false }
+&gt; f.next()
+{ value: undefined, done: true }
+</code></pre><p>我们运行 <code>gen()</code> 后，返回的是一个 <code>Generator</code> 类型的对象，然后调用这个对象的 <code>next</code> 方法，返回了一个普通对象，这个对象的 <code>value</code> 属性是第一个 <code>yield</code> 返回的值，第二个属性 <code>done</code> 表示这个 <code>Generator</code> 函数是否运行结束。当第三次执行 <code>f.next()</code> 的时候，因为已经没有 <code>yield</code> 可以执行了所以 <code>done</code> 的值变成了 <code>true</code>。</p>
+<h5 id="创建一个整数列表"><a href="#创建一个整数列表" class="headerlink" title="创建一个整数列表"></a>创建一个整数列表</h5><p>接下来使用一个小例子来更深入的了解下 <code>Generator</code> 函数的运行原理。我们编写一个 <code>range</code> 函数，传给它一个整数，然后返回从 0 到 传递的整数之间所有的整数，先看普通函数版本：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">range</span>(<span class="params">len</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> l = []</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; len; i++)&#123;</span><br><span class="line">        l.push(i)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<pre><code>&gt; range(5)
+[ 0, 1, 2, 3, 4 ]
+&gt; range(10)
+[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
+</code></pre><p>的确达到了我们的目的，但是这个函数有一个致命的缺陷，就是如果要生成的范围非常巨大，比如 <code>range(99999999999999)</code></p>
+<pre><code>&gt; range(99999999999999)
+
+==== JS stack trace =========================================
+
+    0: ExitFrame [pc: 000003D44F75C5C1]
+Security context: 0x02931fb858a1 &lt;JSObject&gt;
+    1: range [000002931FBA36F9] [repl:~1] [pc=000003D44F7622DB](this=0x01e40aa9ad49 &lt;JSGlobal Object&gt;,len=0x02931fbbdf59 &lt;Number 1e+14&gt;)
+    2: /* anonymous */ [000002931FBBE1F9] [repl:1] [bytecode=000002931FBBDF81 offset=10](this=0x01e40aa9ad49 &lt;JSGlobal Object&gt;)
+    3: InternalFrame [pc: 000003D44F70F0B6]
+    4: EntryFrame [pc: 000003D44F709455]
+    5: E...
+
+FATAL ERROR: CALL_AND_RETRY_LAST Allocation failed - JavaScript heap out of memory
+</code></pre><p>node 进程直接挂掉了，因为所有生成的数都在一个数组里保存，这个数组很容易就超过了堆内存的限制。而如果使用 <code>Generator</code> 函数，每一个值只会在调用的时候生成并返回，并且没有在函数内部保存这个值，那自然不会发生堆内存超出了：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">range</span>(<span class="params">len</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; len; i++)&#123;</span><br><span class="line">        <span class="keyword">yield</span> i</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，因为缺少了对产生的值的保存，代码反而更精简了。那么怎么打印它所产生的值呢？总不能挨个执行 <code>next</code> 吧，ES6 新添了 <code>for ... of</code> 的语法，所有只要实现了 <code>Iterator</code> 接口的对象都可以使用这个语法来遍历，比如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> l = [<span class="number">3</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 for ... of 遍历</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">of</span> l)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出：3 2 1 a b c</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 for ... in 遍历</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">in</span> l)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出：0 1 2 3 4 5</span></span><br></pre></td></tr></table></figure>
+<p><code>for ... of</code> 和 <code>for ... in</code> 最大的区别就是 <code>for ... of</code> 会直接将数组的值传递给了 <code>let i</code>，而 <code>for ... in</code> 将数组的索引传递给了 <code>let i</code>。我们的 <code>Generator</code> 函数也实现了 <code>Iterator</code> 接口所以也可以使用 <code>for ... of</code> 的方法来取值：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">range</span>(<span class="params">len</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; len; i++)&#123;</span><br><span class="line">        <span class="keyword">yield</span> i</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">of</span> range(<span class="number">99999999999999</span>))&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这时候屏幕开始疯狂输出了。。。</p>
+<h5 id="给-Generator-对象传值"><a href="#给-Generator-对象传值" class="headerlink" title="给 Generator 对象传值"></a>给 Generator 对象传值</h5><p>在 <code>Generator</code> 对象运行期间，我们还可以在外部通过 <code>next</code> 方法传递一些值给生成器内部，在生成器对象内部对传递进来的值进行处理，看下面例子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> w = <span class="keyword">yield</span> <span class="string">"hello"</span></span><br><span class="line">    <span class="built_in">console</span>.log(w)</span><br><span class="line">    <span class="keyword">yield</span> w</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 <code>yield</code> 返回 <code>hello</code> 字符串后，我们用 <code>let w</code> 再保存 <code>yield</code> 接收到的值：</p>
+<pre><code>&gt; function* gen(){
+...     let w = yield &quot;hello&quot;
+...     console.log(w)
+...     yield w
+... }
+undefined
+&gt; let g = gen()
+undefined
+&gt; g.next()
+{ value: &apos;hello&apos;, done: false }
+&gt; g.next(&quot;world&quot;)
+world
+{ value: &apos;world&apos;, done: false }
+&gt; g.next(&quot;world&quot;)
+{ value: undefined, done: true }
+</code></pre><p>运行到 <code>let g = gen()</code> 的时候，创建了一个生成器对象 <code>g</code>，第一次 <code>g.next()</code> 的时候为什么我们没有传值进去呢？因为它运行到 <code>yield &quot;hello&quot;</code> 的时候就暂停函数了，如果这个时候传值进去，它也没办法处理。当第二次执行 <code>g.next(&quot;world&quot;)</code> 的时候，从上次暂停的地方继续运行，也就相当于开始运行 <code>let w = (yield)</code> 了，这时候通过 <code>next</code> 传递进去的值就由 <code>yield</code> 返回给内部的 <code>let w</code>，接着生成器继续运行到下一个 <code>yield w</code> 的时候，将 <code>w</code> 的值返回给外部调用者。再继续执行 <code>g.next(&quot;world&quot;)</code> 可内部已经没有 <code>yield</code> 语句进行接收传进去的值了，所以没法处理，生成器结束运行。</p>
+<h5 id="Generator-与-Pormise"><a href="#Generator-与-Pormise" class="headerlink" title="Generator 与 Pormise"></a>Generator 与 Pormise</h5><p>利用生成器对象可以将值返回外部调用者并暂停，然后从外部接收值并继续运行到下一个 <code>yield</code> 的机制，配合 <code>Promise</code> 又能碰撞出什么样的火花呢？</p>
+<p>回到之前需要顺序读取三个文件的问题，我们理想状态下，想要写出这样的代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">"fs"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">readFile</span>(<span class="params">fileName</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>)</span>&#123;</span><br><span class="line">        fs.readFile(fileName, <span class="string">"utf-8"</span>, (err, data)=&gt;&#123;</span><br><span class="line">            <span class="keyword">if</span> (err) &#123;</span><br><span class="line">                reject(err)</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                resolve(data)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> aaa = <span class="keyword">yield</span> readFile(<span class="string">"aaa.txt"</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(aaa)</span><br><span class="line">    <span class="keyword">let</span> bbb = <span class="keyword">yield</span> readFile(<span class="string">"bbb.txt"</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(bbb)</span><br><span class="line">    <span class="keyword">let</span> ccc = <span class="keyword">yield</span> readFile(<span class="string">"ccc.txt"</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(ccc)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过 <code>yield</code> 将程序的控制权交给外部，让外部处理 <code>readFile()</code> 返回的 <code>Promise</code> 对象，然后外部处理完成后将数据传递给 <code>yield</code>，生成器内部就可以直接获取到处理好的数据了，接着再处理其他文件的读取。</p>
+<p>接下来我们该实现如何在外部启动并处理这个生成器，然后将生成器返回的 <code>Promise</code> 对象处理好后再传递给生成器：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> g = gen()</span><br><span class="line">g.next().value.then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    g.next(data).value.then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">        g.next(data).value.then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">            g.next(data)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>通过 <code>g.next().value</code> 获取到了生成器返回来的 <code>Promise</code> 对象，接着使用 <code>.then()</code> 方法处理读取文件完成后的数据通过 <code>g.next(data)</code> 传递回去并继续处理它返回的下一个 <code>Promise</code> 对象，于是就写出了这样的代码。先看看是否达到我们预期的效果了吧：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node app.js
+Hello! this is aaa.txt
+Hello! this is bbb.txt
+Hello! this is ccc.txt
+</code></pre><p>没问题，虽然外部处理生成器返回的 <code>Promise</code> 还是一团糟，但是生成器函数写的就像是同步代码那样了。接下来就是对外部处理生成器对象的方法进行优化了。我们可以发现，外部对 <code>g.next()</code> 的执行基于生成器用 <code>yield</code> 返回了多少次，我们可以用生成器返回对象的 <code>done</code> 属性来判断这个生成器是否结束，然后用递归的方法不断进行 <code>g.next(data)</code> 处理：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run</span>(<span class="params">gen</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> g = gen()</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">let</span> result = g.next(data)</span><br><span class="line">        <span class="keyword">if</span> (result.done) <span class="keyword">return</span> result.value</span><br><span class="line">        result.value.then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">            next(data)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    next()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们定义了一个 <code>run</code> 函数作为生成器函数的辅助函数，<code>run</code> 函数内部首先初始化了生成器对象，然后定义了一个 <code>next</code> 的函数，这个函数通过递归来控制生成器返回值和传递值，通过判断生成器是否已经完成来结束递归。接着我们通过 <code>run</code> 函数来启动 <code>gen</code> 生成器函数：</p>
+<p>完整代码：<br><div><div class="fold_hider"><div class="close hider_title"> 点击显示/隐藏代码</div></div><div class="fold">
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">"fs"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">readFile</span>(<span class="params">fileName</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>)</span>&#123;</span><br><span class="line">        fs.readFile(fileName, <span class="string">"utf-8"</span>, (err, data)=&gt;&#123;</span><br><span class="line">            <span class="keyword">if</span> (err) &#123;</span><br><span class="line">                reject(err)</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                resolve(data)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run</span>(<span class="params">gen</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> g = gen()</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">let</span> result = g.next(data)</span><br><span class="line">        <span class="keyword">if</span> (result.done) <span class="keyword">return</span> result.value</span><br><span class="line">        result.value.then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">            next(data)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    next()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> aaa = <span class="keyword">yield</span> readFile(<span class="string">"aaa.txt"</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(aaa)</span><br><span class="line">    <span class="keyword">let</span> bbb = <span class="keyword">yield</span> readFile(<span class="string">"bbb.txt"</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(bbb)</span><br><span class="line">    <span class="keyword">let</span> ccc = <span class="keyword">yield</span> readFile(<span class="string">"ccc.txt"</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(ccc)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">run(gen)</span><br></pre></td></tr></table></figure>
+
+</div></div></p>
+<p>执行结果：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node app.js
+Hello! this is aaa.txt
+Hello! this is bbb.txt
+Hello! this is ccc.txt
+</code></pre><p>我们还可以在 <code>run</code> 函数中通过 <code>catch</code> 来处理异常的情况，我们可以将异常传递进去，或者直接终止生成器：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run</span>(<span class="params">gen</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> g = gen()</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">let</span> result = g.next(data)</span><br><span class="line">        <span class="keyword">if</span> (result.done) <span class="keyword">return</span> result.value</span><br><span class="line">        result.value.then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">            next(data)</span><br><span class="line">        &#125;).catch(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">            next(err)  <span class="comment">// 如果将err传递进去，则生成器继续运行</span></span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    next()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node app.js
+Hello! this is aaa.txt
+{ [Error: ENOENT: no such file or directory, open &apos;C:\Users\yunfwe\Desktop\bbb.txt&apos;]
+errno: -4058,
+code: &apos;ENOENT&apos;,
+syscall: &apos;open&apos;,
+path: &apos;C:\\Users\\yunfwe\\Desktop\\bbb.txt&apos; }
+Hello! this is ccc.txt
+</code></pre><p><code>Generator</code> 已经有点好用了，那么还有没有更好用的方法呢？</p>
+<h4 id="async-await-闪亮登场"><a href="#async-await-闪亮登场" class="headerlink" title="async/await 闪亮登场"></a>async/await 闪亮登场</h4><p>前面也有说到，<code>async</code> 是 <code>Generator</code> 的语法糖，<code>async</code> 就相当于将 <code>Generator</code> 函数，以及之前我们写的 <code>run</code> 这个辅助执行器融合到了一起。<code>await</code> 关键字只能用在 <code>async</code> 申明的函数中，意为等待一个异步操作完成。</p>
+<h5 id="基本用法-1"><a href="#基本用法-1" class="headerlink" title="基本用法"></a>基本用法</h5><p>上一节处理依次读取三个文件的 <code>gen</code> 和 <code>run</code> 方法，我们先用 <code>async</code> 和 <code>await</code> 改造一下，先体现一下它的用法：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">genAsync</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> aaa = <span class="keyword">await</span> readFile(<span class="string">"aaa.txt"</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(aaa)</span><br><span class="line">    <span class="keyword">let</span> bbb = <span class="keyword">await</span> readFile(<span class="string">"bbb.txt"</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(bbb)</span><br><span class="line">    <span class="keyword">let</span> ccc = <span class="keyword">await</span> readFile(<span class="string">"ccc.txt"</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(ccc)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们只是把申明 <code>Generator</code> 函数的 <code>*</code> 换成了在函数前面用 <code>async</code>，然后在需要等待异步操作完成的地方使用 <code>await</code> 代替了 <code>yield</code>，然后其他的什么辅助方法都不需要了，完整代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">"fs"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">readFile</span>(<span class="params">fileName</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>)</span>&#123;</span><br><span class="line">        fs.readFile(fileName, <span class="string">"utf-8"</span>, (err, data)=&gt;&#123;</span><br><span class="line">            <span class="keyword">if</span> (err) &#123;</span><br><span class="line">                reject(err)</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                resolve(data)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">genAsync</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> aaa = <span class="keyword">await</span> readFile(<span class="string">"aaa.txt"</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(aaa)</span><br><span class="line">    <span class="keyword">let</span> bbb = <span class="keyword">await</span> readFile(<span class="string">"bbb.txt"</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(bbb)</span><br><span class="line">    <span class="keyword">let</span> ccc = <span class="keyword">await</span> readFile(<span class="string">"ccc.txt"</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(ccc)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">genAsync()</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node app.js
+Hello! this is aaa.txt
+Hello! this is bbb.txt
+Hello! this is ccc.txt
+</code></pre><p>有没有觉得很棒！甚至我们都可以像写同步代码一样，通过 <code>try...catch</code> 来捕捉 <code>await</code> 产生的异常！</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">genAsync</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> aaa = <span class="keyword">await</span> readFile(<span class="string">"aaa.txt"</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(aaa)</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> bbb = <span class="keyword">await</span> readFile(<span class="string">"bbb.txt"</span>)</span><br><span class="line">        <span class="built_in">console</span>.log(bbb)</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(err.message)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> ccc = <span class="keyword">await</span> readFile(<span class="string">"ccc.txt"</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(ccc)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们在可能出现异常的地方使用 <code>try...catch</code> 来捕捉，运行结果：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node app.js
+Hello! this is aaa.txt
+ENOENT: no such file or directory, open &apos;C:\Users\yunfwe\Desktop\bbb.txt&apos;
+Hello! this is ccc.txt
+</code></pre><p>异步代码写起来比以前舒服太多了，接下来就探究下 <code>async</code> 都帮我们做了什么吧！</p>
+<h5 id="async-函数"><a href="#async-函数" class="headerlink" title="async 函数"></a>async 函数</h5><p>使用 <code>async</code> 申明的函数返回的是一个 <code>Promise</code> 对象，如果通过 <code>return</code> 返回值，相当于将 <code>Promise</code> 的状态变为了 <code>fulfilled</code> 状态，可以通过 <code>.then()</code> 来处理返回的数据。如果在 <code>async</code> 函数中抛出异常，相当于将 <code>Promise</code> 的状态变成了 <code>rejected</code>，可以通过 <code>.catch()</code> 来捕捉。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"hello world"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">f().then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">"Error!"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">f1().catch(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(err.message)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>执行结果：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node async.js
+hello world
+Error!
+</code></pre><h5 id="await-命令"><a href="#await-命令" class="headerlink" title="await 命令"></a>await 命令</h5><p>只有 <code>async</code> 函数内部才可以使用 <code>await</code> 命令。<code>await</code> 命令后面可以跟上一个 <code>Promise</code> 对象（或者定义了 <code>then</code> 方法的对象）或者其他类型的数据，如果是其他类型数据，<code>await</code> 会直接返回这个数据。</p>
+<p>如果是 <code>Promise</code> 对象，当 <code>await</code> 后面的 <code>Promise</code> 对象的状态变成 <code>fulfilled</code>，<code>await</code> 将返回它的值。如果 <code>await</code> 后面的 <code>Promise</code> 对象的状态变成 <code>rejected</code>，<code>await</code> 会立即抛出一个异常，并结束 <code>async</code> 函数的运行，可以通过 <code>async</code> 函数的 <code>.catch()</code> 在外部来捕捉这个异常，或者直接用 <code>try...catch</code> 在内部捕捉 <code>await</code> 抛出的异常。</p>
+<p><code>await</code> 后面 <code>Promise</code> 状态为 <code>fulfilled</code> 的情况：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> d = <span class="keyword">await</span> <span class="built_in">Promise</span>.resolve(<span class="string">"Done"</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(d)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">f()</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node async.js
+Done
+</code></pre><p><code>await</code> 后面 <code>Promise</code> 状态为 <code>rejected</code> 的情况：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> d = <span class="keyword">await</span> <span class="built_in">Promise</span>.reject(<span class="string">"Error!"</span>)</span><br><span class="line">        <span class="built_in">console</span>.log(d)</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"Catch: "</span> + err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">f()</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node async.js
+Catch: Error!
+</code></pre><p>如果 <code>async</code> 内部没有捕捉到 <code>await</code> 抛出的异常，那么可以在 <code>async</code> 函数外部通过 <code>.catch()</code> 方法捕捉：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> d = <span class="keyword">await</span> <span class="built_in">Promise</span>.reject(<span class="string">"Error!"</span>)</span><br><span class="line">        <span class="built_in">console</span>.log(d)</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"Catch: "</span> + err)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">await</span> <span class="built_in">Promise</span>.reject(<span class="string">"New Error!"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">f().catch(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(err)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node async.js
+Catch: Error!
+New Error!
+</code></pre><p>如果 <code>async</code> 内部多个 <code>await</code> 等待异步结果，只要有一个 <code>await</code> 抛出了异常没被捕捉，那么整个 <code>async</code> 函数就立即停止运行了，我们继续改造之前读取文件的例子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">genAsync</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> aaa = <span class="keyword">await</span> readFile(<span class="string">"aaa.txt"</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(aaa)</span><br><span class="line">    <span class="keyword">let</span> bbb = <span class="keyword">await</span> readFile(<span class="string">"bbb.txt"</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(bbb)</span><br><span class="line">    <span class="keyword">let</span> ccc = <span class="keyword">await</span> readFile(<span class="string">"ccc.txt"</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(ccc)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">genAsync().catch(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(err.message)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>可以看到，<code>bbb.txt</code> 不存在的情况下，如果没有捕捉这个异常，<code>genAsync</code> 就 <code>rejected</code> 了。运行结果：</p>
+<pre><code>C:\Users\yunfwe\Desktop&gt;node app.js
+Hello! this is aaa.txt
+ENOENT: no such file or directory, open &apos;C:\Users\yunfwe\Desktop\bbb.txt&apos;
+</code></pre><h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><p>这是 2018 年最后一篇博客，特此纪念一下 (￣▽￣)”</p>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<li><a href="http://es6.ruanyifeng.com/#docs/promise" target="_blank" rel="noopener">Promise</a></li>
+<li><a href="http://es6.ruanyifeng.com/#docs/generator" target="_blank" rel="noopener">Generator</a></li>
+<li><a href="http://es6.ruanyifeng.com/#docs/async" target="_blank" rel="noopener">Async</a></li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag"><i class="fa fa-tag"></i> javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/28/2018/Web页面布局/" rel="next" title="Web页面布局">
+                <i class="fa fa-chevron-left"></i> Web页面布局
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/27/2019/Supervisor 进程管理工具/" rel="prev" title="Supervisor 进程管理工具">
+                Supervisor 进程管理工具 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="魏云飞">
+            
+              <p class="site-author-name" itemprop="name">魏云飞</p>
+              <p class="site-description motion-element" itemprop="description">帅的人已经醒来 而丑的人还在沉睡</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">61</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/yunfwe" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#教程"><span class="nav-number">3.</span> <span class="nav-text">教程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#经典回调问题"><span class="nav-number">3.1.</span> <span class="nav-text">经典回调问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#当代的-Promise"><span class="nav-number">3.2.</span> <span class="nav-text">当代的 Promise</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Promise-基本概念"><span class="nav-number">3.2.1.</span> <span class="nav-text">Promise 基本概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Promise-初体验"><span class="nav-number">3.2.2.</span> <span class="nav-text">Promise 初体验</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Promise-异常处理"><span class="nav-number">3.2.3.</span> <span class="nav-text">Promise 异常处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Promise-的其他用法"><span class="nav-number">3.2.4.</span> <span class="nav-text">Promise 的其他用法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Pormise-all"><span class="nav-number">3.2.4.1.</span> <span class="nav-text">Pormise.all()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Pormise-race"><span class="nav-number">3.2.4.2.</span> <span class="nav-text">Pormise.race()</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#未来的-Async"><span class="nav-number">3.3.</span> <span class="nav-text">未来的 Async</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Generator"><span class="nav-number">3.3.1.</span> <span class="nav-text">Generator</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#基本用法"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">基本用法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#创建一个整数列表"><span class="nav-number">3.3.1.2.</span> <span class="nav-text">创建一个整数列表</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#给-Generator-对象传值"><span class="nav-number">3.3.1.3.</span> <span class="nav-text">给 Generator 对象传值</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Generator-与-Pormise"><span class="nav-number">3.3.1.4.</span> <span class="nav-text">Generator 与 Pormise</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#async-await-闪亮登场"><span class="nav-number">3.3.2.</span> <span class="nav-text">async/await 闪亮登场</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#基本用法-1"><span class="nav-number">3.3.2.1.</span> <span class="nav-text">基本用法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#async-函数"><span class="nav-number">3.3.2.2.</span> <span class="nav-text">async 函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#await-命令"><span class="nav-number">3.3.2.3.</span> <span class="nav-text">await 命令</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">4.</span> <span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">4.1.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">魏云飞</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">713k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+    <span title="站点总阅读时长">11:53</span>
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.0.4</div>
+<div class="BbeiAn-info"">
+  渝ICP备 -
+  <a href="http://www.beian.miit.gov.cn/">18019763号</a>
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.json";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<script>
+var OriginTitile = document.title;
+ var titleTime;
+ document.addEventListener('visibilitychange', function () {
+     if (document.hidden) {
+         $('[rel="icon"]').attr('href', "/img/TEP.ico");
+         document.title = '╭(°A°`)╮ 页面崩溃啦 ~ ';
+         clearTimeout(titleTime);
+     }
+     else {
+         $('[rel="icon"]').attr('href', "/favicon.ico");
+         document.title = '(ฅ>ω<*ฅ) 噫又好了~' + OriginTitile;
+         titleTime = setTimeout(function () {
+             document.title = OriginTitile;
+         }, 2000);
+     }
+ });
+</script>
+</html>

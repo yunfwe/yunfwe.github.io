@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="MongoDB,NoSQL,">
+
+
+<meta name="description" content="简介 当面对海量数据的时候，单台MongoDB的承受能力显然达不到数据要求。分片(Sharding)是MongoDB将大型的集合分割到不同服务器上的方法。分片起源于关系型数据库的分区，但是和关系型数据库的分区相比，MongoDB已经帮用户做了所有能自动完成的事情。MongoDB会自动将需要分片的集合均衡的分布到不同的服务器上，配合副本集保障了数据的可用性和安全性，而这一切对用户都是透明的。">
+<meta name="keywords" content="MongoDB,NoSQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MongoDB分片集群">
+<meta property="og:url" content="http://www.yunfwe.cn/2018/03/02/2018/MongoDB分片集群/index.html">
+<meta property="og:site_name" content="某科学的最后之作">
+<meta property="og:description" content="简介 当面对海量数据的时候，单台MongoDB的承受能力显然达不到数据要求。分片(Sharding)是MongoDB将大型的集合分割到不同服务器上的方法。分片起源于关系型数据库的分区，但是和关系型数据库的分区相比，MongoDB已经帮用户做了所有能自动完成的事情。MongoDB会自动将需要分片的集合均衡的分布到不同的服务器上，配合副本集保障了数据的可用性和安全性，而这一切对用户都是透明的。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.yunfwe.cn/uploads/photos/2015112714373538.jpg">
+<meta property="og:updated_time" content="2025-07-22T07:12:54.869Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MongoDB分片集群">
+<meta name="twitter:description" content="简介 当面对海量数据的时候，单台MongoDB的承受能力显然达不到数据要求。分片(Sharding)是MongoDB将大型的集合分割到不同服务器上的方法。分片起源于关系型数据库的分区，但是和关系型数据库的分区相比，MongoDB已经帮用户做了所有能自动完成的事情。MongoDB会自动将需要分片的集合均衡的分布到不同的服务器上，配合副本集保障了数据的可用性和安全性，而这一切对用户都是透明的。">
+<meta name="twitter:image" content="http://www.yunfwe.cn/uploads/photos/2015112714373538.jpg">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="某科学的最后之作" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://www.yunfwe.cn/2018/03/02/2018/MongoDB分片集群/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>MongoDB分片集群 | 某科学的最后之作</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">某科学的最后之作</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">帅的人已经醒来 而丑的人还在沉睡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.yunfwe.cn/2018/03/02/2018/MongoDB分片集群/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="魏云飞">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="某科学的最后之作">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MongoDB分片集群</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-02T10:12:00+08:00">2018-03-02</time>
+            
+
+            
+            
+              
+                
+              
+            
+
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2025-07-22T15:12:54+08:00">2025-07-22</time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/MongoDB/" itemprop="url" rel="index"><span itemprop="name">MongoDB</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">11k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">0:11</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="/uploads/photos/2015112714373538.jpg" rel="gallery_cmde8g1xl004zpijxymub08hk" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="/uploads/photos/2015112714373538.jpg" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
+<p>当面对海量数据的时候，单台MongoDB的承受能力显然达不到数据要求。分片(Sharding)是MongoDB将大型的集合分割到不同服务器上的方法。分片起源于关系型数据库的分区，但是和关系型数据库的分区相比，MongoDB已经帮用户做了所有能自动完成的事情。MongoDB会自动将需要分片的集合均衡的分布到不同的服务器上，配合副本集保障了数据的可用性和安全性，而这一切对用户都是透明的。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><h3 id="分片的目的"><a href="#分片的目的" class="headerlink" title="分片的目的"></a>分片的目的</h3><p>高数据量和吞吐量的数据库应用会对单机的性能造成较大压力。随着数据的增大，单台MongoDB的QPS会严重下降。较大的查询甚至会将单机的CPU和内存资源耗尽。<br>为了解决MongoDB的性能问题，一般有两种解决方法：<strong>垂直扩展</strong>和<strong>水平扩展</strong>。</p>
+<p><strong>垂直扩展</strong> 就是升级服务器的硬件，增加更多的CPU，增加更大的内存。但是这种方法很容易就达到硬件提升的瓶颈，而且可能需要付出更高的代价。<br><strong>水平扩展</strong> 就是一台服务器不行就多台，将数据分布到多个服务器上，需要查询数据的时候根据相应的算法知道数据存放在哪台服务器上就可以了。</p>
+<h3 id="分片的设计"><a href="#分片的设计" class="headerlink" title="分片的设计"></a>分片的设计</h3><p>一个MongoDB分片集群有三种角色</p>
+<ol>
+<li><strong>分片服务器</strong>(Shard Server) mongod实例，用于存储实际的数据块。分片服务器可以是一个副本集集群共同来提供服务 防止单点故障。</li>
+<li><strong>配置服务器</strong>(Config Server) mongod实例，存储整个集群和分片的元数据，就像是一本书的目录，保存的只是数据的分布表。</li>
+<li><strong>路由服务器</strong>(Route Server) mongos实例，客户端由此接入，本身不存放数据，仅供程序连接，起到一个路由的作用。</li>
+</ol>
+<p>路由服务器对整个MongoDB分片集群进行了抽象，用户访问mongos提供的监听就像访问一个mongod一样。而分片服务器使用副本集来保障了数据的可用性和安全性。分片集群还提供了良好的扩展能力，随着数据量增大可以方便的增加分片服务器来扩展整个集群的容量。</p>
+<p>用户对分片集群一次完整的读取数据过程如下：<br><img src="/uploads/2018/mongodb/h34achz523xvc160.png" alt></p>
+<h3 id="数据分发"><a href="#数据分发" class="headerlink" title="数据分发"></a>数据分发</h3><p>在MongoDB分片集群中，将集合的数据拆分成<strong>块(chunk)</strong>，然后将块分不到不同的分片服务器上。<br>MongoDB的块大小默认是<code>64M</code>，大于<code>64M</code>的块将自动分裂为两个较小的块。MongoDB内置均衡器(balancer)就是用于拆分块和分发块的。</p>
+<p>块的分发主要有两种方式：<strong>基于块的数量的分发</strong> 和 <strong>基于片键范围的定向分发</strong></p>
+<h4 id="基于块的数量的分发"><a href="#基于块的数量的分发" class="headerlink" title="基于块的数量的分发"></a>基于块的数量的分发</h4><p>MongoDB内置均衡器按照集合的索引字段来进行数据分发，该字段叫做<strong>片键(sharded key)</strong><br>片键一般有三种类型：<strong>升序片键</strong>，<strong>随机片键</strong>和<strong>基于分组的片键</strong>。</p>
+<h5 id="升序片键"><a href="#升序片键" class="headerlink" title="升序片键"></a>升序片键</h5><p>升序片键类似自增长的ID。假如集合foo有10个文档，1-4的文档所在块在分片服务器A上，5-8的文档所在块在分片服务器B上，9-10的文档所在块在分片服务器C上。当有新的文档需要写入时会插入到C服务器上所在的块，当块的大小超过限制后会分裂为两个块，分裂后的旧数据所在块可能会移动到其他服务器，继续新增的数据还会插入到拥有最大ID的块，导致所有的写请求都被路由到了C分片服务器上，数据写入不均匀。</p>
+<p>但是如果按照片键进行范围读取时，数据可能都在同一个块上，读取的性能就比较高了。</p>
+<h5 id="随机片键"><a href="#随机片键" class="headerlink" title="随机片键"></a>随机片键</h5><p>随机片键是指片键的值不是固定增长，而是一些没有规律的键值。由于写入数据是随机分发的，各分片增长的速度大致相同，减少了chunk 迁移的次数。使用随机分片的弊端是：写入的位置是随机的，如果使用Hash Index来产生随机值，那么范围查询的速度会很慢。</p>
+<h5 id="基于分组的片键"><a href="#基于分组的片键" class="headerlink" title="基于分组的片键"></a>基于分组的片键</h5><p>基于分组的片键是两字段的复合片键，第一个字段用于分组，第二个字段用于自增，所以第二个字段最好是自增字段。这种片键策略是最好的，能够实现多热点数据的读写。</p>
+<p>选择合适的片键需要对项目是写为主还是读为主的权衡。</p>
+<h4 id="基于片键范围的定向分发"><a href="#基于片键范围的定向分发" class="headerlink" title="基于片键范围的定向分发"></a>基于片键范围的定向分发</h4><p>如果希望特定范围的块被分发到特定的分片服务器中，可以为分片添加标签，然后为标签指定相应的片键范围，这样，如果一个文档属于某个标签的片键范围，就会被定向到特定的分片服务器中了。</p>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>使用三台测试机来搭建环境 使用不同的端口号来启动不同的MongoDB实例。</p>
+<h3 id="系统环境"><a href="#系统环境" class="headerlink" title="系统环境"></a>系统环境</h3><table>
+<thead>
+<tr>
+<th>主机名</th>
+<th style="text-align:center">系统</th>
+<th style="text-align:right">IP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mongo-A</td>
+<td style="text-align:center">CentOS 6.8</td>
+<td style="text-align:right">10.0.0.3</td>
+</tr>
+<tr>
+<td>mongo-B</td>
+<td style="text-align:center">CentOS 6.8</td>
+<td style="text-align:right">10.0.0.4</td>
+</tr>
+<tr>
+<td>mongo-C</td>
+<td style="text-align:center">CentOS 6.8</td>
+<td style="text-align:right">10.0.0.5</td>
+</tr>
+</tbody>
+</table>
+<h3 id="拓扑结构"><a href="#拓扑结构" class="headerlink" title="拓扑结构"></a>拓扑结构</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">mongo-A</th>
+<th style="text-align:center">mongo-B</th>
+<th style="text-align:center">mongo-C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Mongos</td>
+<td style="text-align:center">Mongos</td>
+<td style="text-align:center">Mongos</td>
+</tr>
+<tr>
+<td style="text-align:center">Config Server</td>
+<td style="text-align:center">Config Server</td>
+<td style="text-align:center">Config Server</td>
+</tr>
+<tr>
+<td style="text-align:center">Shard Server 1 主</td>
+<td style="text-align:center">Shard Server 1 备</td>
+<td style="text-align:center">Shard Server 1 仲裁</td>
+</tr>
+<tr>
+<td style="text-align:center">Shard Server 2 主</td>
+<td style="text-align:center">Shard Server 2 备</td>
+<td style="text-align:center">Shard Server 2 仲裁</td>
+</tr>
+<tr>
+<td style="text-align:center">Shard Server 3 主</td>
+<td style="text-align:center">Shard Server 3 备</td>
+<td style="text-align:center">Shard Server 3 仲裁</td>
+</tr>
+</tbody>
+</table>
+<h3 id="服务信息"><a href="#服务信息" class="headerlink" title="服务信息"></a>服务信息</h3><table>
+<thead>
+<tr>
+<th>角色</th>
+<th>数据目录</th>
+<th>端口</th>
+<th>副本集名称</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mongos</td>
+<td>None</td>
+<td>27017</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Config Server</td>
+<td>/data/cs</td>
+<td>20000</td>
+<td>cs</td>
+</tr>
+<tr>
+<td>Shard Server 1</td>
+<td>/data/ss1</td>
+<td>21001</td>
+<td>ss1</td>
+</tr>
+<tr>
+<td>Shard Server 2</td>
+<td>/data/ss2</td>
+<td>21002</td>
+<td>ss2</td>
+</tr>
+<tr>
+<td>Shard Server 3</td>
+<td>/data/ss3</td>
+<td>21003</td>
+<td>ss3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><h3 id="安装MongoDB"><a href="#安装MongoDB" class="headerlink" title="安装MongoDB"></a>安装MongoDB</h3><p>这里使用<code>Linux</code>平台当前最新版 <strong>3.6.3</strong> <a href="http://downloads.mongodb.org/linux/mongodb-linux-x86_64-3.6.3.tgz" target="_blank" rel="noopener">点此下载</a></p>
+<p>所有节点全部执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tar xf mongodb-linux-x86_64-3.6.3.tgz -C /usr/local/</span><br><span class="line">ln -s /usr/local/mongodb-linux-x86_64-3.6.3/ /usr/local/mongodb</span><br><span class="line">mkdir -p /data/&#123;cs,ss1,ss2,ss3&#125;</span><br><span class="line">echo &apos;export PATH=/usr/local/mongodb/bin/:$PATH&apos; &gt; /etc/profile.d/mongodb.sh</span><br><span class="line">source /etc/profile.d/mongodb.sh</span><br></pre></td></tr></table></figure></p>
+<h3 id="配置分片集群"><a href="#配置分片集群" class="headerlink" title="配置分片集群"></a>配置分片集群</h3><h4 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h4><p>所有节点执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mongod --configsvr --dbpath /data/cs --fork --logpath /var/log/mongodcs.log --bind_ip 0.0.0.0 --port 20000 --replSet cs </span><br><span class="line">mongod --shardsvr --dbpath /data/ss1 --fork --logpath /var/log/mongodss1.log --bind_ip 0.0.0.0 --port 21001 --replSet ss1</span><br><span class="line">mongod --shardsvr --dbpath /data/ss2 --fork --logpath /var/log/mongodss2.log --bind_ip 0.0.0.0 --port 21002 --replSet ss2</span><br><span class="line">mongod --shardsvr --dbpath /data/ss3 --fork --logpath /var/log/mongodss3.log --bind_ip 0.0.0.0 --port 21003 --replSet ss3</span><br></pre></td></tr></table></figure></p>
+<h4 id="配置Config-Server"><a href="#配置Config-Server" class="headerlink" title="配置Config Server"></a>配置Config Server</h4><p>随便连接到一个服务器的20000端口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mongo 127.0.0.1:20000</span><br></pre></td></tr></table></figure></p>
+<p>初始化Config Server，在mongo中执行以下代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> cfg = &#123;<span class="attr">_id</span>:<span class="string">"cs"</span>, <span class="attr">configsvr</span>:<span class="literal">true</span>, <span class="attr">members</span>:[ </span><br><span class="line">        &#123;<span class="attr">_id</span>:<span class="number">0</span>,<span class="attr">host</span>:<span class="string">'10.0.0.3:20000'</span>&#125;, </span><br><span class="line">        &#123;<span class="attr">_id</span>:<span class="number">1</span>,<span class="attr">host</span>:<span class="string">'10.0.0.4:20000'</span>&#125;,   </span><br><span class="line">        &#123;<span class="attr">_id</span>:<span class="number">2</span>,<span class="attr">host</span>:<span class="string">'10.0.0.5:20000'</span>&#125;</span><br><span class="line">    ]&#125;;</span><br><span class="line">rs.initiate(cfg)</span><br></pre></td></tr></table></figure>
+<p>结果输出：</p>
+<pre><code>&gt; rs.initiate(cfg)
+{
+    &quot;ok&quot; : 1,
+    &quot;operationTime&quot; : Timestamp(1519896701, 1),
+    &quot;$gleStats&quot; : {
+        &quot;lastOpTime&quot; : Timestamp(1519896701, 1),
+        &quot;electionId&quot; : ObjectId(&quot;000000000000000000000000&quot;)
+    },
+    &quot;$clusterTime&quot; : {
+        &quot;clusterTime&quot; : Timestamp(1519896701, 1),
+        &quot;signature&quot; : {
+            &quot;hash&quot; : BinData(0,&quot;AAAAAAAAAAAAAAAAAAAAAAAAAAA=&quot;),
+            &quot;keyId&quot; : NumberLong(0)
+        }
+    }
+}
+</code></pre><h4 id="配置Shard-Server-1"><a href="#配置Shard-Server-1" class="headerlink" title="配置Shard Server 1"></a>配置Shard Server 1</h4><p>连接mongo-A的21001端口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mongo 10.0.0.3:21001</span><br></pre></td></tr></table></figure></p>
+<p>初始化Shard Server 1<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> cfg = &#123;<span class="attr">_id</span>:<span class="string">"ss1"</span>,<span class="attr">members</span>:[ </span><br><span class="line">        &#123;<span class="attr">_id</span>:<span class="number">0</span>,<span class="attr">host</span>:<span class="string">'10.0.0.3:21001'</span>,<span class="attr">priority</span>:<span class="number">2</span>&#125;, </span><br><span class="line">        &#123;<span class="attr">_id</span>:<span class="number">1</span>,<span class="attr">host</span>:<span class="string">'10.0.0.4:21001'</span>,<span class="attr">priority</span>:<span class="number">1</span>&#125;,   </span><br><span class="line">        &#123;<span class="attr">_id</span>:<span class="number">2</span>,<span class="attr">host</span>:<span class="string">'10.0.0.5:21001'</span>,<span class="attr">arbiterOnly</span>:<span class="literal">true</span>&#125;] </span><br><span class="line">    &#125;;</span><br><span class="line">rs.initiate(cfg)</span><br></pre></td></tr></table></figure></p>
+<h4 id="配置Shard-Server-2"><a href="#配置Shard-Server-2" class="headerlink" title="配置Shard Server 2"></a>配置Shard Server 2</h4><p>接着连接mongo-A的21002端口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mongo 10.0.0.3:21002</span><br></pre></td></tr></table></figure></p>
+<p>初始化Shard Server 2<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> cfg = &#123;<span class="attr">_id</span>:<span class="string">"ss2"</span>,<span class="attr">members</span>:[ </span><br><span class="line">        &#123;<span class="attr">_id</span>:<span class="number">0</span>,<span class="attr">host</span>:<span class="string">'10.0.0.3:21002'</span>,<span class="attr">priority</span>:<span class="number">2</span>&#125;, </span><br><span class="line">        &#123;<span class="attr">_id</span>:<span class="number">1</span>,<span class="attr">host</span>:<span class="string">'10.0.0.4:21002'</span>,<span class="attr">priority</span>:<span class="number">1</span>&#125;,   </span><br><span class="line">        &#123;<span class="attr">_id</span>:<span class="number">2</span>,<span class="attr">host</span>:<span class="string">'10.0.0.5:21002'</span>,<span class="attr">arbiterOnly</span>:<span class="literal">true</span>&#125;] </span><br><span class="line">    &#125;;</span><br><span class="line">rs.initiate(cfg)</span><br></pre></td></tr></table></figure></p>
+<h4 id="配置Shard-Server-3"><a href="#配置Shard-Server-3" class="headerlink" title="配置Shard Server 3"></a>配置Shard Server 3</h4><p>连接mongo-A的21003端口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mongo 10.0.0.3:21003</span><br></pre></td></tr></table></figure></p>
+<p>初始化Shard Server 3<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> cfg = &#123;<span class="attr">_id</span>:<span class="string">"ss3"</span>,<span class="attr">members</span>:[ </span><br><span class="line">        &#123;<span class="attr">_id</span>:<span class="number">0</span>,<span class="attr">host</span>:<span class="string">'10.0.0.3:21003'</span>,<span class="attr">priority</span>:<span class="number">2</span>&#125;, </span><br><span class="line">        &#123;<span class="attr">_id</span>:<span class="number">1</span>,<span class="attr">host</span>:<span class="string">'10.0.0.4:21003'</span>,<span class="attr">priority</span>:<span class="number">1</span>&#125;,   </span><br><span class="line">        &#123;<span class="attr">_id</span>:<span class="number">2</span>,<span class="attr">host</span>:<span class="string">'10.0.0.5:21003'</span>,<span class="attr">arbiterOnly</span>:<span class="literal">true</span>&#125;] </span><br><span class="line">    &#125;;</span><br><span class="line">rs.initiate(cfg)</span><br></pre></td></tr></table></figure></p>
+<h4 id="配置mongos路由服务"><a href="#配置mongos路由服务" class="headerlink" title="配置mongos路由服务"></a>配置mongos路由服务</h4><p>选择一台服务器当作mongos路由服务，这里使用mongo-A</p>
+<p>在mongo-A上执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mongos --configdb cs/10.0.0.3:20000,10.0.0.4:20000,10.0.0.5:20000 --fork --logpath /var/log/mongos.log --bind_ip 0.0.0.0</span><br></pre></td></tr></table></figure></p>
+<p>mongos默认监听27017端口 也是mongod默认监听的端口</p>
+<h4 id="添加分片服务器到集群"><a href="#添加分片服务器到集群" class="headerlink" title="添加分片服务器到集群"></a>添加分片服务器到集群</h4><p>登陆路由服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mongo 10.0.0.3:27017</span><br></pre></td></tr></table></figure></p>
+<p>添加分片服务器到集群<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sh.addShard(<span class="string">"ss1/10.0.0.3:21001,10.0.0.4:21001,10.0.0.5:21001"</span>)</span><br><span class="line">sh.addShard(<span class="string">"ss2/10.0.0.3:21002,10.0.0.4:21002,10.0.0.5:21002"</span>)</span><br><span class="line">sh.addShard(<span class="string">"ss3/10.0.0.3:21003,10.0.0.4:21003,10.0.0.5:21003"</span>)</span><br></pre></td></tr></table></figure></p>
+<p>使用<code>sh.status()</code>查看集群状态</p>
+<pre><code>mongos&gt; sh.status()
+--- Sharding Status --- 
+sharding version: {
+    &quot;_id&quot; : 1,
+    &quot;minCompatibleVersion&quot; : 5,
+    &quot;currentVersion&quot; : 6,
+    &quot;clusterId&quot; : ObjectId(&quot;5a97c88a1b0ab73e5d64fc6c&quot;)
+}
+shards:
+        {  &quot;_id&quot; : &quot;ss1&quot;,  &quot;host&quot; : &quot;ss1/10.0.0.3:21001,10.0.0.4:21001&quot;,  &quot;state&quot; : 1 }
+        {  &quot;_id&quot; : &quot;ss2&quot;,  &quot;host&quot; : &quot;ss2/10.0.0.3:21002,10.0.0.4:21002&quot;,  &quot;state&quot; : 1 }
+        {  &quot;_id&quot; : &quot;ss3&quot;,  &quot;host&quot; : &quot;ss3/10.0.0.3:21003,10.0.0.4:21003&quot;,  &quot;state&quot; : 1 }
+active mongoses:
+        &quot;3.6.3&quot; : 1
+autosplit:
+        Currently enabled: yes
+balancer:
+        Currently enabled:  yes
+        Currently running:  no
+        Failed balancer rounds in last 5 attempts:  0
+        Migration Results for the last 24 hours: 
+                No recent migrations
+databases:
+        {  &quot;_id&quot; : &quot;config&quot;,  &quot;primary&quot; : &quot;config&quot;,  &quot;partitioned&quot; : true }
+
+mongos&gt;
+</code></pre><p>至此MongoDB分片集群就搭建完了。</p>
+<h3 id="数据库的分片配置"><a href="#数据库的分片配置" class="headerlink" title="数据库的分片配置"></a>数据库的分片配置</h3><h4 id="激活数据库的分片功能"><a href="#激活数据库的分片功能" class="headerlink" title="激活数据库的分片功能"></a>激活数据库的分片功能</h4><p>激活<code>mydb</code>的分片功能</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh.enableSharding(&quot;mydb&quot;)</span><br></pre></td></tr></table></figure>
+<pre><code>mongos&gt; sh.enableSharding(&quot;mydb&quot;)
+{
+    &quot;ok&quot; : 1,
+    &quot;$clusterTime&quot; : {
+        &quot;clusterTime&quot; : Timestamp(1519954632, 6),
+        &quot;signature&quot; : {
+            &quot;hash&quot; : BinData(0,&quot;AAAAAAAAAAAAAAAAAAAAAAAAAAA=&quot;),
+            &quot;keyId&quot; : NumberLong(0)
+        }
+    },
+    &quot;operationTime&quot; : Timestamp(1519954632, 6)
+}
+mongos&gt;
+</code></pre><h4 id="测试升序片键"><a href="#测试升序片键" class="headerlink" title="测试升序片键"></a>测试升序片键</h4><p>对<code>mydb</code>库的<code>test</code>集合进行分片，然后插入100000条数据</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">use mydb</span><br><span class="line">sh.shardCollection(<span class="string">"mydb.test"</span>,&#123;<span class="attr">id</span>:<span class="number">1</span>&#125;)</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">100000</span>; i++)&#123;</span><br><span class="line">    db.test.insert(&#123;<span class="string">"id"</span>:i,<span class="string">"name"</span>:<span class="string">"xiaoming"</span>,<span class="string">"age"</span>:<span class="number">22</span>,<span class="string">"data"</span>:<span class="keyword">new</span> <span class="built_in">Date</span>()&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到<code>test</code>集合的数据都集中在<code>ss3</code>副本集上。</p>
+<pre><code>mongos&gt; db.test.stats()
+{
+    &quot;sharded&quot; : true,
+    &quot;capped&quot; : false,
+    &quot;ns&quot; : &quot;mydb.test&quot;,
+    &quot;count&quot; : 100000,
+    &quot;size&quot; : 8000000,
+    &quot;storageSize&quot; : 2519040,
+    &quot;totalIndexSize&quot; : 2592768,
+    &quot;indexSizes&quot; : {
+        &quot;_id_&quot; : 942080,
+        &quot;id_1&quot; : 1650688
+    },
+    &quot;avgObjSize&quot; : 80,
+    &quot;nindexes&quot; : 2,
+    &quot;nchunks&quot; : 1,
+    &quot;shards&quot; : {
+        &quot;ss3&quot; : {
+            &quot;ns&quot; : &quot;mydb.test&quot;,
+            &quot;size&quot; : 8000000,
+            &quot;count&quot; : 100000,
+            &quot;avgObjSize&quot; : 80,
+            &quot;storageSize&quot; : 2519040,
+            &quot;capped&quot; : false,
+            &quot;wiredTiger&quot; : {
+                &quot;metadata&quot; : {
+                    &quot;formatVersion&quot; : 1
+                },
+</code></pre><h4 id="测试哈希片键"><a href="#测试哈希片键" class="headerlink" title="测试哈希片键"></a>测试哈希片键</h4><p>使用哈希片键的方式重新插入100000条数据</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">use mydb</span><br><span class="line">db.test.drop()</span><br><span class="line">sh.shardCollection(<span class="string">"mydb.test"</span>,&#123;<span class="attr">id</span>:<span class="string">"hashed"</span>&#125;)</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">100000</span>; i++)&#123;</span><br><span class="line">    db.test.insert(&#123;<span class="string">"id"</span>:i,<span class="string">"name"</span>:<span class="string">"xiaoming"</span>,<span class="string">"age"</span>:<span class="number">22</span>,<span class="string">"data"</span>:<span class="keyword">new</span> <span class="built_in">Date</span>()&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再次使用<code>db.test.stats()</code>可以看到文档已经分散到三个副本集了。</p>
+<pre><code>mongos&gt; db.test.stats()
+{
+    &quot;sharded&quot; : true,
+    &quot;capped&quot; : false,
+    &quot;ns&quot; : &quot;mydb.test&quot;,
+    &quot;count&quot; : 100000,
+    &quot;size&quot; : 8000000,
+    &quot;storageSize&quot; : 2572288,
+    &quot;totalIndexSize&quot; : 4280320,
+    &quot;indexSizes&quot; : {
+        &quot;_id_&quot; : 1040384,
+        &quot;id_hashed&quot; : 3239936
+    },
+    &quot;avgObjSize&quot; : 80,
+    &quot;nindexes&quot; : 2,
+    &quot;nchunks&quot; : 6,
+    &quot;shards&quot; : {
+        &quot;ss1&quot; : {
+            &quot;ns&quot; : &quot;mydb.test&quot;,
+            &quot;size&quot; : 2700400,
+            &quot;count&quot; : 33755,
+            &quot;avgObjSize&quot; : 80,
+            &quot;storageSize&quot; : 868352,
+            &quot;capped&quot; : false,
+            &quot;wiredTiger&quot; : {
+                &quot;metadata&quot; : {
+                    &quot;formatVersion&quot; : 1
+                },
+        ...
+        &quot;ss2&quot; : {
+            &quot;ns&quot; : &quot;mydb.test&quot;,
+            &quot;size&quot; : 2651440,
+            &quot;count&quot; : 33143,
+            &quot;avgObjSize&quot; : 80,
+            &quot;storageSize&quot; : 851968,
+            &quot;capped&quot; : false,
+            &quot;wiredTiger&quot; : {
+                &quot;metadata&quot; : {
+                    &quot;formatVersion&quot; : 1
+                },
+        ...
+        &quot;ss3&quot; : {
+            &quot;ns&quot; : &quot;mydb.test&quot;,
+            &quot;size&quot; : 2648160,
+            &quot;count&quot; : 33102,
+            &quot;avgObjSize&quot; : 80,
+            &quot;storageSize&quot; : 851968,
+            &quot;capped&quot; : false,
+            &quot;wiredTiger&quot; : {
+                &quot;metadata&quot; : {
+                    &quot;formatVersion&quot; : 1
+                },
+</code></pre><h3 id="分片集群的管理"><a href="#分片集群的管理" class="headerlink" title="分片集群的管理"></a>分片集群的管理</h3><h4 id="集群添加分片服务器"><a href="#集群添加分片服务器" class="headerlink" title="集群添加分片服务器"></a>集群添加分片服务器</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh.addShard(<span class="string">"ss1/10.0.0.3:21001,10.0.0.4:21001,10.0.0.5:21001"</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="从集群中移除分片服务器"><a href="#从集群中移除分片服务器" class="headerlink" title="从集群中移除分片服务器"></a>从集群中移除分片服务器</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">use admin</span><br><span class="line">db.runCommand(&#123;<span class="attr">removeshard</span>:<span class="string">"ss1"</span>&#125;)</span><br></pre></td></tr></table></figure>
+<p>需要注意的是，如果要移除的分片服务器是某个集合的主键，需要先将数据移到其他节点。</p>
+<h4 id="查看集群状态"><a href="#查看集群状态" class="headerlink" title="查看集群状态"></a>查看集群状态</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh.status()</span><br></pre></td></tr></table></figure>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MongoDB/" rel="tag"><i class="fa fa-tag"></i> MongoDB</a>
+          
+            <a href="/tags/NoSQL/" rel="tag"><i class="fa fa-tag"></i> NoSQL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/27/2018/MongoDB初探/" rel="next" title="MongoDB初探">
+                <i class="fa fa-chevron-left"></i> MongoDB初探
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/12/2018/PHP基础学习/" rel="prev" title="PHP基础学习">
+                PHP基础学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="魏云飞">
+            
+              <p class="site-author-name" itemprop="name">魏云飞</p>
+              <p class="site-description motion-element" itemprop="description">帅的人已经醒来 而丑的人还在沉睡</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">61</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/yunfwe" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">2.</span> <span class="nav-text">概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分片的目的"><span class="nav-number">2.1.</span> <span class="nav-text">分片的目的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分片的设计"><span class="nav-number">2.2.</span> <span class="nav-text">分片的设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据分发"><span class="nav-number">2.3.</span> <span class="nav-text">数据分发</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基于块的数量的分发"><span class="nav-number">2.3.1.</span> <span class="nav-text">基于块的数量的分发</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#升序片键"><span class="nav-number">2.3.1.1.</span> <span class="nav-text">升序片键</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#随机片键"><span class="nav-number">2.3.1.2.</span> <span class="nav-text">随机片键</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#基于分组的片键"><span class="nav-number">2.3.1.3.</span> <span class="nav-text">基于分组的片键</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#基于片键范围的定向分发"><span class="nav-number">2.3.2.</span> <span class="nav-text">基于片键范围的定向分发</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">3.</span> <span class="nav-text">环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#系统环境"><span class="nav-number">3.1.</span> <span class="nav-text">系统环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拓扑结构"><span class="nav-number">3.2.</span> <span class="nav-text">拓扑结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#服务信息"><span class="nav-number">3.3.</span> <span class="nav-text">服务信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#步骤"><span class="nav-number">4.</span> <span class="nav-text">步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装MongoDB"><span class="nav-number">4.1.</span> <span class="nav-text">安装MongoDB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置分片集群"><span class="nav-number">4.2.</span> <span class="nav-text">配置分片集群</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#启动服务"><span class="nav-number">4.2.1.</span> <span class="nav-text">启动服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置Config-Server"><span class="nav-number">4.2.2.</span> <span class="nav-text">配置Config Server</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置Shard-Server-1"><span class="nav-number">4.2.3.</span> <span class="nav-text">配置Shard Server 1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置Shard-Server-2"><span class="nav-number">4.2.4.</span> <span class="nav-text">配置Shard Server 2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置Shard-Server-3"><span class="nav-number">4.2.5.</span> <span class="nav-text">配置Shard Server 3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置mongos路由服务"><span class="nav-number">4.2.6.</span> <span class="nav-text">配置mongos路由服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加分片服务器到集群"><span class="nav-number">4.2.7.</span> <span class="nav-text">添加分片服务器到集群</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库的分片配置"><span class="nav-number">4.3.</span> <span class="nav-text">数据库的分片配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#激活数据库的分片功能"><span class="nav-number">4.3.1.</span> <span class="nav-text">激活数据库的分片功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试升序片键"><span class="nav-number">4.3.2.</span> <span class="nav-text">测试升序片键</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试哈希片键"><span class="nav-number">4.3.3.</span> <span class="nav-text">测试哈希片键</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分片集群的管理"><span class="nav-number">4.4.</span> <span class="nav-text">分片集群的管理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#集群添加分片服务器"><span class="nav-number">4.4.1.</span> <span class="nav-text">集群添加分片服务器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#从集群中移除分片服务器"><span class="nav-number">4.4.2.</span> <span class="nav-text">从集群中移除分片服务器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看集群状态"><span class="nav-number">4.4.3.</span> <span class="nav-text">查看集群状态</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">5.</span> <span class="nav-text">附录</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">魏云飞</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">713k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+    <span title="站点总阅读时长">11:53</span>
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.0.4</div>
+<div class="BbeiAn-info"">
+  渝ICP备 -
+  <a href="http://www.beian.miit.gov.cn/">18019763号</a>
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.json";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<script>
+var OriginTitile = document.title;
+ var titleTime;
+ document.addEventListener('visibilitychange', function () {
+     if (document.hidden) {
+         $('[rel="icon"]').attr('href', "/img/TEP.ico");
+         document.title = '╭(°A°`)╮ 页面崩溃啦 ~ ';
+         clearTimeout(titleTime);
+     }
+     else {
+         $('[rel="icon"]').attr('href', "/favicon.ico");
+         document.title = '(ฅ>ω<*ฅ) 噫又好了~' + OriginTitile;
+         titleTime = setTimeout(function () {
+             document.title = OriginTitile;
+         }, 2000);
+     }
+ });
+</script>
+</html>

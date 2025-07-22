@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="python,linux,">
+
+
+<meta name="description" content="简介 在平常的工作中，遇到 IO 密集型任务，比如要频繁调用外部的 API 接口（网络IO），或者频繁读写文件（磁盘IO）通常代码都会在 IO 任务创建后等待 IO 任务结束并将需要的数据返回。这种同步的编程方式是最简单的，但同时也是效率最低的。比如在一个 Web 后端中，如果是单线程单进程的运行模式，一次就只能处理一个客户端的请求，即使引入了多线程/多进程，虽然可以同时服务多个客户端了，但是如果">
+<meta name="keywords" content="python,linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux IO多路复用">
+<meta property="og:url" content="http://www.yunfwe.cn/2019/11/16/2019/Linux IO多路复用/index.html">
+<meta property="og:site_name" content="某科学的最后之作">
+<meta property="og:description" content="简介 在平常的工作中，遇到 IO 密集型任务，比如要频繁调用外部的 API 接口（网络IO），或者频繁读写文件（磁盘IO）通常代码都会在 IO 任务创建后等待 IO 任务结束并将需要的数据返回。这种同步的编程方式是最简单的，但同时也是效率最低的。比如在一个 Web 后端中，如果是单线程单进程的运行模式，一次就只能处理一个客户端的请求，即使引入了多线程/多进程，虽然可以同时服务多个客户端了，但是如果">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.yunfwe.cn/uploads/photos/grasdgrsdgrg.jpg">
+<meta property="og:updated_time" content="2025-07-22T07:14:12.635Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux IO多路复用">
+<meta name="twitter:description" content="简介 在平常的工作中，遇到 IO 密集型任务，比如要频繁调用外部的 API 接口（网络IO），或者频繁读写文件（磁盘IO）通常代码都会在 IO 任务创建后等待 IO 任务结束并将需要的数据返回。这种同步的编程方式是最简单的，但同时也是效率最低的。比如在一个 Web 后端中，如果是单线程单进程的运行模式，一次就只能处理一个客户端的请求，即使引入了多线程/多进程，虽然可以同时服务多个客户端了，但是如果">
+<meta name="twitter:image" content="http://www.yunfwe.cn/uploads/photos/grasdgrsdgrg.jpg">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="某科学的最后之作" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://www.yunfwe.cn/2019/11/16/2019/Linux IO多路复用/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>Linux IO多路复用 | 某科学的最后之作</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">某科学的最后之作</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">帅的人已经醒来 而丑的人还在沉睡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.yunfwe.cn/2019/11/16/2019/Linux IO多路复用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="魏云飞">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="某科学的最后之作">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Linux IO多路复用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-16T10:12:00+08:00">2019-11-16</time>
+            
+
+            
+            
+              
+                
+              
+            
+
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2025-07-22T15:14:12+08:00">2025-07-22</time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">12k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">0:12</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="/uploads/photos/grasdgrsdgrg.jpg" rel="gallery_cmde8g1xr006bpijxtpecv9tl" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="/uploads/photos/grasdgrsdgrg.jpg" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
+<p>在平常的工作中，遇到 IO 密集型任务，比如要频繁调用外部的 API 接口（网络IO），或者频繁读写文件（磁盘IO）通常代码都会在 IO 任务创建后等待 IO 任务结束并将需要的数据返回。这种同步的编程方式是最简单的，但同时也是效率最低的。比如在一个 Web 后端中，如果是单线程单进程的运行模式，一次就只能处理一个客户端的请求，即使引入了多线程/多进程，虽然可以同时服务多个客户端了，但是如果瞬间几千的并发连接，那么后端就必须创建相对多的线程或进程，这时候 CPU 将会花费大量的时间和资源用于线程上下文切换上，而且这么多的线程，如果用到了锁机制来保证一些共享数据的安全，还将进一步的降低 Web 后端的性能。而 IO 多路复用的出现，则给这种局面带来了转机。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><table>
+<thead>
+<tr>
+<th>软件</th>
+<th>版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>操作系统</td>
+<td>Ubuntu 18.04</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>3.6</td>
+</tr>
+</tbody>
+</table>
+<h2 id="教程"><a href="#教程" class="headerlink" title="教程"></a>教程</h2><p>在学习 IO 多路复用前，我们先理解一些基本的概念，渐进式的学习 IO 多路复用。</p>
+<h3 id="同步-异步"><a href="#同步-异步" class="headerlink" title="同步/异步"></a>同步/异步</h3><p>同步和异步的概念，在不同的角度有不同的回答，这里举几个简单的例子来说明一下。</p>
+<ol>
+<li><p>在楼下食堂买饭，当点完餐后，你就站在台前呆若木鸡的等，直到你点的餐做好了你才端走去吃。因为吃饭和点餐是相互依赖的事情，所以在点餐没有得到结果（食物）之前就什么也不干一直等待，这就是同步。异步就是在点完餐后，你就找个地坐着玩手机，就干点别的 不傻等了。节约了等待过程的时间浪费，但是怎么才能知道自己点的餐好了呢？这时候可以选择每隔五分钟就上吧台问一问，没有好就继续回去玩手机。这种方式也就称之为轮询。还有一种更高效的方式，就是点完餐后服务人员给你一个号，当你的餐准备完毕就广播你的号，你就可以前去领餐了。这种方式就是消息通知。</p>
+</li>
+<li><p>在一套 Web 系统中，比如我们要导出员工表，当点击导出的按钮后，过一会就开始自动下载员工表。在浏览器内部，浏览器发起 http 请求我们的后端接口，这时候后端保持着 http 连接，当把员工数据从数据库中找到并绘制成表格后就返回给浏览器，这就是同步。而异步就是当浏览器发起请求后，后端直接返回它一个任务 ID，并提供它一个接口用来查询任务进度。这时候想要知道任务是否已经结束就需要不停的刷新页面查看任务状态，这种轮询的方式是非常比较浪费资源切低效的。最高效的方式就是后端可以主动通知浏览器任务已经结束了，关于主动推的技术目前主流的是 WebSocket。</p>
+</li>
+<li><p>在日常的编程中，我们接触最多的就是同步编程的方式了，比如我们使用 <code>requests</code> 库发起一个 http 请求，在请求发出后，函数将以阻塞的方式等待对方返回数据。在阻塞期间，是没有任何一行代码被执行，整个程序都处于挂起状态，直到对方返回数据后才继续往下走，如果有多个不想关的请求需要被发送，比如爬虫程序，那么同步编程的方式效率简直太低了。JavaScript 在浏览器中，通过 <code>XMLHttpRequest</code> 发送 ajax 请求的时候，默认是直接返回的，但是你需要将事后对数据的处理方法通过回调的形式传递给 <code>XMLHttpRequest</code> 对象，当请求的接口响应后，会主动调用对数据处理的回调函数。这种通过非阻塞加回调的方式，就是一种常见的异步编程方式。</p>
+</li>
+</ol>
+<p>由上可以看到，同步就是事物之间串行化的执行过程，异步就是事物之间无需互相等待。同步和异步所关注的就是事件完成后的<strong>消息通知机制</strong>，是阻塞等待、轮询还是事件通知/回调。</p>
+<h3 id="阻塞-非阻塞"><a href="#阻塞-非阻塞" class="headerlink" title="阻塞/非阻塞"></a>阻塞/非阻塞</h3><p>阻塞和非阻塞是在调用者的角度来看，例如发起一个 IO 相关的<strong>系统调用</strong>，或者 <code>wait</code> 另外的线程，<code>sleep</code> 主动挂起自己，都会使程序进行阻塞。而我们大多遇到的阻塞案例，都是进行了 IO 相关的系统调用。</p>
+<p>什么是系统调用？简单来说就是内核提供给用户程序的 API 接口，用于操纵内核才有权限访问的内容。例如我们在 Python 中对文件进行读写，我们并不需要关心文件存储在哪种物理介质上，是机械硬盘是U盘还是固态硬盘，这是因为在驱动、内核、C语言库的层层封装下，我们才得以用非常简单的方式对文件进行读写。对于网络也一样，我们不需要关心网卡的类型和性质，只需要简单的调用 <code>socket</code> 模块就可以完成对网络的操控。这些库本质上都只是调用了C语言提供的标准库，C语言的标准库中又调用了内核提供的这些系统调用完成的。那内核又为什么不允许用户进程直接操控硬件呢？是为了自我保护，如果任何进程都能随意的操控硬件，操控内存中的数据则是非常危险的，内核都可能分分钟被恶意程序干掉。</p>
+<p>现在再来看看因为 IO 相关的系统调用造成阻塞的原因是什么。Linux 上的 <code>strace</code> 命令可以跟踪用户进程的系统调用，下面写一段因为网络 IO 造成的阻塞的例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)</span><br><span class="line">s.bind((<span class="string">''</span>,<span class="number">9090</span>))</span><br><span class="line">data, addr = s.recvfrom(<span class="number">4096</span>)</span><br><span class="line">s.sendto(data, addr)</span><br><span class="line">s.close()</span><br></pre></td></tr></table></figure>
+<p>使用 <code>strace python echo.py</code> 执行脚本，在一片输出后，停在了 <code>recvfrom(3,</code> 这个地方：</p>
+<pre><code>...
+socket(AF_INET, SOCK_DGRAM, IPPROTO_IP) = 3
+bind(3, {sa_family=AF_INET, sin_port=htons(9090), sin_addr=inet_addr(&quot;0.0.0.0&quot;)}, 16) = 0
+recvfrom(3, 
+</code></pre><p>我们需要关注的是最后三行，前面打印的都是 Python 虚拟机在启动的时候加载动态链接库、读取脚本内容、分配内存空间等相关的系统调用。当脚本执行到 <code>s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)</code> 发起了第一个系统调用 <code>socket</code>，就是创建了一个网络套接字文件，返回的文件描述符是 3，在系统的 <code>/proc</code> 下也可以看到该进程打开的所有文件描述符：</p>
+<pre><code>root@yunfwe:~# ps aux |grep echo.py
+root     10533  0.0  0.0  18720  1932 pts/0    S+   20:40   0:00 strace python echo.py
+root     10535  0.0  0.4  35684  9084 pts/0    S+   20:40   0:00 python echo.py
+root     14654  0.0  0.0  14428  1052 pts/2    S+   20:50   0:00 grep --color=auto echo.py
+root@yunfwe:~# ls -lh /proc/10535/fd
+total 0
+lrwx------ 1 root root 64 2019/11/10 20:50:52 0 -&gt; /dev/pts/0
+lrwx------ 1 root root 64 2019/11/10 20:50:52 1 -&gt; /dev/pts/0
+lrwx------ 1 root root 64 2019/11/10 20:50:52 2 -&gt; /dev/pts/0
+lrwx------ 1 root root 64 2019/11/10 20:50:52 3 -&gt; &apos;socket:[274124191]&apos;
+root@yunfwe:~#
+</code></pre><p>程序当前已经打开了 4 个文件描述符，其中 1,2,3 分别对应着 <strong>标准输入</strong>，<strong>标准输出</strong>，<strong>错误输出</strong>，其中都指向了 <code>/dev/pts/0</code>，这个设备文件就是当前 SSH 连接的虚拟终端，所以程序的输出我们才会在终端上看到。最后一个 socket 类型的文件就是打开的网络套接字了。</p>
+<p>接着 <code>s.bind((&#39;&#39;,9090))</code> 的语句发起了第二个系统调用，就是给刚才创建的网络套接字绑定了监听地址和端口。如果没有异常，<code>bind</code> 系统调用将返回 0。接着执行到 <code>data, addr = s.recvfrom(4096)</code> 语句的时候，发起了第三个系统调用，这个系统调用并长时间的阻塞了 Python 进程，这个过程又发生了什么？</p>
+<p>进程在进行系统调用的时候，用户进程触发软中断，CPU 接收到中断信号后由用户态切换到内核态去运行相应系统调用的内核函数，此时用户进程是被挂起的（进程被放入等待队列中，这时进程的状态为 <code>sleeping</code>），并等待系统调用执行完毕后 CPU 由内核态切换到用户态才被重新唤醒（进程重新被放入执行队列，只有此队列的进程才可能获得 CPU 执行权，此时进程的状态为 <code>running</code>）。所以，前面在进行 <code>socket</code> 和 <code>bind</code> 系统调用的时候，Python 进程并不是没有被阻塞，而是阻塞的时间太短，我们感知不到而已。</p>
+<p>当网卡又数据来到的时候，网卡将产生一个硬中断来通知内核来处理数据，内核发现了有该进程监听的端口的数据的时候，将数据由内核空间的缓冲区拷贝到用户进程空间的缓冲区，并重新将用户进程唤醒（放置到运行队列），这时用户进程就拿到了需要的数据。我们可以使用 <code>nc</code> 命令向此端口发送一些数据，看看用户进程之后的动作。</p>
+<p>新建终端，并通过 <code>nc</code> 命令发送数据：</p>
+<pre><code>root@yunfwe:~# echo &apos;hello&apos; |nc -4u 127.0.0.1 9090
+hello
+</code></pre><p>Python 进程退出，<code>strace</code> 命令的跟踪如下：</p>
+<pre><code>recvfrom(3, &quot;hello\n&quot;, 4096, 0, {sa_family=AF_INET, sin_port=htons(53114), sin_addr=inet_addr(&quot;127.0.0.1&quot;)}, [16]) = 6
+sendto(3, &quot;hello\n&quot;, 6, 0, {sa_family=AF_INET, sin_port=htons(53114), sin_addr=inet_addr(&quot;127.0.0.1&quot;)}, 16) = 6
+close(3)                                = 0
+rt_sigaction(SIGINT, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=SA_RESTORER, sa_restorer=0x7f1fa7148f20}, {sa_handler=0x561f54bcebe0, sa_mask=[], sa_flags=SA_RESTORER, sa_restorer=0x7f1fa7148f20}, 8) = 0
+exit_group(0)                           = ?
++++ exited with 0 +++
+root@yunfwe:~# 
+</code></pre><p><code>recvfrom</code> 系统调用将接收到的字符串 <code>hello\n</code> 和客户端地址由内核态返回到用户态，用户态紧接着通过 <code>sendto</code> 系统调用将数据发送给客户端地址，然后 <code>close</code> 系统调用关闭打开的文件描述符，用户进程执行完毕，Python 解释器退出。进程退出也是用户进程生命周期的最后一个系统调用，这时候内核将回收进程所占用的资源（打开的文件、占用的内存等），然后将进程的退出码返回给进程的调用者，这就是该进程的父进程。</p>
+<p>题外话：无论是文件 IO 相关的系统调用，还是网络 IO 相关的系统调用，都会发生由 内核缓冲区 -&gt; 用户空间缓冲区，或者 用户空间缓冲区 -&gt; 内核缓冲区的数据复制，对于 Web 静态资源服务器，比如 Nginx 像客户端发送文件数据，需要先将硬盘上读取的文件由内核缓冲区 -&gt; 用户空间缓冲区，然后再由用户空间缓冲区 -&gt; 内核的网络套接字缓冲区 -&gt; 发送到客户端，这个过程是低效的，因此 Linux 内核提供了 <code>sendfile</code> 这个系统调用，这个系统调用将文件描述符（必须是真实的文件）作为输入，套接字描述符作为输出，达到在两个套接字之间直接传递数据，完全在内核内部完成，而避免了数据在内核和用户进程间的复制，并且避免了多余的系统调用。所以 Nginx 作为号称可以榨干计算机最后一丝性能的服务软件，自然也提供了对 <code>sendfile</code> 的支持，只需要在提供静态资源访问的配置块中添加 <code>sendfile on;</code> 即可。</p>
+<p>说完了程序为什么会发送阻塞，再说说如何避免阻塞，也就是非阻塞。非阻塞 IO 最简单的实现就是多线程，遇到耗时的 IO 操作，就开启一个线程处理，这样就可以做到不阻塞当前线程了。对于 <code>socket</code> 模块，也可以将套接字对象设置为非阻塞模式：<code>socket.setblocking(false)</code>，这样再进行 <code>recv</code> 等系统调用时将抛出一个异常而不是阻塞当前线程。对于文件，Linux 内核提供了 AIO 相关的系统调用，但是市面上也并没有看到太多的应用。当今最常用的非阻塞 IO 的方法就是 <strong>IO多路复用</strong>，Linux 提供 IO 多路复用相关的几个系统调用就是 <code>select</code>、<code>poll</code>、<code>epoll</code>。Python 协程的完整实现，IO 多路复用也是不可少的一个环节，Nginx 出了名和高效，也就是借助了 IO 多路复用的能力。</p>
+<p>PS：中断其实也就是一种异步的事件通知机制，可见整套计算机系统的设计中穿插着各种的同步和异步。其他原因造成的阻塞，例如锁、<code>wait</code>、<code>sleep</code> 函数等，各位有兴趣可以自己探索一番。</p>
+<h3 id="IO多路复用"><a href="#IO多路复用" class="headerlink" title="IO多路复用"></a>IO多路复用</h3><p>IO 多路复用是如何在单个线程内并发处理多个网络套接字的一种方式，已经是系统高性能网络服务器的必备技术，Nginx、Redis 等也都用到了 IO 多路复用技术。</p>
+<h4 id="select"><a href="#select" class="headerlink" title="select"></a>select</h4><p>最先出来，且兼容性最好的 IO 多路复用技术是 <code>select</code> 系统调用。它的实现思路是，传递给它一个包含所有套接字描述符的数组，如果数组内的套接字有数据到来，<code>select</code> 将返回这些可以操作的套接字，并唤醒进程继续处理，否则将一直阻塞，或直到设置的 <code>timeout</code> 超时。Python 的标准库 <code>select.select</code> 提供了对它的封装，下面一个简单的例子看看如何使用。</p>
+<p><code>select.select</code> 函数申明：</p>
+<pre><code>select(rlist, wlist, xlist[, timeout]) -&gt; (rlist, wlist, xlist)
+</code></pre><ul>
+<li>rlist 对应可读列表，此列表内的套接字有数据来到时会使 select 返回。</li>
+<li>wlist 对应可写列表，此列表内的套接字可写时返回。</li>
+<li>xlist 对应异常列表，此列表内的套接字异常，比如已被关闭时返回。</li>
+<li>可选的 timeout 参数，如果提供，则 select 会在超时后唤醒进程。因此，我们也可以使用 <code>select.select([],[],[],2)</code> 来模拟 time.sleep 函数。</li>
+</ul>
+<p>select 函数返回一个包含三种情况套接字列表的元组，例如返回的 rlist 内的套接字，肯定是已经有数据可读的套接字，因此这时候调用 recv 就不会将进程阻塞了。同时处理多个客户端连接的原因也在这里，当有新的客户端连接，或者客户端有数据发送到服务端时，select 都将唤醒线程去处理，且处理过程中 recv 也不会造成单个套接字的阻塞导致整个线程内所有套接字都无法被处理。</p>
+<p>下面看代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> select</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, <span class="number">1</span>)</span><br><span class="line">s.setblocking(<span class="literal">False</span>)</span><br><span class="line">s.bind((<span class="string">''</span>,<span class="number">9090</span>))</span><br><span class="line">s.listen(<span class="number">5</span>)</span><br><span class="line"><span class="keyword">print</span> <span class="string">'Server is listen on 0.0.0.0:9090'</span></span><br><span class="line"></span><br><span class="line">rlist = [s, ]</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    rables , _ , xables = select.select(rlist,[],[])</span><br><span class="line">    <span class="keyword">for</span> sock <span class="keyword">in</span> rables:</span><br><span class="line">        <span class="keyword">if</span> sock <span class="keyword">is</span> s:</span><br><span class="line">            new_sock, addr = sock.accept()</span><br><span class="line">            new_sock.setblocking(<span class="literal">False</span>)</span><br><span class="line">            <span class="keyword">print</span> <span class="string">'New client : %s:%s'</span> % addr</span><br><span class="line">            rlist.append(new_sock)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            msg = sock.recv(<span class="number">4096</span>)</span><br><span class="line">            <span class="keyword">if</span> msg == <span class="string">''</span> <span class="keyword">or</span> <span class="string">'exit'</span> <span class="keyword">in</span> msg: </span><br><span class="line">                sock.close()</span><br><span class="line">                rlist.remove(sock)</span><br><span class="line">                <span class="keyword">print</span> <span class="string">'Have a client exit...'</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">print</span> <span class="string">'Recv msg: %s'</span> % msg</span><br><span class="line">                sock.send(<span class="string">'From server: '</span> + msg)</span><br></pre></td></tr></table></figure>
+<p>将代码运行起来：</p>
+<pre><code>root@yunfwe:~# python echo.py 
+Server is listen on 0.0.0.0:9090
+</code></pre><p>这时代码被阻塞到了 select 处，接着新开一个终端，通过 nc 命令连接此端口，并发送 <code>hello</code> 字符串：</p>
+<pre><code>root@yunfwe:~# nc 127.0.0.1 9090
+hello
+From server: hello
+</code></pre><p>这时服务端打印如下：</p>
+<pre><code>root@yunfwe:~# python echo.py 
+Server is listen on 0.0.0.0:9090
+New client : 127.0.0.1:41700
+Recv msg: hello
+</code></pre><p>这个过程中，select 已经返回了两次，第一次是 nc 客户端接入的时候，执行了获取客户端套接字以及将客户端套接字也加入 rlist 中，第二次返回因为客户端发送了 <code>hello</code> 字符串。<code>sock.recv(4096)</code> 这一步，并不是指从套接字缓存区读取 4096 个字节，而是创建一个长度为 4096 的用户进程缓冲区，然后接收从内核中套接字缓冲区复制来的数据，所以并不一定 recv 返回的数据就有 4096 的长度。接着再新开一个终端再次用 nc 连接服务端：</p>
+<pre><code>root@yunfwe:~# nc 127.0.0.1 9090
+hi
+From server: hi
+</code></pre><p>可以看到，第二个客户端也被正常的服务了！</p>
+<pre><code>root@yunfwe:~# python echo.py 
+Server is listen on 0.0.0.0:9090
+New client : 127.0.0.1:41700
+Recv msg: hello
+
+New client : 127.0.0.1:41702
+Recv msg: hi
+</code></pre><p>在单线程中，同时处理多个客户端的连接，而且如果设置了 <code>timeout</code> 关键字，就可以在超时后做一些额外的处理工作，IO 多路复用就提供了这么强大的能力。</p>
+<p>接着两个客户端都向服务器发送 <code>exit</code> 字符串来退出连接：</p>
+<pre><code>root@yunfwe:~# python echo.py 
+Server is listen on 0.0.0.0:9090
+New client : 127.0.0.1:41700
+Recv msg: hello
+
+New client : 127.0.0.1:41702
+Recv msg: hi
+
+Have a client exit...
+Have a client exit...
+</code></pre><p>以上就是 select 的简单示例，可以看到 select 还是非常简单，那么 select 又是如何完成套接字的监听和唤醒进程的呢？</p>
+<p>在上面的例子中，已经有两个客户端连接了，加上服务端监听服务端口的套接字，一共有三个套接字。在进行 select 系统调用时，select 会将调用线程分别放到这三个套接字的等待队列中，这时线程就失去了执行权，当其中任何一个套接字有数据到来，将触发中断处理程序，中断程序会将线程从等待队列移除，然后重新加入执行队列。线程被唤醒后就知道，肯定有至少一个套接字接收了数据，这时只需要遍历 select 返回的列表就可以拿到所有就绪的套接字了。</p>
+<p>select 的实现非常简单，而且在多个平台都有实现（Windows，Linux，Mac 都可用），但是简单不一定代表高效，如果需要被同时监听的套接字太多，每次 select 都先检查套接字缓冲区是否已经有准备好的数据，如果有就直接返回，没有就需要将线程加入到每个套接字的等待队列，唤醒也需要从每个套接字的等待队列移除。这个过程需要经历至少一次对套接字列表的遍历，套接字列表越大，每次 select 调用的成本也越高，这也是 Linux 限制 select 默认最高 1024 个描述符的原因之一。</p>
+<h4 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h4><p>在 select 的基础上，升级发展出了 poll，但是基本的原理还是一样，select 中遇到的问题，poll 也没有解决，只是 poll 没有了 1024 最大文件描述符的限制。再之后，对 select 进行功能分离和引入 eventpoll 对象来作为代理，优化存储套接字的数据结构，使 IO 多路复用的效率大大提高，这就是 epoll。</p>
+<p>在 select 中，每次 select 调用，都会将线程添加到套接字的等待队列，唤醒也需要从所有套接字队列中把线程移除，epoll 添加了一层代理（eventpoll），只需要使用 <code>epoll_create</code> 就可以创建它，然后使用 <code>epoll_ctl</code> 维护要监听的套接字，当添加要监听的套接字的时候，只是将 eventpoll 添加到这些套接字的等待队列，而不是直接将线程添加到等待队列了。当套接字接收到数据，中断处理进程会给 eventpoll 对象的 rdlist （就绪列表）中引用这些准备就绪的套接字。当程序执行到 <code>epoll_wait</code> 时，如果 rdlist 中已经有就绪的套接字就直接返回，否则将线程放到 eventpoll 中的等待队列里完成对线程的阻塞，当套接字再次收到数据，线程才会被再次唤醒。</p>
+<p>正因为 rdlist 的存在，eventpoll 就不需要对所有套接字进行遍历来收集准备就绪的套接字了。而且只需要判断 rdlist 的有无数据就可以完成对线程的阻塞和唤醒，<code>epoll_ctl</code> 也使用红黑树来维护要监视的套接字，所以综上，就是 epoll 更高效和快速的原因。</p>
+<p>Python 的 <code>select.epoll</code> 实现了对 epoll 的封装，刚才的示例使用 epoll 来改造：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> select</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, <span class="number">1</span>)</span><br><span class="line">s.setblocking(<span class="literal">False</span>)</span><br><span class="line">s.bind((<span class="string">''</span>,<span class="number">9090</span>))</span><br><span class="line">s.listen(<span class="number">5</span>)</span><br><span class="line"><span class="keyword">print</span> <span class="string">'Server is listen on 0.0.0.0:9090'</span></span><br><span class="line"></span><br><span class="line">epoll = select.epoll()</span><br><span class="line">epoll.register(s.fileno(), select.EPOLLIN)</span><br><span class="line"></span><br><span class="line">fd_map = &#123;s.fileno(): s&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    events = epoll.poll()</span><br><span class="line">    <span class="keyword">for</span> fd, event <span class="keyword">in</span> events:</span><br><span class="line">        sock = fd_map[fd]</span><br><span class="line">        <span class="keyword">if</span> sock <span class="keyword">is</span> s:</span><br><span class="line">            new_sock, addr = sock.accept()</span><br><span class="line">            new_sock.setblocking(<span class="literal">False</span>)</span><br><span class="line">            <span class="keyword">print</span> <span class="string">'New client : %s:%s'</span> % addr</span><br><span class="line">            epoll.register(new_sock.fileno(), select.EPOLLIN | select.EPOLLET)</span><br><span class="line">            fd_map[new_sock.fileno()] = new_sock</span><br><span class="line">        <span class="keyword">elif</span> event == select.EPOLLIN:</span><br><span class="line">            msg = sock.recv(<span class="number">4096</span>)</span><br><span class="line">            <span class="keyword">if</span> msg == <span class="string">''</span> <span class="keyword">or</span> <span class="string">'exit'</span> <span class="keyword">in</span> msg: </span><br><span class="line">                sock.close()</span><br><span class="line">                epoll.unregister(fd)</span><br><span class="line">                <span class="keyword">del</span> fd_map[fd]</span><br><span class="line">                <span class="keyword">print</span> <span class="string">'Have a client exit...'</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">print</span> <span class="string">'Recv msg: %s'</span> % msg</span><br><span class="line">                sock.send(<span class="string">'From server: '</span> + msg)</span><br></pre></td></tr></table></figure>
+<p>程序的执行效果与 select 版一致，就不再演示了。epoll 与 select 在 Python 上的用法还是有些区别的，select 可以直接传递套接字对象，而 epoll 只能传递套接字的文件描述符（<code>sock.fileno()</code>），所以我们需要手动维护一个文件描述符到套接字的映射。<code>epoll.register(s.fileno(), select.EPOLLIN)</code> 就是在一开始的时候，注册端口监听的套接字，之后每次调用 <code>epoll.poll()</code> 的时候，就不需要重新注册了。<code>select.EPOLLIN</code> 就是监听此套接字的可读事件，对应着 <code>select.EPOLLOUT</code> 为可写事件。在注册客户端套接字的时候多出来 <code>select.EPOLLET</code> 是表示将此套接字的监听模式设置为<strong>边缘触发</strong>模式，接下来的代码对数据的处理逻辑就与 select 版相同了。</p>
+<p>关于<strong>水平触发</strong>和<strong>边缘触发</strong>：水平触发是默认的情况，当有数据来到，通过 recv 函数读取数据时，如果一次性没有读完（例如接收缓冲区太小），则此套接字在下次执行 <code>epoll.poll()</code> 的时候，依然会被返回，直到此套接字缓冲区被读空为止。如果存在大量没有读完的套接字，水平触发模式效率是比较低的。边缘触发则相反，如果数据一次没读完，也只通知一次，直到下次有新的数据到来。所以如果采用边缘触发模式，应该循环读取数据，直到套接字缓存区被读完抛出异常为止。因此，边缘触发的示例中，从套接字缓冲区读取数据的部分应该改为如下形式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">elif</span> event == select.EPOLLIN:</span><br><span class="line">    msg = <span class="string">''</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            msg += sock.recv(<span class="number">4096</span>)</span><br><span class="line">        <span class="keyword">except</span> socket.error:</span><br><span class="line">            <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<p>到这里，希望大家都对这些概念都有了基本的理解。</p>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"><i class="fa fa-tag"></i> python</a>
+          
+            <a href="/tags/linux/" rel="tag"><i class="fa fa-tag"></i> linux</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/23/2019/LXC Linux系统容器/" rel="next" title="LXC Linux系统容器">
+                <i class="fa fa-chevron-left"></i> LXC Linux系统容器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="魏云飞">
+            
+              <p class="site-author-name" itemprop="name">魏云飞</p>
+              <p class="site-description motion-element" itemprop="description">帅的人已经醒来 而丑的人还在沉睡</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">61</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/yunfwe" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#教程"><span class="nav-number">3.</span> <span class="nav-text">教程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#同步-异步"><span class="nav-number">3.1.</span> <span class="nav-text">同步/异步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#阻塞-非阻塞"><span class="nav-number">3.2.</span> <span class="nav-text">阻塞/非阻塞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IO多路复用"><span class="nav-number">3.3.</span> <span class="nav-text">IO多路复用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#select"><span class="nav-number">3.3.1.</span> <span class="nav-text">select</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#epoll"><span class="nav-number">3.3.2.</span> <span class="nav-text">epoll</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">4.</span> <span class="nav-text">附录</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">魏云飞</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">713k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+    <span title="站点总阅读时长">11:53</span>
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.0.4</div>
+<div class="BbeiAn-info"">
+  渝ICP备 -
+  <a href="http://www.beian.miit.gov.cn/">18019763号</a>
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.json";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<script>
+var OriginTitile = document.title;
+ var titleTime;
+ document.addEventListener('visibilitychange', function () {
+     if (document.hidden) {
+         $('[rel="icon"]').attr('href', "/img/TEP.ico");
+         document.title = '╭(°A°`)╮ 页面崩溃啦 ~ ';
+         clearTimeout(titleTime);
+     }
+     else {
+         $('[rel="icon"]').attr('href', "/favicon.ico");
+         document.title = '(ฅ>ω<*ฅ) 噫又好了~' + OriginTitile;
+         titleTime = setTimeout(function () {
+             document.title = OriginTitile;
+         }, 2000);
+     }
+ });
+</script>
+</html>

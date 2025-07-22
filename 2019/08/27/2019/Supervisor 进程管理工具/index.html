@@ -1,0 +1,2706 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="python,supervisor,">
+
+
+<meta name="description" content="简介 Supervisor 是用 Python 开发的一个 C/S 架构的进程管理工具，只可以用 Linux/Unix 系统下。在 Linux 系统上，通常的做法是为每个需要控制的服务编写 rc.d 脚本，之后通过 service 或者 systemctl 来管理和控制服务，但是在程序崩溃的时候却无法自动重启项目。Supervisor 将它管理的服务作为它的子进程，所以可以简单且精确的管理和控制这">
+<meta name="keywords" content="python,supervisor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Supervisor 进程管理工具">
+<meta property="og:url" content="http://www.yunfwe.cn/2019/08/27/2019/Supervisor 进程管理工具/index.html">
+<meta property="og:site_name" content="某科学的最后之作">
+<meta property="og:description" content="简介 Supervisor 是用 Python 开发的一个 C/S 架构的进程管理工具，只可以用 Linux/Unix 系统下。在 Linux 系统上，通常的做法是为每个需要控制的服务编写 rc.d 脚本，之后通过 service 或者 systemctl 来管理和控制服务，但是在程序崩溃的时候却无法自动重启项目。Supervisor 将它管理的服务作为它的子进程，所以可以简单且精确的管理和控制这">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.yunfwe.cn/uploads/photos/2019020123123.jpg">
+<meta property="og:updated_time" content="2019-09-02T16:04:29.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Supervisor 进程管理工具">
+<meta name="twitter:description" content="简介 Supervisor 是用 Python 开发的一个 C/S 架构的进程管理工具，只可以用 Linux/Unix 系统下。在 Linux 系统上，通常的做法是为每个需要控制的服务编写 rc.d 脚本，之后通过 service 或者 systemctl 来管理和控制服务，但是在程序崩溃的时候却无法自动重启项目。Supervisor 将它管理的服务作为它的子进程，所以可以简单且精确的管理和控制这">
+<meta name="twitter:image" content="http://www.yunfwe.cn/uploads/photos/2019020123123.jpg">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="某科学的最后之作" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://www.yunfwe.cn/2019/08/27/2019/Supervisor 进程管理工具/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>Supervisor 进程管理工具 | 某科学的最后之作</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">某科学的最后之作</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">帅的人已经醒来 而丑的人还在沉睡</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.yunfwe.cn/2019/08/27/2019/Supervisor 进程管理工具/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="魏云飞">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="某科学的最后之作">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Supervisor 进程管理工具</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-27T10:12:00+08:00">2019-08-27</time>
+            
+
+            
+            
+              
+                
+              
+            
+
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2019-09-03T00:04:29+08:00">2019-09-03</time>
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">54k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">0:54</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox" href="/uploads/photos/2019020123123.jpg" rel="gallery_cmde8g1y500ajpijxm5ljp2jr" itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="/uploads/photos/2019020123123.jpg" itemprop="contentUrl">
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
+<p>Supervisor 是用 Python 开发的一个 C/S 架构的进程管理工具，只可以用 Linux/Unix 系统下。在 Linux 系统上，通常的做法是为每个需要控制的服务编写 rc.d 脚本，之后通过 service 或者 systemctl 来管理和控制服务，但是在程序崩溃的时候却无法自动重启项目。Supervisor 将它管理的服务作为它的子进程，所以可以简单且精确的管理和控制这些服务。<a href="http://www.supervisord.org/" target="_blank" rel="noopener">官方文档</a></p>
+</blockquote>
+<a id="more"></a>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><blockquote>
+<p>Supervisor 仅支持 Linux/Unix 系统，推荐使用 Python 2.7 或 Python 3.4 之上的版本来运行 Supervisor。</p>
+</blockquote>
+<h3 id="系统环境"><a href="#系统环境" class="headerlink" title="系统环境"></a>系统环境</h3><table>
+<thead>
+<tr>
+<th>系统类型</th>
+<th>发行商</th>
+<th>版本号</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linux</td>
+<td>Ubuntu</td>
+<td>18.04.3</td>
+</tr>
+</tbody>
+</table>
+<h3 id="软件环境"><a href="#软件环境" class="headerlink" title="软件环境"></a>软件环境</h3><table>
+<thead>
+<tr>
+<th>软件</th>
+<th>版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td>3.6.8</td>
+</tr>
+<tr>
+<td>Supervisor</td>
+<td>4.0.4</td>
+</tr>
+</tbody>
+</table>
+<h2 id="教程"><a href="#教程" class="headerlink" title="教程"></a>教程</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>Ubuntu 可以直接通过 <code>apt install supervisor</code> 进行安装，但是这样安装的版本不会是最新版，并且还会安装一些其他依赖。这里选择适用性更广的虚拟环境来安装。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">apt install python3-venv -y     <span class="comment"># 安装 python3 虚拟环境库</span></span><br><span class="line">mkdir -p /data/venv             <span class="comment"># 创建一个目录供放置虚拟环境</span></span><br><span class="line"><span class="built_in">cd</span> /data/venv</span><br><span class="line">python3 -m venv supervisor      <span class="comment"># 创建一个叫 supervisor 的虚拟环境</span></span><br><span class="line"><span class="built_in">source</span> /data/venv/supervisor/bin/activate</span><br><span class="line">pip install supervisor</span><br></pre></td></tr></table></figure>
+<p>安装好之后，执行 <code>supervisord -v</code> 可以看到当前安装的版本号。</p>
+<pre><code>(supervisor) root@ubuntu:/data/venv# supervisord -v
+4.0.4
+(supervisor) root@ubuntu:/data/venv#
+</code></pre><h3 id="快速开始"><a href="#快速开始" class="headerlink" title="快速开始"></a>快速开始</h3><blockquote>
+<p>接下来演示 Supervisor 最基本的使用</p>
+</blockquote>
+<h4 id="提供一个配置文件"><a href="#提供一个配置文件" class="headerlink" title="提供一个配置文件"></a>提供一个配置文件</h4><p>Supervisor 会首先在当前目录查找 <code>supervisord.conf</code>，如果没有找到 则会使用 <code>/etc/supervisord.conf</code>，如果此文件依然不存在，则会使用程序内置的配置。或者，我们可以用 <code>-c</code> 参数，来为 supervisor 指明一个配置文件。为了让进程运行的更清晰，建议通过 <code>-c</code> 参数来指明配置文件。</p>
+<p>接下来就是提供一个配置文件给 supervisor。supervisor 提供了一个 <code>echo_supervisord_conf</code> 的命令，此命令的执行会打印一个 supervisor 的模板示例。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo_supervisord_conf</span><br></pre></td></tr></table></figure>
+<p>以下是打印的配置文件示例内容：</p>
+<div><div class="fold_hider"><div class="close hider_title"> 点击显示/隐藏代码</div></div><div class="fold">
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; Sample supervisor config file.</span></span><br><span class="line"><span class="comment">;</span></span><br><span class="line"><span class="comment">; For more information on the config file, please see:</span></span><br><span class="line"><span class="comment">; http://supervisord.org/configuration.html</span></span><br><span class="line"><span class="comment">;</span></span><br><span class="line"><span class="comment">; Notes:</span></span><br><span class="line"><span class="comment">;  - Shell expansion ("~" or "$HOME") is not supported.  Environment</span></span><br><span class="line"><span class="comment">;    variables can be expanded using this syntax: "%(ENV_HOME)s".</span></span><br><span class="line"><span class="comment">;  - Quotes around values are not supported, except in the case of</span></span><br><span class="line"><span class="comment">;    the environment= options as shown below.</span></span><br><span class="line"><span class="comment">;  - Comments must have a leading space: "a=b ;comment" not "a=b;comment".</span></span><br><span class="line"><span class="comment">;  - Command will be truncated if it looks like a config file comment, e.g.</span></span><br><span class="line"><span class="comment">;    "command=bash -c 'foo ; bar'" will truncate to "command=bash -c 'foo ".</span></span><br><span class="line"><span class="comment">;</span></span><br><span class="line"><span class="comment">; Warning:</span></span><br><span class="line"><span class="comment">;  Paths throughout this example file use /tmp because it is available on most</span></span><br><span class="line"><span class="comment">;  systems.  You will likely need to change these to locations more appropriate</span></span><br><span class="line"><span class="comment">;  for your system.  Some systems periodically delete older files in /tmp.</span></span><br><span class="line"><span class="comment">;  Notably, if the socket file defined in the [unix_http_server] section below</span></span><br><span class="line"><span class="comment">;  is deleted, supervisorctl will be unable to connect to supervisord.</span></span><br><span class="line"></span><br><span class="line"><span class="section">[unix_http_server]</span></span><br><span class="line"><span class="attr">file</span>=/tmp/supervisor.sock   <span class="comment">; the path to the socket file</span></span><br><span class="line"><span class="comment">;chmod=0700                 ; socket file mode (default 0700)</span></span><br><span class="line"><span class="comment">;chown=nobody:nogroup       ; socket file uid:gid owner</span></span><br><span class="line"><span class="comment">;username=user              ; default is no username (open server)</span></span><br><span class="line"><span class="comment">;password=123               ; default is no password (open server)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">; Security Warning:</span></span><br><span class="line"><span class="comment">;  The inet HTTP server is not enabled by default.  The inet HTTP server is</span></span><br><span class="line"><span class="comment">;  enabled by uncommenting the [inet_http_server] section below.  The inet</span></span><br><span class="line"><span class="comment">;  HTTP server is intended for use within a trusted environment only.  It</span></span><br><span class="line"><span class="comment">;  should only be bound to localhost or only accessible from within an</span></span><br><span class="line"><span class="comment">;  isolated, trusted network.  The inet HTTP server does not support any</span></span><br><span class="line"><span class="comment">;  form of encryption.  The inet HTTP server does not use authentication</span></span><br><span class="line"><span class="comment">;  by default (see the username= and password= options to add authentication).</span></span><br><span class="line"><span class="comment">;  Never expose the inet HTTP server to the public internet.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">;[inet_http_server]         ; inet (TCP) server disabled by default</span></span><br><span class="line"><span class="comment">;port=127.0.0.1:9001        ; ip_address:port specifier, *:port for all iface</span></span><br><span class="line"><span class="comment">;username=user              ; default is no username (open server)</span></span><br><span class="line"><span class="comment">;password=123               ; default is no password (open server)</span></span><br><span class="line"></span><br><span class="line"><span class="section">[supervisord]</span></span><br><span class="line"><span class="attr">logfile</span>=/tmp/supervisord.log <span class="comment">; main log file; default $CWD/supervisord.log</span></span><br><span class="line"><span class="attr">logfile_maxbytes</span>=<span class="number">50</span>MB        <span class="comment">; max main logfile bytes b4 rotation; default 50MB</span></span><br><span class="line"><span class="attr">logfile_backups</span>=<span class="number">10</span>           <span class="comment">; # of main logfile backups; 0 means none, default 10</span></span><br><span class="line"><span class="attr">loglevel</span>=info                <span class="comment">; log level; default info; others: debug,warn,trace</span></span><br><span class="line"><span class="attr">pidfile</span>=/tmp/supervisord.pid <span class="comment">; supervisord pidfile; default supervisord.pid</span></span><br><span class="line"><span class="attr">nodaemon</span>=<span class="literal">false</span>               <span class="comment">; start in foreground if true; default false</span></span><br><span class="line"><span class="attr">minfds</span>=<span class="number">1024</span>                  <span class="comment">; min. avail startup file descriptors; default 1024</span></span><br><span class="line"><span class="attr">minprocs</span>=<span class="number">200</span>                 <span class="comment">; min. avail process descriptors;default 200</span></span><br><span class="line"><span class="comment">;umask=022                   ; process file creation umask; default 022</span></span><br><span class="line"><span class="comment">;user=supervisord            ; setuid to this UNIX account at startup; recommended if root</span></span><br><span class="line"><span class="comment">;identifier=supervisor       ; supervisord identifier, default is 'supervisor'</span></span><br><span class="line"><span class="comment">;directory=/tmp              ; default is not to cd during start</span></span><br><span class="line"><span class="comment">;nocleanup=true              ; don't clean up tempfiles at start; default false</span></span><br><span class="line"><span class="comment">;childlogdir=/tmp            ; 'AUTO' child log dir, default $TEMP</span></span><br><span class="line"><span class="comment">;environment=KEY="value"     ; key value pairs to add to environment</span></span><br><span class="line"><span class="comment">;strip_ansi=false            ; strip ansi escape codes in logs; def. false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">; The rpcinterface:supervisor section must remain in the config file for</span></span><br><span class="line"><span class="comment">; RPC (supervisorctl/web interface) to work.  Additional interfaces may be</span></span><br><span class="line"><span class="comment">; added by defining them in separate [rpcinterface:x] sections.</span></span><br><span class="line"></span><br><span class="line"><span class="section">[rpcinterface:supervisor]</span></span><br><span class="line"><span class="attr">supervisor.rpcinterface_factory</span> = supervisor.rpcinterface:make_main_rpcinterface</span><br><span class="line"></span><br><span class="line"><span class="comment">; The supervisorctl section configures how supervisorctl will connect to</span></span><br><span class="line"><span class="comment">; supervisord.  configure it match the settings in either the unix_http_server</span></span><br><span class="line"><span class="comment">; or inet_http_server section.</span></span><br><span class="line"></span><br><span class="line"><span class="section">[supervisorctl]</span></span><br><span class="line"><span class="attr">serverurl</span>=unix:///tmp/supervisor.sock <span class="comment">; use a unix:// URL  for a unix socket</span></span><br><span class="line"><span class="comment">;serverurl=http://127.0.0.1:9001 ; use an http:// url to specify an inet socket</span></span><br><span class="line"><span class="comment">;username=chris              ; should be same as in [*_http_server] if set</span></span><br><span class="line"><span class="comment">;password=123                ; should be same as in [*_http_server] if set</span></span><br><span class="line"><span class="comment">;prompt=mysupervisor         ; cmd line prompt (default "supervisor")</span></span><br><span class="line"><span class="comment">;history_file=~/.sc_history  ; use readline history if available</span></span><br><span class="line"></span><br><span class="line"><span class="comment">; The sample program section below shows all possible program subsection values.</span></span><br><span class="line"><span class="comment">; Create one or more 'real' program: sections to be able to control them under</span></span><br><span class="line"><span class="comment">; supervisor.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">;[program:theprogramname]</span></span><br><span class="line"><span class="comment">;command=/bin/cat              ; the program (relative uses PATH, can take args)</span></span><br><span class="line"><span class="comment">;process_name=%(program_name)s ; process_name expr (default %(program_name)s)</span></span><br><span class="line"><span class="comment">;numprocs=1                    ; number of processes copies to start (def 1)</span></span><br><span class="line"><span class="comment">;directory=/tmp                ; directory to cwd to before exec (def no cwd)</span></span><br><span class="line"><span class="comment">;umask=022                     ; umask for process (default None)</span></span><br><span class="line"><span class="comment">;priority=999                  ; the relative start priority (default 999)</span></span><br><span class="line"><span class="comment">;autostart=true                ; start at supervisord start (default: true)</span></span><br><span class="line"><span class="comment">;startsecs=1                   ; # of secs prog must stay up to be running (def. 1)</span></span><br><span class="line"><span class="comment">;startretries=3                ; max # of serial start failures when starting (default 3)</span></span><br><span class="line"><span class="comment">;autorestart=unexpected        ; when to restart if exited after running (def: unexpected)</span></span><br><span class="line"><span class="comment">;exitcodes=0                   ; 'expected' exit codes used with autorestart (default 0)</span></span><br><span class="line"><span class="comment">;stopsignal=QUIT               ; signal used to kill process (default TERM)</span></span><br><span class="line"><span class="comment">;stopwaitsecs=10               ; max num secs to wait b4 SIGKILL (default 10)</span></span><br><span class="line"><span class="comment">;stopasgroup=false             ; send stop signal to the UNIX process group (default false)</span></span><br><span class="line"><span class="comment">;killasgroup=false             ; SIGKILL the UNIX process group (def false)</span></span><br><span class="line"><span class="comment">;user=chrism                   ; setuid to this UNIX account to run the program</span></span><br><span class="line"><span class="comment">;redirect_stderr=true          ; redirect proc stderr to stdout (default false)</span></span><br><span class="line"><span class="comment">;stdout_logfile=/a/path        ; stdout log path, NONE for none; default AUTO</span></span><br><span class="line"><span class="comment">;stdout_logfile_maxbytes=1MB   ; max # logfile bytes b4 rotation (default 50MB)</span></span><br><span class="line"><span class="comment">;stdout_logfile_backups=10     ; # of stdout logfile backups (0 means none, default 10)</span></span><br><span class="line"><span class="comment">;stdout_capture_maxbytes=1MB   ; number of bytes in 'capturemode' (default 0)</span></span><br><span class="line"><span class="comment">;stdout_events_enabled=false   ; emit events on stdout writes (default false)</span></span><br><span class="line"><span class="comment">;stdout_syslog=false           ; send stdout to syslog with process name (default false)</span></span><br><span class="line"><span class="comment">;stderr_logfile=/a/path        ; stderr log path, NONE for none; default AUTO</span></span><br><span class="line"><span class="comment">;stderr_logfile_maxbytes=1MB   ; max # logfile bytes b4 rotation (default 50MB)</span></span><br><span class="line"><span class="comment">;stderr_logfile_backups=10     ; # of stderr logfile backups (0 means none, default 10)</span></span><br><span class="line"><span class="comment">;stderr_capture_maxbytes=1MB   ; number of bytes in 'capturemode' (default 0)</span></span><br><span class="line"><span class="comment">;stderr_events_enabled=false   ; emit events on stderr writes (default false)</span></span><br><span class="line"><span class="comment">;stderr_syslog=false           ; send stderr to syslog with process name (default false)</span></span><br><span class="line"><span class="comment">;environment=A="1",B="2"       ; process environment additions (def no adds)</span></span><br><span class="line"><span class="comment">;serverurl=AUTO                ; override serverurl computation (childutils)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">; The sample eventlistener section below shows all possible eventlistener</span></span><br><span class="line"><span class="comment">; subsection values.  Create one or more 'real' eventlistener: sections to be</span></span><br><span class="line"><span class="comment">; able to handle event notifications sent by supervisord.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">;[eventlistener:theeventlistenername]</span></span><br><span class="line"><span class="comment">;command=/bin/eventlistener    ; the program (relative uses PATH, can take args)</span></span><br><span class="line"><span class="comment">;process_name=%(program_name)s ; process_name expr (default %(program_name)s)</span></span><br><span class="line"><span class="comment">;numprocs=1                    ; number of processes copies to start (def 1)</span></span><br><span class="line"><span class="comment">;events=EVENT                  ; event notif. types to subscribe to (req'd)</span></span><br><span class="line"><span class="comment">;buffer_size=10                ; event buffer queue size (default 10)</span></span><br><span class="line"><span class="comment">;directory=/tmp                ; directory to cwd to before exec (def no cwd)</span></span><br><span class="line"><span class="comment">;umask=022                     ; umask for process (default None)</span></span><br><span class="line"><span class="comment">;priority=-1                   ; the relative start priority (default -1)</span></span><br><span class="line"><span class="comment">;autostart=true                ; start at supervisord start (default: true)</span></span><br><span class="line"><span class="comment">;startsecs=1                   ; # of secs prog must stay up to be running (def. 1)</span></span><br><span class="line"><span class="comment">;startretries=3                ; max # of serial start failures when starting (default 3)</span></span><br><span class="line"><span class="comment">;autorestart=unexpected        ; autorestart if exited after running (def: unexpected)</span></span><br><span class="line"><span class="comment">;exitcodes=0                   ; 'expected' exit codes used with autorestart (default 0)</span></span><br><span class="line"><span class="comment">;stopsignal=QUIT               ; signal used to kill process (default TERM)</span></span><br><span class="line"><span class="comment">;stopwaitsecs=10               ; max num secs to wait b4 SIGKILL (default 10)</span></span><br><span class="line"><span class="comment">;stopasgroup=false             ; send stop signal to the UNIX process group (default false)</span></span><br><span class="line"><span class="comment">;killasgroup=false             ; SIGKILL the UNIX process group (def false)</span></span><br><span class="line"><span class="comment">;user=chrism                   ; setuid to this UNIX account to run the program</span></span><br><span class="line"><span class="comment">;redirect_stderr=false         ; redirect_stderr=true is not allowed for eventlisteners</span></span><br><span class="line"><span class="comment">;stdout_logfile=/a/path        ; stdout log path, NONE for none; default AUTO</span></span><br><span class="line"><span class="comment">;stdout_logfile_maxbytes=1MB   ; max # logfile bytes b4 rotation (default 50MB)</span></span><br><span class="line"><span class="comment">;stdout_logfile_backups=10     ; # of stdout logfile backups (0 means none, default 10)</span></span><br><span class="line"><span class="comment">;stdout_events_enabled=false   ; emit events on stdout writes (default false)</span></span><br><span class="line"><span class="comment">;stdout_syslog=false           ; send stdout to syslog with process name (default false)</span></span><br><span class="line"><span class="comment">;stderr_logfile=/a/path        ; stderr log path, NONE for none; default AUTO</span></span><br><span class="line"><span class="comment">;stderr_logfile_maxbytes=1MB   ; max # logfile bytes b4 rotation (default 50MB)</span></span><br><span class="line"><span class="comment">;stderr_logfile_backups=10     ; # of stderr logfile backups (0 means none, default 10)</span></span><br><span class="line"><span class="comment">;stderr_events_enabled=false   ; emit events on stderr writes (default false)</span></span><br><span class="line"><span class="comment">;stderr_syslog=false           ; send stderr to syslog with process name (default false)</span></span><br><span class="line"><span class="comment">;environment=A="1",B="2"       ; process environment additions</span></span><br><span class="line"><span class="comment">;serverurl=AUTO                ; override serverurl computation (childutils)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">; The sample group section below shows all possible group values.  Create one</span></span><br><span class="line"><span class="comment">; or more 'real' group: sections to create "heterogeneous" process groups.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">;[group:thegroupname]</span></span><br><span class="line"><span class="comment">;programs=progname1,progname2  ; each refers to 'x' in [program:x] definitions</span></span><br><span class="line"><span class="comment">;priority=999                  ; the relative start priority (default 999)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">; The [include] section can just contain the "files" setting.  This</span></span><br><span class="line"><span class="comment">; setting can list multiple files (separated by whitespace or</span></span><br><span class="line"><span class="comment">; newlines).  It can also contain wildcards.  The filenames are</span></span><br><span class="line"><span class="comment">; interpreted as relative to this file.  Included files *cannot*</span></span><br><span class="line"><span class="comment">; include files themselves.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">;[include]</span></span><br><span class="line"><span class="comment">;files = relative/directory/*.ini</span></span><br></pre></td></tr></table></figure>
+
+</div></div>
+<p>为了方便查看配置，这里只写入没有被注释掉的配置项到配置文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo_supervisord_conf |grep -v <span class="string">'^;'</span> |uniq &gt; /etc/supervisord.conf</span><br><span class="line">cat /etc/supervisord.conf</span><br></pre></td></tr></table></figure>
+<p>以下是配置文件内容：</p>
+<pre><code>[unix_http_server]
+file=/tmp/supervisor.sock   ; the path to the socket file
+
+[supervisord]
+logfile=/tmp/supervisord.log ; main log file; default $CWD/supervisord.log
+logfile_maxbytes=50MB        ; max main logfile bytes b4 rotation; default 50MB
+logfile_backups=10           ; # of main logfile backups; 0 means none, default 10
+loglevel=info                ; log level; default info; others: debug,warn,trace
+pidfile=/tmp/supervisord.pid ; supervisord pidfile; default supervisord.pid
+nodaemon=false               ; start in foreground if true; default false
+minfds=1024                  ; min. avail startup file descriptors; default 1024
+minprocs=200                 ; min. avail process descriptors;default 200
+
+[rpcinterface:supervisor]
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+
+[supervisorctl]
+serverurl=unix:///tmp/supervisor.sock ; use a unix:// URL  for a unix socket
+</code></pre><h4 id="启动-Supervisord"><a href="#启动-Supervisord" class="headerlink" title="启动 Supervisord"></a>启动 Supervisord</h4><p>如果已经进入 supervisor 的虚拟环境，可以直接使用 supervisord 命令启动：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">supervisord -c /etc/supervisord.conf</span><br></pre></td></tr></table></figure>
+<p>或者没有进入虚拟环境的话，可以使用 supervisord 命令的绝对路径启动：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/venv/supervisor/bin/supervisord -c /etc/supervisord.conf</span><br></pre></td></tr></table></figure>
+<p>可以看到 supervisord 已经运行起来了：</p>
+<pre><code>(supervisor) root@ubuntu:~# pgrep supervisord 
+1990
+(supervisor) root@ubuntu:~# ls /tmp/
+supervisor.sock  supervisord.log  supervisord.pid
+(supervisor) root@ubuntu:~#
+</code></pre><h4 id="管理一个进程"><a href="#管理一个进程" class="headerlink" title="管理一个进程"></a>管理一个进程</h4><p>接下来为 supervisor 添加被它管理的第一个进程。将下面配置项追加到 <code>/etc/supervisord.conf</code>：</p>
+<pre><code>[program:pyhttp]
+command=/usr/bin/python3 -m http.server 8080
+directory=/tmp/
+stdout_logfile=/tmp/pyhttp.log
+autostart=true
+autorestart=true
+</code></pre><p>接着执行 <code>supervisorctl</code> 命令，这个命令是 <code>supervisord</code> 的命令行管理工具，也就是 C/S 架构中的 C 了。进入 supervisorctl 交互命令行后，执行 <code>update</code> 命令会通知 supervisord 进程更新进程管理相关的配置项，这样刚才添加的配置项就生效了：</p>
+<pre><code>(supervisor) root@ubuntu:~# supervisorctl -c /etc/supervisord.conf
+supervisor&gt; update
+pyhttp: added process group
+supervisor&gt; status
+pyhttp                           RUNNING   pid 2107, uptime 0:00:11
+supervisor&gt;
+</code></pre><p>使用 <code>status</code> 命令可以查看当前被 <code>supervisord</code> 管理的所有进程状态，<code>exit</code> 命令可以退出交互模式。</p>
+<p><strong>注意：</strong> 也可以直接使用 <code>supervisorctl update</code> 或者 <code>supervisorctl status</code> 来达到相同的效果而不需要进入 supervisorctl 的交互模式。<br>运行 supervisorctl 命令也应当指定 supervisord 所使用的配置文件。</p>
+<h4 id="进程控制"><a href="#进程控制" class="headerlink" title="进程控制"></a>进程控制</h4><p>通过 <code>stop</code>、<code>start</code>、<code>restart</code> 命令可以对进程进行 <strong>停止</strong>、<strong>启动</strong>、<strong>重启</strong> 的操作：</p>
+<pre><code>(supervisor) root@ubuntu:~# supervisorctl -c /etc/supervisord.conf
+pyhttp                           RUNNING   pid 2107, uptime 0:09:31
+supervisor&gt; stop pyhttp 
+pyhttp: stopped
+supervisor&gt; status
+pyhttp                           STOPPED   Aug 28 06:00 AM
+supervisor&gt; start pyhttp
+pyhttp: started
+supervisor&gt; restart pyhttp
+pyhttp: stopped
+pyhttp: started
+supervisor&gt; status
+pyhttp                           RUNNING   pid 2135, uptime 0:00:03
+supervisor&gt; 
+</code></pre><h4 id="停止-Supervisord"><a href="#停止-Supervisord" class="headerlink" title="停止 Supervisord"></a>停止 Supervisord</h4><p>在停止 supervisord 进程前，我们应该先停止 supervisord 管理的所有子进程，以免造成 supervisord 停止后，子进程没有主动停止被 init 进程接管的现象。下面演示下强制杀掉 supervisord 进程后造成子进程逃逸的现象：</p>
+<pre><code>(supervisor) root@ubuntu:~# netstat -anpt |grep python3
+tcp    0    0 0.0.0.0:8080      0.0.0.0:*       LISTEN    2221/python3        
+(supervisor) root@ubuntu:~# pgrep supervisord 
+2191
+(supervisor) root@ubuntu:~# cat /proc/2221/status |grep PPid
+PPid:    2191
+(supervisor) root@ubuntu:~# kill -9 2191
+(supervisor) root@ubuntu:~# pgrep supervisord 
+(supervisor) root@ubuntu:~# cat /proc/2221/status |grep PPid
+PPid:    1
+(supervisor) root@ubuntu:~# 
+</code></pre><p>supervisor 提供了安全的方式关闭 supervisord 进程，在 supervisorctl 中使用 <code>shutdown</code> 命令即可：</p>
+<pre><code>(supervisor) root@ubuntu:~# supervisorctl -c /etc/supervisord.conf
+pyhttp                           RUNNING   pid 2251, uptime 0:00:10
+supervisor&gt; shutdown 
+Really shut the remote supervisord process down y/N? y
+Shut down
+supervisor&gt; status
+unix:///tmp/supervisor.sock no such file
+supervisor&gt; 
+(supervisor) root@ubuntu:~# netstat -anpt |grep 8080
+(supervisor) root@ubuntu:~#
+</code></pre><h4 id="使用-Web-管理"><a href="#使用-Web-管理" class="headerlink" title="使用 Web 管理"></a>使用 Web 管理</h4><p>Supervisor 提供了一套简易的 Web 页面来远程管理进程，但是由于安全考虑默认是关闭的。将以下配置项加入配置文件则可以开启这个功能：</p>
+<pre><code>[inet_http_server]
+port=0.0.0.0:9001
+username=admin
+password=123456
+</code></pre><p>服务监听在 <code>0.0.0.0:9001</code>，登录用户名为 <code>admin</code>，密码为 <code>123456</code>。接着重启 supervisord 进程：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">kill</span> -HUP `pgrep supervisord`</span><br></pre></td></tr></table></figure>
+<p>向 supervisord 进程发送 <code>HUP</code> 信号会通知进程重新初始化，supervisord 会重新加载配置文件，已经启动的子进程会重启！还有一点需要注意，<code>pgrep</code> 命令会列出所有的 supervisord 进程，如果主机上正运行着多个 supervisord 实例，这会触发所有 supervisord 重新初始化！</p>
+<pre><code>(supervisor) root@ubuntu:~# netstat -anpt |grep python3
+tcp    0   0 0.0.0.0:9001        0.0.0.0:*        LISTEN     2264/python3        
+tcp    0   0 0.0.0.0:8080        0.0.0.0:*        LISTEN     2644/python3        
+(supervisor) root@ubuntu:~# kill -HUP `pgrep supervisord`
+(supervisor) root@ubuntu:~# netstat -anpt |grep python3
+tcp    0   0 0.0.0.0:9001        0.0.0.0:*        LISTEN     2264/python3        
+tcp    0   0 0.0.0.0:8080        0.0.0.0:*        LISTEN     2650/python3    
+</code></pre><p>可以看到，当我又一次重启 supervisord 后，监听 8080 端口的 python3 进程的 PID 发生了变化，而 supervisord 的没有。</p>
+<p>接着通过浏览器访问 supervisord 的 Web 页面：</p>
+<p><img src="/uploads/2019/supervisor/w73siq9x9109l2qg.png" alt></p>
+<p>我们可以通过 Web 页面对 supervisord 做一些简单的操作。</p>
+<p><strong>注意：</strong> 生产环境请勿开启此项，会有安全隐患。</p>
+<h3 id="命令行程序"><a href="#命令行程序" class="headerlink" title="命令行程序"></a>命令行程序</h3><blockquote>
+<p>supervisor 安装完毕后会提供四个命令行工具：<code>supervisord</code>、<code>supervisorctl</code>、<code>echo_supervisord_conf</code>、<code>pidproxy</code>。下面对这些命令行工具进行详细说明。</p>
+</blockquote>
+<h4 id="supervisord"><a href="#supervisord" class="headerlink" title="supervisord"></a>supervisord</h4><h5 id="命令帮助"><a href="#命令帮助" class="headerlink" title="命令帮助"></a>命令帮助</h5><p>这个就是 supervisor 最重要的进程了，这个命令会在后台启动一个守护进程，对子进程的管理实际上就是通过这个进程。执行 <code>supervisord --help</code> 可以看到此命令的所有参数：</p>
+<pre><code>(supervisor) root@ubuntu:~# supervisord --help
+supervisord -- run a set of applications as daemons.
+
+Usage: /data/venv/supervisor/bin/supervisord [options]
+
+Options:
+-c/--configuration FILENAME -- configuration file path (searches if not given)
+-n/--nodaemon -- run in the foreground (same as &apos;nodaemon=true&apos; in config file)
+-h/--help -- print this usage message and exit
+-v/--version -- print supervisord version number and exit
+-u/--user USER -- run supervisord as this user (or numeric uid)
+-m/--umask UMASK -- use this umask for daemon subprocess (default is 022)
+-d/--directory DIRECTORY -- directory to chdir to when daemonized
+-l/--logfile FILENAME -- use FILENAME as logfile path
+-y/--logfile_maxbytes BYTES -- use BYTES to limit the max size of logfile
+-z/--logfile_backups NUM -- number of backups to keep when max bytes reached
+-e/--loglevel LEVEL -- use LEVEL as log level (debug,info,warn,error,critical)
+-j/--pidfile FILENAME -- write a pid file for the daemon process to FILENAME
+-i/--identifier STR -- identifier used for this instance of supervisord
+-q/--childlogdir DIRECTORY -- the log directory for child process logs
+-k/--nocleanup --  prevent the process from performing cleanup (removal of
+                old automatic child log files) at startup.
+-a/--minfds NUM -- the minimum number of file descriptors for start success
+-t/--strip_ansi -- strip ansi escape codes from process output
+--minprocs NUM  -- the minimum number of processes available for start success
+--profile_options OPTIONS -- run supervisord under profiler and output
+                            results based on OPTIONS, which  is a comma-sep&apos;d
+                            list of &apos;cumulative&apos;, &apos;calls&apos;, and/or &apos;callers&apos;,
+                            e.g. &apos;cumulative,callers&apos;)
+
+(supervisor) root@ubuntu:~#
+</code></pre><p>由于我们几乎不会通过命令行参数来运行 supervisord，所以各个参数的含义都不再说明，只需要知道通过 <code>-c</code> 或者 <code>--configuration</code> 来指明 supervisord 的配置文件即可。</p>
+<h5 id="信号处理"><a href="#信号处理" class="headerlink" title="信号处理"></a>信号处理</h5><p>当 supervisord 进程接收到不同的信号时，会有不同的反应，我们在外部还可以通过信号来控制 supervisord 的一些行为：</p>
+<ul>
+<li><code>SIGTERM</code>：这个信号也是 kill 命令默认的信号，supervisord 会关闭所有子进程，然后退出。这可能需要几秒钟的时间。</li>
+<li><code>SIGINT</code>：相当于将 supervisord 的进程 <code>Ctrl-C</code> 掉，supervisord 的处理同对 <code>SIGTERM</code> 信号的处理。</li>
+<li><code>SIGQUIT</code>：同对 <code>SIGTERM</code> 信号的处理。</li>
+<li><code>SIGHUP</code>：supervisord 将停止所有进程，然后重新加载配置文件，并启动所有进程。</li>
+<li><code>SIGUSR2</code>：supervisord 将关闭并重新打开主日志文件和子日志文件。</li>
+</ul>
+<h4 id="supervisorctl"><a href="#supervisorctl" class="headerlink" title="supervisorctl"></a>supervisorctl</h4><h5 id="命令帮助-1"><a href="#命令帮助-1" class="headerlink" title="命令帮助"></a>命令帮助</h5><p>这个命令是 supervisord 守护进程的命令行管理工具，我们大多时候都是通过这个命令来管理 supervisord 的。下面是这个命令的帮助：</p>
+<pre><code>(supervisor) root@ubuntu:~# supervisorctl --help
+supervisorctl -- control applications run by supervisord from the cmd line.
+
+Usage: /data/venv/supervisor/bin/supervisorctl [options] [action [arguments]]
+
+Options:
+-c/--configuration FILENAME -- configuration file path (searches if not given)
+-h/--help -- print usage message and exit
+-i/--interactive -- start an interactive shell after executing commands
+-s/--serverurl URL -- URL on which supervisord server is listening
+    (default &quot;http://localhost:9001&quot;).
+-u/--username USERNAME -- username to use for authentication with server
+-p/--password PASSWORD -- password to use for authentication with server
+-r/--history-file -- keep a readline history (if readline is available)
+
+action [arguments] -- see below
+
+Actions are commands like &quot;tail&quot; or &quot;stop&quot;.  If -i is specified or no action is
+specified on the command line, a &quot;shell&quot; interpreting actions typed
+interactively is started.  Use the action &quot;help&quot; to find out about available
+actions.
+</code></pre><h5 id="连接-supervisord"><a href="#连接-supervisord" class="headerlink" title="连接 supervisord"></a>连接 supervisord</h5><p>supervisorctl 默认是通过 unix 套接字跟 supervisord 通信，也就是用之前使用 supervisorctl 的方式。如果 supervisord 开启了远程监听（web访问），则 supervisorctl 也可以远程连接其他主机的 supervisor，连接方式主要是以下两种：</p>
+<pre><code>(supervisor) root@ubuntu:~# supervisorctl -s http://10.0.1.15:9001 -u admin -p 123456 status
+pyhttp                           RUNNING   pid 2728, uptime 0:00:48
+(supervisor) root@ubuntu:~# supervisorctl -s http://10.0.1.15:9001 
+Server requires authentication
+Username:admin
+Password:
+
+pyhttp                           RUNNING   pid 2728, uptime 0:03:48
+supervisor&gt; 
+(supervisor) root@ubuntu:~#
+</code></pre><p>使用 <code>-s</code> 指定服务监听地址，<code>-u</code> 提供登录的用户名，<code>-p</code> 提供密码，如果是进入交互模式，没有在命令行提供用户名和密码，supervisorctl 则会询问。</p>
+<h5 id="控制命令"><a href="#控制命令" class="headerlink" title="控制命令"></a>控制命令</h5><p>除了最常用的 <code>stop</code>、<code>start</code>、<code>restart</code> 命令，supervisorctl 还支持非常多的控制命令，通过 <code>help</code> 命令可以获取所有支持的命令：</p>
+<pre><code>(supervisor) root@ubuntu:~# supervisorctl -c /etc/supervisord.conf 
+pyhttp                           RUNNING   pid 2728, uptime 0:36:59
+supervisor&gt; help
+
+default commands (type help &lt;topic&gt;):
+=====================================
+add    exit      open  reload  restart   start   tail   
+avail  fg        pid   remove  shutdown  status  update 
+clear  maintail  quit  reread  signal    stop    version
+
+supervisor&gt;
+</code></pre><p>通过 <code>help &lt;command&gt;</code> 可以查看命令帮助：</p>
+<pre><code>supervisor&gt; help help
+help        Print a list of available actions
+help &lt;action&gt;    Print help for &lt;action&gt;
+supervisor&gt;
+</code></pre><p>下面对所以支持的命令进行一一介绍</p>
+<h6 id="update"><a href="#update" class="headerlink" title="update"></a>update</h6><blockquote>
+<p>重新读取配置文件</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>update</code>            根据配置文件的改动添加或移除项目，将会重启或停止受影响的项目</li>
+<li><code>update all</code>        和 update 一样，根据配置文件的改动添加或移除项目，将会重启或停止受影响的项目</li>
+<li><code>update &lt;gname&gt; [...]</code>    更新指定的组，可以提供多个组名</li>
+</ul>
+<p>示例：</p>
+<p>为了演示效果，我们修改配置文件，添加一个进程，并为它们创建一个进程组。将以下配置项写入配置文件，并更新 supervisord：</p>
+<pre><code>[program:pyhttp1]
+command=/usr/bin/python3 -m http.server 8081
+directory=/tmp/
+stdout_logfile=/tmp/pyhttp1.log
+
+[program:pyhttp2]
+command=/usr/bin/python3 -m http.server 8082
+directory=/tmp/
+stdout_logfile=/tmp/pyhttp2.log
+
+[group:simpleHttp]
+programs=pyhttp1,pyhttp2
+</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">supervisorctl -c /etc/supervisord.conf update</span><br></pre></td></tr></table></figure>
+<pre><code>(supervisor) root@ubuntu:~# supervisorctl -c /etc/supervisord.conf update
+simpleHttp: added process group
+</code></pre><p><strong>注意</strong>：update 方法不会影响没有修改配置的进程，所以重复执行也是安全的</p>
+<h6 id="status"><a href="#status" class="headerlink" title="status"></a>status</h6><blockquote>
+<p>查看进程的状态信息</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>status</code>：获取所有进程状态信息</li>
+<li><code>status &lt;name&gt;</code>：        获取指定名称的进程状态信息</li>
+<li><code>status &lt;gname&gt;:*</code>：    获取指定进程组名称的所有进程信息</li>
+<li><code>status &lt;name&gt; &lt;name&gt;</code>：    获取指定的多个名称的进程信息</li>
+</ul>
+<p>示例：</p>
+<pre><code>(supervisor) root@ubuntu:~# supervisorctl -c /etc/supervisord.conf 
+pyhttp                           RUNNING   pid 2851, uptime 0:02:20
+simpleHttp:pyhttp1               RUNNING   pid 2860, uptime 0:00:29
+simpleHttp:pyhttp2               RUNNING   pid 2861, uptime 0:00:29
+supervisor&gt; status pyhttp 
+pyhttp                           RUNNING   pid 2851, uptime 0:02:25
+supervisor&gt; status simpleHttp:*
+simpleHttp:pyhttp1               RUNNING   pid 2860, uptime 0:00:39
+simpleHttp:pyhttp2               RUNNING   pid 2861, uptime 0:00:39
+supervisor&gt;
+</code></pre><h6 id="stop"><a href="#stop" class="headerlink" title="stop"></a>stop</h6><blockquote>
+<p>停止进程</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>stop &lt;name&gt;</code>        停止指定名称的进程</li>
+<li><code>stop &lt;gname&gt;:*</code>        停止指定进程组内的所有进程</li>
+<li><code>stop &lt;name&gt; &lt;name&gt;</code>    停止指定的多个进程或进程组</li>
+<li><code>stop all</code>        停止所有进程</li>
+</ul>
+<p>示例：</p>
+<pre><code>supervisor&gt; stop pyhttp
+pyhttp: stopped
+supervisor&gt; stop simpleHttp:*
+simpleHttp:pyhttp1: stopped
+simpleHttp:pyhttp2: stopped
+supervisor&gt; status
+pyhttp                           STOPPED   Aug 28 01:23 PM
+simpleHttp:pyhttp1               STOPPED   Aug 28 01:24 PM
+simpleHttp:pyhttp2               STOPPED   Aug 28 01:24 PM
+supervisor&gt;
+</code></pre><h6 id="start"><a href="#start" class="headerlink" title="start"></a>start</h6><blockquote>
+<p>启动进程</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>start &lt;name&gt;</code>        启动指定名称的进程</li>
+<li><code>start &lt;gname&gt;:*</code>        启动指定进程组内的所有进程</li>
+<li><code>start &lt;name&gt; &lt;name&gt;</code>    启动指定的多个进程或进程组</li>
+<li><code>start all</code>        启动所有进程</li>
+</ul>
+<p>示例：</p>
+<pre><code>supervisor&gt; start pyhttp
+pyhttp: started
+supervisor&gt; start all
+simpleHttp:pyhttp1: started
+simpleHttp:pyhttp2: started
+supervisor&gt; status
+pyhttp                           RUNNING   pid 3351, uptime 0:00:06
+simpleHttp:pyhttp1               RUNNING   pid 3352, uptime 0:00:03
+simpleHttp:pyhttp2               RUNNING   pid 3353, uptime 0:00:03
+supervisor&gt;
+</code></pre><h6 id="restart"><a href="#restart" class="headerlink" title="restart"></a>restart</h6><blockquote>
+<p>重启进程</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>restart &lt;name&gt;</code>        重启指定名称的进程</li>
+<li><code>restart &lt;gname&gt;:*</code>    重启指定进程组内的所有进程</li>
+<li><code>restart &lt;name&gt; &lt;name&gt;</code>    重启指定的多个进程或进程组</li>
+<li><code>restart all</code>        重启所有进程</li>
+</ul>
+<p>示例：</p>
+<pre><code>supervisor&gt; restart all
+pyhttp: stopped
+simpleHttp:pyhttp1: stopped
+simpleHttp:pyhttp2: stopped
+pyhttp: started
+simpleHttp:pyhttp1: started
+simpleHttp:pyhttp2: started
+supervisor&gt;
+</code></pre><h6 id="pid"><a href="#pid" class="headerlink" title="pid"></a>pid</h6><blockquote>
+<p>获取 PID</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>pid</code>            获取 supervisord 的 PID</li>
+<li><code>pid &lt;name&gt;</code>        获取指定名称的进程的 PID</li>
+<li><code>pid all</code>            获取所有进程的 PID</li>
+</ul>
+<p>示例：</p>
+<pre><code>supervisor&gt; pid all
+3357
+3358
+3359
+supervisor&gt; pid
+2727
+supervisor&gt; pid pyhttp 
+3357
+supervisor&gt; 
+</code></pre><h6 id="reload"><a href="#reload" class="headerlink" title="reload"></a>reload</h6><blockquote>
+<p>通知 supervisord 进程重新重新初始化。会关闭所有进程，然后重新读取配置文件后启动进程</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>reload</code>         重启远程的 supervisord</li>
+</ul>
+<p>此命令类似于直接向 supervisord 进程发送 <code>HUP</code> 信号一样，会通知 supervisord 进程重新初始化。为了演示效果，我们修改下进程组 <code>simpleHttp</code> 的成员，将 <code>pyhttp2</code> 换成 <code>pyhttp</code>：</p>
+<pre><code>[group:simpleHttp]
+programs=pyhttp1,pyhttp
+</code></pre><p>示例：</p>
+<pre><code>supervisor&gt; reload
+Really restart the remote supervisord process y/N? y
+Restarted supervisord
+supervisor&gt; status
+pyhttp2                          RUNNING   pid 3502, uptime 0:00:07
+simpleHttp:pyhttp                RUNNING   pid 3504, uptime 0:00:07
+simpleHttp:pyhttp1               RUNNING   pid 3503, uptime 0:00:07
+supervisor&gt;
+</code></pre><p><strong>注意</strong>：生产环境应该尽量避免执行这个命令，因为会重启所有的进程，除非在修改了 supervisord 服务本身的配置项的时候，比如修改了 supervisord 服务监听地址的时候，才需要使用 <code>reload</code> 命令，修改了项目相关配置项的时候 应当使用 <code>update</code> 代替。关于 supervisor 的配置文件，下面会有详细说明。</p>
+<h6 id="remove"><a href="#remove" class="headerlink" title="remove"></a>remove</h6><blockquote>
+<p>移除一个已停止的进程，相当于禁用</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>remove &lt;name&gt; [...]</code>    从当前活跃的配置中，移除指定的进程名或进程组</li>
+</ul>
+<p>示例：</p>
+<pre><code>supervisor&gt; stop pyhttp2
+pyhttp2: stopped
+supervisor&gt; remove pyhttp2 
+pyhttp2: removed process group
+supervisor&gt; status
+simpleHttp:pyhttp                RUNNING   pid 3510, uptime 0:05:42
+simpleHttp:pyhttp1               RUNNING   pid 3509, uptime 0:05:42
+supervisor&gt; 
+</code></pre><p>必须要先停止要移除的进程，移除后再执行 <code>status</code> 被移除的进程就不可见了。</p>
+<h6 id="avail"><a href="#avail" class="headerlink" title="avail"></a>avail</h6><blockquote>
+<p>显示所有已配置的进程</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>avail</code> 显示所有已配置的进程</li>
+</ul>
+<p>示例：</p>
+<pre><code>supervisor&gt; avail 
+simpleHttp:pyhttp                in use    auto      999:999
+simpleHttp:pyhttp1               in use    auto      999:999
+pyhttp2                          avail     auto      999:999
+supervisor&gt;
+</code></pre><p>可以看到所有的进程，包括正在使用的，和可用的。</p>
+<h6 id="add"><a href="#add" class="headerlink" title="add"></a>add</h6><blockquote>
+<p>添加一个被移除后的进程，相当于启用</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>add &lt;name&gt; [...]</code> 从已移除的项目中，重新启用指定的进程名或进程组</li>
+</ul>
+<p>示例：</p>
+<pre><code>supervisor&gt; add pyhttp2
+pyhttp2: added process group
+supervisor&gt; status
+pyhttp2                          RUNNING   pid 3613, uptime 0:00:07
+simpleHttp:pyhttp                RUNNING   pid 3510, uptime 0:11:37
+simpleHttp:pyhttp1               RUNNING   pid 3509, uptime 0:11:37
+supervisor&gt;
+</code></pre><p><strong>注意</strong>：用 update 也会使已禁用的进程重新启用。但是和 <code>add</code> 还是有本质上的区别，如果禁用这个进程后，修改了这个进程的配置文件，用 <code>add</code> 只能启用未修改前这个进程的配置，而 <code>update</code> 则会重新读取新的配置。</p>
+<h6 id="reread"><a href="#reread" class="headerlink" title="reread"></a>reread</h6><blockquote>
+<p>重新读取项目的配置文件</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>reread</code> 重新加载配置文件，但是不会自动执行 add 和 remove</li>
+</ul>
+<p>也就是说，reread 会比 update 柔和，当修改了正在运行的进程的配置项后，它也不会停止被修改的进程。即使添加了新的进程配置项，它也不会主动启动新进程。现在我们修改配置文件，将 <code>pyhttp2</code> 的名称改为 <code>pyhttp3</code>：</p>
+<pre><code>[program:pyhttp3]
+command=/usr/bin/python3 -m http.server 8082
+directory=/tmp/
+stdout_logfile=/tmp/pyhttp2.log
+</code></pre><p>示例：</p>
+<pre><code>supervisor&gt; reread
+pyhttp2: disappeared
+pyhttp3: available
+supervisor&gt; status
+pyhttp2                          RUNNING   pid 3616, uptime 0:01:12
+simpleHttp:pyhttp                RUNNING   pid 3510, uptime 0:24:57
+simpleHttp:pyhttp1               RUNNING   pid 3509, uptime 0:24:57
+supervisor&gt; avail 
+simpleHttp:pyhttp                in use    auto      999:999
+simpleHttp:pyhttp1               in use    auto      999:999
+pyhttp3                          avail     auto      999:999
+supervisor&gt;
+</code></pre><p>可以看到，pyhttp2 进程依然在运行，pyhttp3 只存在于 avail 中。接下来复原配置文件，并执行 update ：</p>
+<pre><code>[program:pyhttp2]
+command=/usr/bin/python3 -m http.server 8082
+directory=/tmp/
+stdout_logfile=/tmp/pyhttp2.log
+</code></pre><h6 id="tail"><a href="#tail" class="headerlink" title="tail"></a>tail</h6><blockquote>
+<p>显示进程的标准输出或错误输出，用法类似于 linux 的 tail 命令</p>
+</blockquote>
+<p>命令格式：<code>tail [-f] &lt;name&gt; [stdout|stderr] (default stdout)</code></p>
+<p>用法：</p>
+<ul>
+<li><code>tail -f &lt;name&gt;</code>        连续的获取指定进程名的标准输出，Ctrl-C 退出。</li>
+<li><code>tail -100 &lt;name&gt;</code>    获取指定进程名的最后 100 个字节的标准输出。</li>
+<li><code>tail &lt;name&gt; stderr</code>    获取指定进程名的最后 1600 个字节的错误输出。</li>
+</ul>
+<p>由于 supervisord 没有获取到 <code>python -m http.server</code> 的输出流，所以 tail 命令看不到任何数据，具体原因我也懒得排查了。。。</p>
+<h6 id="maintail"><a href="#maintail" class="headerlink" title="maintail"></a>maintail</h6><blockquote>
+<p>显示 supervisord 进程的日志，用法和 tail 命令类似</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>maintail -f</code>     连续的获取 supervisord 的日志，Ctrl-C 退出。</li>
+<li><code>maintail -100</code>    获取 supervisord 的日志的最后 100 个字节。</li>
+<li><code>maintail    last</code>  获取 supervisord 的日志的最后 1600 个字节。</li>
+</ul>
+<p>示例：</p>
+<pre><code>supervisor&gt; maintail -100 
+INFO success: pyhttp2 entered RUNNING state, process has stayed up for &gt; than 1 seconds (startsecs)
+</code></pre><h6 id="clear"><a href="#clear" class="headerlink" title="clear"></a>clear</h6><blockquote>
+<p>清理进程日志</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>clear &lt;name&gt;</code>        清理指定进程名的日志文件。</li>
+<li><code>clear &lt;name&gt; &lt;name&gt;</code>    清理指定的多个进程名的日志文件</li>
+<li><code>clear all</code>        清理所有进程的日志文件。</li>
+</ul>
+<p>示例：</p>
+<pre><code>supervisor&gt; clear all
+simpleHttp:pyhttp1: cleared
+simpleHttp:pyhttp: cleared
+pyhttp2: cleared
+supervisor&gt;
+</code></pre><h6 id="version"><a href="#version" class="headerlink" title="version"></a>version</h6><blockquote>
+<p>显示 supervisord 的版本</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>version</code> 显示远程 supervisord 进程的版本。</li>
+</ul>
+<p>示例：</p>
+<pre><code>supervisor&gt; version
+4.0.4
+supervisor&gt;
+</code></pre><h6 id="fg"><a href="#fg" class="headerlink" title="fg"></a>fg</h6><blockquote>
+<p>在前台模式连接一个进程，本质上是连接到了进程的标准输入</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>fg &lt;process&gt;</code> 在前台模式连接一个进程</li>
+</ul>
+<p>首先我们需要先编写一个可以获取标准输入的程序，然后才可以用 fg 命令来做测试。</p>
+<p>编辑 <code>/root/fgtest.py</code> 写入以下内容：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    print(<span class="string">"hello "</span>, input())</span><br></pre></td></tr></table></figure>
+<p>编辑 <code>/etc/supervisord.conf</code> 添加如下内容：</p>
+<pre><code>[program:fgtest]
+command=/usr/bin/python3 /root/fgtest.py
+stdout_logfile=/tmp/fgtest.log
+</code></pre><p>接着更新 supervisord，并测试 fg 命令：</p>
+<pre><code>supervisor&gt; update
+fgtest: added process group
+supervisor&gt; status
+fgtest                           RUNNING   pid 3722, uptime 0:00:06
+pyhttp2                          RUNNING   pid 3699, uptime 0:03:17
+simpleHttp:pyhttp                RUNNING   pid 3701, uptime 0:03:17
+simpleHttp:pyhttp1               RUNNING   pid 3700, uptime 0:03:17
+supervisor&gt; fg fgtest 
+==&gt; Press Ctrl-C to exit &lt;==
+aaa
+hello  aaa
+Exiting foreground
+supervisor&gt; tail fgtest 
+hello  aaa
+
+supervisor&gt;
+</code></pre><p>的确如我们所愿，当我们输入了 <code>aaa</code>，进程成功的回显了 <code>hello aaa</code>，并且 tail 命令也正确的输出了结果。</p>
+<h6 id="signal"><a href="#signal" class="headerlink" title="signal"></a>signal</h6><blockquote>
+<p>给子进程发送信号，类似于 linux 的 kill 命令</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>signal &lt;signal name&gt; &lt;name&gt;</code>        向指定的进程名发送指定的信号</li>
+<li><code>signal &lt;signal name&gt; &lt;gname&gt;:*</code>        向指定的进程组发送指定的信号</li>
+<li><code>signal &lt;signal name&gt; &lt;name&gt; &lt;name&gt;</code>    向指定的多个进程名发送指定的信号</li>
+<li><code>signal &lt;signal name&gt; all</code>        向所有进程发送指定的信号</li>
+</ul>
+<p>linux 可用的信号如下所示：</p>
+<pre><code>root@ubuntu:~# kill -l
+1) SIGHUP     2) SIGINT     3) SIGQUIT     4) SIGILL     5) SIGTRAP
+2) SIGABRT     7) SIGBUS     8) SIGFPE     9) SIGKILL    10) SIGUSR1
+3)  SIGSEGV    12) SIGUSR2    13) SIGPIPE    14) SIGALRM    15) SIGTERM
+4)  SIGSTKFLT    17) SIGCHLD    18) SIGCONT    19) SIGSTOP    20) SIGTSTP
+5)  SIGTTIN    22) SIGTTOU    23) SIGURG    24) SIGXCPU    25) SIGXFSZ
+6)  SIGVTALRM    27) SIGPROF    28) SIGWINCH    29) SIGIO    30) SIGPWR
+7)  SIGSYS    34) SIGRTMIN    35) SIGRTMIN+1    36) SIGRTMIN+2    37) SIGRTMIN+3
+8)  SIGRTMIN+4    39) SIGRTMIN+5    40) SIGRTMIN+6    41) SIGRTMIN+7    42) SIGRTMIN+8
+9)  SIGRTMIN+9    44) SIGRTMIN+10    45) SIGRTMIN+11    46) SIGRTMIN+12    47) SIGRTMIN+13
+10) SIGRTMIN+14    49) SIGRTMIN+15    50) SIGRTMAX-14    51) SIGRTMAX-13    52) SIGRTMAX-12
+11) SIGRTMAX-11    54) SIGRTMAX-10    55) SIGRTMAX-9    56) SIGRTMAX-8    57) SIGRTMAX-7
+12) SIGRTMAX-6    59) SIGRTMAX-5    60) SIGRTMAX-4    61) SIGRTMAX-3    62) SIGRTMAX-2
+13) SIGRTMAX-1    64) SIGRTMAX    
+</code></pre><p>我们前面已经了解到，可以通过给 supervisord 发送 <code>HUP</code>(1) 信号来通知进程重新初始化。平常我们通过 <code>Ctrl-C</code> 来终止程序本质上就是发送 <code>INT</code>(2) 信号给进程。以及最常用的也是 kill 命令默认发出的 <code>TERM</code>(15) 信号，还有六亲不认的 <code>KILL</code>(9) 信号。</p>
+<p>示例：</p>
+<pre><code>supervisor&gt; status fgtest 
+fgtest                           RUNNING   pid 3737, uptime 0:00:36
+supervisor&gt; signal INT fgtest 
+fgtest: signalled
+supervisor&gt; status fgtest 
+fgtest                           RUNNING   pid 3738, uptime 0:00:03
+supervisor&gt; signal 9 fgtest 
+fgtest: signalled
+supervisor&gt; status fgtest 
+fgtest                           STARTING  
+supervisor&gt; status fgtest 
+fgtest                           RUNNING   pid 3739, uptime 0:00:03
+supervisor&gt; 
+</code></pre><p>我们可以通过信号的名称，或者信号的编号来用作发送给进程，可以看到，给进程发送了终止，或者强制杀死的信号后，supervisord 把挂掉的进程重启了！这也是 supervisord 的特性之一。</p>
+<h6 id="help"><a href="#help" class="headerlink" title="help"></a>help</h6><blockquote>
+<p>查看帮助</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>help</code> 列出所有的可用命令</li>
+<li><code>help &lt;command&gt;</code> 查看指定的命令的帮助</li>
+</ul>
+<p>示例：</p>
+<pre><code>supervisor&gt; help 
+
+default commands (type help &lt;topic&gt;):
+=====================================
+add    exit      open  reload  restart   start   tail   
+avail  fg        pid   remove  shutdown  status  update 
+clear  maintail  quit  reread  signal    stop    version
+
+supervisor&gt; help start
+start &lt;name&gt;        Start a process
+start &lt;gname&gt;:*        Start all processes in a group
+start &lt;name&gt; &lt;name&gt;    Start multiple processes or groups
+start all        Start all processes
+supervisor&gt; 
+</code></pre><h6 id="open"><a href="#open" class="headerlink" title="open"></a>open</h6><blockquote>
+<p>连接远程的 supervisord 进程，可以通过 unix 套接字，也可以通过 http 协议。</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>open &lt;url&gt;</code> 连接远程的 supervisord 进程。</li>
+</ul>
+<p>示例：</p>
+<pre><code>supervisor&gt; open http://127.0.0.1:9001
+Server requires authentication
+Username:admin
+Password:
+
+pyhttp2                          RUNNING   pid 3616, uptime 0:33:55
+simpleHttp:pyhttp                RUNNING   pid 3510, uptime 0:57:40
+simpleHttp:pyhttp1               RUNNING   pid 3509, uptime 0:57:40
+supervisor&gt; open unix:///tmp/supervisor.sock
+pyhttp2                          RUNNING   pid 3616, uptime 0:34:58
+simpleHttp:pyhttp                RUNNING   pid 3510, uptime 0:58:43
+simpleHttp:pyhttp1               RUNNING   pid 3509, uptime 0:58:43
+supervisor&gt;
+</code></pre><h6 id="quit"><a href="#quit" class="headerlink" title="quit"></a>quit</h6><blockquote>
+<p>退出当前 supervisorctl 交互界面。</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>quit</code> 退出 supervisorctl 交互。</li>
+</ul>
+<p>示例：</p>
+<pre><code>supervisor&gt; quit
+
+(supervisor) root@ubuntu:~#
+</code></pre><h6 id="exit"><a href="#exit" class="headerlink" title="exit"></a>exit</h6><blockquote>
+<p>退出当前 supervisorctl 交互界面，同 quit。</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>exit</code> 退出 supervisorctl 交互。</li>
+</ul>
+<p>示例：</p>
+<pre><code>supervisor&gt; exit
+
+(supervisor) root@ubuntu:~#
+</code></pre><h6 id="shutdown"><a href="#shutdown" class="headerlink" title="shutdown"></a>shutdown</h6><blockquote>
+<p>关闭 supervisord 以及所有正在被管理的子进程。</p>
+</blockquote>
+<p>用法：</p>
+<ul>
+<li><code>shutdown</code> 关闭远程 supervisord 进程。</li>
+</ul>
+<p>示例：</p>
+<pre><code>supervisor&gt; shutdown 
+Really shut the remote supervisord process down y/N? y
+Shut down
+supervisor&gt;
+supervisor&gt; status
+unix:///tmp/supervisor.sock no such file
+supervisor&gt;
+</code></pre><h4 id="echo-supervisord-conf"><a href="#echo-supervisord-conf" class="headerlink" title="echo_supervisord_conf"></a>echo_supervisord_conf</h4><p>这个命令很简单，就是打印 <code>supervisord.conf</code> 的模板示例。</p>
+<h4 id="pidproxy"><a href="#pidproxy" class="headerlink" title="pidproxy"></a>pidproxy</h4><p>对于一些启动比较特殊的服务，例如 <code>mysqld</code>，当我们启动 <code>mysqld</code> 的时候，通常执行的是 <code>mysqld_safe</code> 脚本，然后它再去调用 <code>mysqld</code> 程序来启动服务。</p>
+<p>supervisord 是通过给进程发送信号的方式来关闭程序的，但是 supervisord 只能获取 <code>mysqld_safe</code> 的 PID，而 <code>mysqld_safe</code> 会忽略进程退出相关的信号，只有它的子进程 <code>mysqld</code> 才会处理信号，所以如果使用 supervisord 来管理 <code>mysqld</code>，就需要让 supervisord 知道 <code>mysqld</code> 进程的实际 PID。</p>
+<p>幸运的是，大多数进程启动后，都会创建一个 <code>.pid</code> 的文件，文件里保存进程的实际 PID，pidproxy 可以帮助我们启动进程后，根据提供的 <code>.pid</code> 文件位置来获取实际要控制的进程。</p>
+<p>用法：</p>
+<ul>
+<li><code>pidproxy &lt;pidfile name&gt; &lt;command&gt; [&lt;cmdarg1&gt; ...]</code></li>
+</ul>
+<p>示例：</p>
+<pre><code>[program：mysqld] 
+command = /data/venv/supervisor/bin/pidproxy /var/run/mysqld.pid mysqld_safe
+</code></pre><h3 id="配置文件详解"><a href="#配置文件详解" class="headerlink" title="配置文件详解"></a>配置文件详解</h3><h4 id="默认配置文件查找"><a href="#默认配置文件查找" class="headerlink" title="默认配置文件查找"></a>默认配置文件查找</h4><p>supervisord 和 supervisorctl 共同使用 <code>supervisord.conf</code> 这个配置文件，如果没有使用 <code>-c</code> 参数指定配置文件的话，程序将依次从以下位置查找并使用找到的第一个配置文件：</p>
+<ol>
+<li><code>./supervisord.conf</code> 当前用户所在路径下的 supervisord.conf 文件。</li>
+<li><code>./etc/supervisord.conf</code> 当前用户所在路径下的 etc/supervisord.conf 文件。</li>
+<li><code>/etc/supervisord.conf</code> 系统绝对路径 /etc/supervisord.conf 文件。</li>
+<li><code>/etc/supervisor/supervisord.conf</code> 系统绝对路径，但是从 3.3.0 版本才开始支持。</li>
+<li><code>../etc/supervisord.conf</code> 相对于程序所在路径的 ../etc/supervisord.conf。</li>
+<li><code>../supervisord.conf</code> 相对于程序所在路径的 ../supervisord.conf。</li>
+</ol>
+<h4 id="配置文件格式"><a href="#配置文件格式" class="headerlink" title="配置文件格式"></a>配置文件格式</h4><p>supervisord.conf 使用 Windows-INI 风格的配置文件。由不同的配置单元，配置单元中通过键值对的方式记录配置信息，格式如下：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[program:pyhttp1]</span></span><br><span class="line"><span class="attr">command</span>=/usr/bin/python3 -m http.server <span class="number">8081</span></span><br><span class="line"><span class="attr">directory</span>=/tmp/</span><br><span class="line"><span class="attr">stdout_logfile</span>=/tmp/pyhttp1.log</span><br><span class="line"></span><br><span class="line"><span class="section">[program:pyhttp2]</span></span><br><span class="line"><span class="attr">command</span>=/usr/bin/python3 -m http.server <span class="number">8082</span></span><br><span class="line"><span class="attr">directory</span>=/tmp/</span><br><span class="line"><span class="attr">stdout_logfile</span>=/tmp/pyhttp2.log</span><br></pre></td></tr></table></figure>
+<p>每一个 <code>[]</code> 开始都表示一个配置单元，直到下一个配置单元为止。在 supervisord.conf 中，配置单元中的值还可以使用 <code>%(ENV_ENVNAME)s</code> 的方式。supervisord 启动的时候，会将其中的值根据对应的环境变量替换成实际的值，例如在配置文件中使用了 <code>%(ENV_ENVNAME)s</code>，则对应环境变量 <code>ENVNAME</code> 的值会替换了配置文件中变量的部分。下面举个例子来看：</p>
+<p>配置文件中追加新的配置项：</p>
+<pre><code>[program:envtest]
+command=/usr/bin/python3 -m http.server 8083
+stdout_logfile=/tmp/%(ENV_LOGFILE)s
+</code></pre><p>因为通过环境变量传递值给 supervisord.conf 的方式，必须保证 supervisord 进程可以继承到这些环境变量，我们在添加 <code>LOGFILE</code> 这个环境变量后必须重新启动 supervisord 进程才可以</p>
+<pre><code>(supervisor) root@ubuntu:~# supervisorctl shutdown
+Shut down
+(supervisor) root@ubuntu:~# env LOGFILE=&quot;log_from_env.log&quot; supervisord -c /etc/supervisord.conf
+(supervisor) root@ubuntu:~# supervisorctl status
+envtest                          RUNNING   pid 4944, uptime 0:00:04
+fgtest                           RUNNING   pid 4945, uptime 0:00:04
+pyhttp2                          RUNNING   pid 4946, uptime 0:00:04
+simpleHttp:pyhttp                RUNNING   pid 4948, uptime 0:00:04
+simpleHttp:pyhttp1               RUNNING   pid 4947, uptime 0:00:04
+(supervisor) root@ubuntu:~# ls /tmp/log_from_env.log 
+/tmp/log_from_env.log
+(supervisor) root@ubuntu:~#
+</code></pre><p>我们配置了一个只针对 supervisord 进程生效的环境变量 <code>LOGFILE</code>，可以看到 <code>log_from_env.log</code> 文件被成功读取并替换到配置文件中。</p>
+<h4 id="配置单元"><a href="#配置单元" class="headerlink" title="配置单元"></a>配置单元</h4><blockquote>
+<p>下面详细讲解 supervisord.conf 都支持哪些配置项。</p>
+</blockquote>
+<h5 id="unix-http-server"><a href="#unix-http-server" class="headerlink" title="[unix_http_server]"></a>[unix_http_server]</h5><p>该配置项用于定义 supervisord 监听 UNIX 套接字提供 <code>HTTP/XML-RPC</code> 服务的相关配置。</p>
+<h6 id="file"><a href="#file" class="headerlink" title="file"></a>file</h6><blockquote>
+<p>supervisord 将监听 UNIX 套接字的路径。</p>
+</blockquote>
+<p>默认值：无<br>是否必填：否<br>例子：<code>file = /tmp/supervisor.sock</code></p>
+<h6 id="chmod"><a href="#chmod" class="headerlink" title="chmod"></a>chmod</h6><blockquote>
+<p>设置 UNIX 套接字文件的权限。</p>
+</blockquote>
+<p>默认值：0700<br>是否必填：否<br>例如：<code>chmod = 0777</code></p>
+<h6 id="chown"><a href="#chown" class="headerlink" title="chown"></a>chown</h6><blockquote>
+<p>设置 UNIX 套接字文件的属主和属组。可以是用户名，也可以用冒号分割用户名和组 例如：<code>nobody:nogroup</code>。</p>
+</blockquote>
+<p>默认值：默认使用启动 supervisord 进程的用户名和组。<br>是否必填：否<br>例如：<code>chown= nobody:nogroup</code></p>
+<h6 id="username"><a href="#username" class="headerlink" title="username"></a>username</h6><blockquote>
+<p><code>HTTP/XML-RPC</code> 服务的认证用户名，如果提供，supervisorctl 则需要用户认证才可连接。</p>
+</blockquote>
+<p>默认值：无<br>是否必填：否<br>例如：<code>username = admin</code></p>
+<h6 id="password"><a href="#password" class="headerlink" title="password"></a>password</h6><blockquote>
+<p><code>HTTP/XML-RPC</code> 服务的认证密码。可以是明文密码，也可以使用密码经过 sha-1 哈希后的值，需要用 <code>{SHA}</code> 标识是一个哈希串，例如： <code>{SHA}82ab876d1387bfafe46cc1c8a2ef074eae50cb1d</code> </p>
+</blockquote>
+<p>默认值：无<br>是否必填：否<br>例如：<code>password = password</code> 或者 <code>password = {SHA}5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8</code></p>
+<h5 id="inet-http-server"><a href="#inet-http-server" class="headerlink" title="[inet_http_server]"></a>[inet_http_server]</h5><p>该项用于定义 supervisord 监听 TCP 套接字提供 <code>HTTP/XML-RPC</code> 服务的相关配置。启动此监听后 supervisord 可以通过网络来管理和控制。默认 supervisord 不会启动 TCP 的监听，因为这非常的不安全。</p>
+<h6 id="port"><a href="#port" class="headerlink" title="port"></a>port</h6><blockquote>
+<p>监听的地址和端口</p>
+</blockquote>
+<p>默认值：如果有 <code>[inet_http_server]</code> 配置项则必填<br>是否必填：否<br>例如：<code>port = 127.0.0.1:9001</code></p>
+<h6 id="username-1"><a href="#username-1" class="headerlink" title="username"></a>username</h6><blockquote>
+<p><code>HTTP/XML-RPC</code> 服务的认证用户名，如果提供，supervisorctl 则需要用户认证才可连接。</p>
+</blockquote>
+<p>默认值：无<br>是否必填：否<br>例如：<code>username = admin</code></p>
+<h6 id="password-1"><a href="#password-1" class="headerlink" title="password"></a>password</h6><blockquote>
+<p><code>HTTP/XML-RPC</code> 服务的认证密码。可以是明文密码，也可以使用密码经过 sha-1 哈希后的值，需要用 <code>{SHA}</code> 标识是一个哈希串，例如： <code>{SHA}82ab876d1387bfafe46cc1c8a2ef074eae50cb1d</code> </p>
+</blockquote>
+<p>默认值：无<br>是否必填：否<br>例如：<code>password = password</code> 或者 <code>password = {SHA}5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8</code></p>
+<h5 id="supervisord-1"><a href="#supervisord-1" class="headerlink" title="[supervisord]"></a>[supervisord]</h5><p>此配置项定义 supervisord 进程的一些配置信息</p>
+<h6 id="logfile"><a href="#logfile" class="headerlink" title="logfile"></a>logfile</h6><blockquote>
+<p>supervisord 进程的日志输出文件。</p>
+</blockquote>
+<p>默认值：当前目录下的 <code>supervisord.log</code> 文件<br>是否必填：否<br>例如：<code>logfile = /tmp/supervisord.log</code></p>
+<p><strong>注意</strong>：如果 logfile 的值是特殊文件，比如 <code>/dev/stdout</code> 则必须设置 <code>logfile_maxbytes = 0</code> 来禁止日志轮转。</p>
+<h6 id="logfile-maxbytes"><a href="#logfile-maxbytes" class="headerlink" title="logfile_maxbytes"></a>logfile_maxbytes</h6><blockquote>
+<p>日志超过多大的尺寸将会被分割轮转，如果设置为 0 则表示无限大。</p>
+</blockquote>
+<p>默认值：50MB<br>是否必填：否<br>例如：<code>logfile_maxbytes = 50MB</code></p>
+<h6 id="logfile-backups"><a href="#logfile-backups" class="headerlink" title="logfile_backups"></a>logfile_backups</h6><blockquote>
+<p>由于日志文件轮转导致的备份数量，如果设置为 0 则不会对因为轮转被分割的日志文件进行备份。</p>
+</blockquote>
+<p>默认值：10<br>是否必填：否<br>例如：<code>logfile_backups = 10</code></p>
+<h6 id="loglevel"><a href="#loglevel" class="headerlink" title="loglevel"></a>loglevel</h6><blockquote>
+<p>supervisord 进程记录日志的级别，可选值为 <code>critical</code>, <code>error</code>, <code>warn</code>, <code>info</code>, <code>debug</code>, <code>trace</code>, <code>blather</code>。</p>
+</blockquote>
+<p>默认值：info<br>是否必填：否<br>例如：<code>loglevel = info</code></p>
+<h6 id="pidfile"><a href="#pidfile" class="headerlink" title="pidfile"></a>pidfile</h6><blockquote>
+<p>supervisord 进程 pid 文件的位置。</p>
+</blockquote>
+<p>默认值：当前路径下的 <code>supervisord.pid</code><br>是否必填：否<br>例如：<code>pidfile = /tmp/supervisord.pid</code></p>
+<h6 id="umask"><a href="#umask" class="headerlink" title="umask"></a>umask</h6><blockquote>
+<p>supervisord 进程的 umask。将会影响 supervisord 进程创建文件的权限，包括记录子进程日志的文件权限。</p>
+</blockquote>
+<p>默认值：022<br>是否必填：否<br>例如：<code>umask = 022</code></p>
+<h6 id="nodaemon"><a href="#nodaemon" class="headerlink" title="nodaemon"></a>nodaemon</h6><blockquote>
+<p>是否以非守护进程方式运行 supervisord 进程，如果 <code>true</code>，supervisord 进程将在前台运行。</p>
+</blockquote>
+<p>默认值：false<br>是否必填：否<br>例如：<code>nodaemon = false</code></p>
+<h6 id="minfds"><a href="#minfds" class="headerlink" title="minfds"></a>minfds</h6><blockquote>
+<p>supervisord 进程在成功运行之前会调整自身的最小可用文件描述符的数量。</p>
+</blockquote>
+<p>默认值：1024<br>是否必填：否<br>例如：<code>minfds = 1024</code></p>
+<h6 id="minprocs"><a href="#minprocs" class="headerlink" title="minprocs"></a>minprocs</h6><blockquote>
+<p>supervisord 进程在成功运行之前会调整自身的最小进程描述符的数量。</p>
+</blockquote>
+<p>默认值：200<br>是否必填：否<br>例如：<code>minprocs = 200</code></p>
+<h6 id="nocleanup"><a href="#nocleanup" class="headerlink" title="nocleanup"></a>nocleanup</h6><blockquote>
+<p>子进程的 stdout 和 stderr 的输出如果没有配置重定向则默认保存为临时文件（子进程日志路径为 AUTO 的情况），此项配置 supervisord 启动时是否清理这些临时文件。</p>
+</blockquote>
+<p>默认值：false<br>是否必填：否<br>例如：<code>nocleanup = false</code></p>
+<h6 id="childlogdir"><a href="#childlogdir" class="headerlink" title="childlogdir"></a>childlogdir</h6><blockquote>
+<p>当子进程日志路径为 AUTO 的时候，子进程日志文件的存放路径。</p>
+</blockquote>
+<p>默认值：/tmp<br>是否必填：否<br>例如：<code>childlogdir = /tmp</code></p>
+<h6 id="user"><a href="#user" class="headerlink" title="user"></a>user</h6><blockquote>
+<p>在使用 root 用户运行 supervisord 进程时，进程将切换到此配置指定的用户。</p>
+</blockquote>
+<p>默认值：不切换用户<br>是否必填：否<br>例如：<code>user = nobody</code></p>
+<h6 id="directory"><a href="#directory" class="headerlink" title="directory"></a>directory</h6><blockquote>
+<p>运行 supervisord 守护进程时切换到此目录。</p>
+</blockquote>
+<p>默认值：不切换<br>是否必填：否<br>例如：<code>directory = /tmp</code></p>
+<h6 id="strip-ansi"><a href="#strip-ansi" class="headerlink" title="strip_ansi"></a>strip_ansi</h6><blockquote>
+<p>是否清除子进程日志中的 ansi 序列，比如 <code>\n</code>, <code>\t</code> 这些字符。</p>
+</blockquote>
+<p>默认值：false<br>是否必填：否<br>例如：<code>strip_ansi = false</code></p>
+<h6 id="environment"><a href="#environment" class="headerlink" title="environment"></a>environment</h6><blockquote>
+<p>用于设置 supervisord 进程启动时的环境变量。supervisord 进程启动时会从 linux 系统继承当前的环境变量，这里可以设置 supervisord 进程特有的一些环境变量。当 supervisord 进程启动子进程时，子进程也会继承系统的和这些特有的环境变量。</p>
+</blockquote>
+<p>默认值：无<br>是否必填：否<br>例如：<code>environment = LOGFILE=&quot;/tmp/process.log&quot;</code></p>
+<p><strong>注意</strong>：多个环境变量用逗号隔开。</p>
+<h6 id="identifier"><a href="#identifier" class="headerlink" title="identifier"></a>identifier</h6><blockquote>
+<p>supervisord 进程的标识符，主要用于通过 XML_RPC 统一管理时，用于区分不同 supervisord 进程的标识符。</p>
+</blockquote>
+<p>默认值：supervisor<br>是否必填：否<br>例如：<code>identifier = supervisor</code></p>
+<h5 id="supervisorctl-1"><a href="#supervisorctl-1" class="headerlink" title="[supervisorctl]"></a>[supervisorctl]</h5><p>此配置项主要是针对 supervisorctl 的一些配置。</p>
+<h6 id="serverurl"><a href="#serverurl" class="headerlink" title="serverurl"></a>serverurl</h6><blockquote>
+<p>supervisorctl 默认连接的 supervisord 地址，可以是 unix 套接字地址，也可以是 http 地址。</p>
+</blockquote>
+<p>默认值：<code>http://localhost:9001</code><br>是否必填：否<br>例如：<code>serverurl = unix:///tmp/supervisor.sock</code></p>
+<p><strong>注意</strong>：没看错，默认值的确是 http 的连接。</p>
+<h6 id="username-2"><a href="#username-2" class="headerlink" title="username"></a>username</h6><blockquote>
+<p>supervisorctl 认证 <code>HTTP/XML-RPC</code> 服务时使用的用户名。</p>
+</blockquote>
+<p>默认值：无<br>是否必填：否<br>例如：<code>username = admin</code></p>
+<h6 id="password-2"><a href="#password-2" class="headerlink" title="password"></a>password</h6><blockquote>
+<p>supervisorctl 认证 <code>HTTP/XML-RPC</code> 服务时使用的密码，这个值必须是明文的。</p>
+</blockquote>
+<p>默认值：无<br>是否必填：否<br>例如：<code>password = password</code></p>
+<h6 id="prompt"><a href="#prompt" class="headerlink" title="prompt"></a>prompt</h6><blockquote>
+<p>supervisorctl 命令交互页面的提示符，默认是 <code>supervisor</code>，所以进入 supervisorctl 后提示符都是 <code>supervisor&gt;</code>。</p>
+</blockquote>
+<p>默认值：supervisor<br>是否必填：否<br>例如：<code>prompt = supervisor</code></p>
+<h6 id="history-file"><a href="#history-file" class="headerlink" title="history_file"></a>history_file</h6><blockquote>
+<p>保存 supervisorctl 命令输入历史的文件，和 shell 的 hisotry 类似。默认是没有开启，开启后我们则可以用过上下键来查找之前执行过的命令。</p>
+</blockquote>
+<p>默认值：没有文件<br>是否必填：否<br>例如：<code>history_file = ~/.sc_history</code></p>
+<h5 id="program-xxx"><a href="#program-xxx" class="headerlink" title="[program:xxx]"></a>[program:xxx]</h5><p>这个配置项就是定义子进程的配置了，<code>[program:xxx]</code> 中的 <code>xxx</code> 可以是任意名字。</p>
+<h6 id="command"><a href="#command" class="headerlink" title="command"></a>command</h6><blockquote>
+<p>进程的启动命令，进程必须在前台运行模式才可以被 supervisord 进程管理。</p>
+</blockquote>
+<p>默认值：无<br>是否必填：是<br>例如：<code>command = python3 -m http.server</code></p>
+<h6 id="process-name"><a href="#process-name" class="headerlink" title="process_name"></a>process_name</h6><blockquote>
+<p>进程名，如果下面的 numprocs 参数才 1，就不需要管这个参数。它的值默认是 <code>%(program_name)s</code> 也就是 <code>[program:xxx]</code> 中的 <code>xxx</code>。如果 numprocs 有多个，那不同的进程名就必须是不同的名字了。</p>
+</blockquote>
+<p>默认值：<code>$(program_name)s</code><br>是否必填：否<br>例如：<code>process_name = $(program_name)s</code></p>
+<h6 id="numprocs"><a href="#numprocs" class="headerlink" title="numprocs"></a>numprocs</h6><blockquote>
+<p>supervisord 进程将启动此子进程的多个实例。如果 numprocs 大于 1，则 process_name 的值中必须包含 <code>$(process_num)s</code> 的表达式。</p>
+</blockquote>
+<p>默认值：1<br>是否必填：否<br>例如：<code>numprocs = 1</code></p>
+<p><strong>备注</strong>：如果 numproces 的值大于 1，配置文件可以这样写：</p>
+<pre><code>[program:fgtest]
+command=/usr/bin/python3 /root/fgtest.py
+stdout_logfile=/tmp/fgtest.log
+process_name = %(program_name)s-%(process_num)s
+numprocs=10
+</code></pre><p>update 后可以看到：</p>
+<pre><code>supervisor&gt; status
+envtest                          RUNNING   pid 8319, uptime 1:18:29
+fgtest:fgtest-0                  RUNNING   pid 8580, uptime 0:00:02
+fgtest:fgtest-1                  RUNNING   pid 8581, uptime 0:00:02
+fgtest:fgtest-2                  RUNNING   pid 8582, uptime 0:00:02
+fgtest:fgtest-3                  RUNNING   pid 8583, uptime 0:00:02
+fgtest:fgtest-4                  RUNNING   pid 8584, uptime 0:00:02
+fgtest:fgtest-5                  RUNNING   pid 8585, uptime 0:00:02
+fgtest:fgtest-6                  RUNNING   pid 8586, uptime 0:00:02
+fgtest:fgtest-7                  RUNNING   pid 8587, uptime 0:00:02
+fgtest:fgtest-8                  RUNNING   pid 8588, uptime 0:00:02
+fgtest:fgtest-9                  RUNNING   pid 8589, uptime 0:00:02
+pyhttp2                          RUNNING   pid 8321, uptime 1:18:29
+simpleHttp:pyhttp                RUNNING   pid 8323, uptime 1:18:29
+simpleHttp:pyhttp1               RUNNING   pid 8322, uptime 1:18:29
+supervisor&gt;
+</code></pre><h6 id="numprocs-start"><a href="#numprocs-start" class="headerlink" title="numprocs_start"></a>numprocs_start</h6><blockquote>
+<p>上面可以看到，<code>%(process_num)s</code> 是从 0 开始计算。这个配置用于更改 <code>%(process_num)s</code> 的偏移量，例如 numproces_start 等于 1，则会生成 <code>fgtest:fgtest-1</code> 到 <code>fgtest:fgtest-10</code>。</p>
+</blockquote>
+<p>默认值：0<br>是否必填：否<br>例如：<code>numprocs_start = 0</code></p>
+<h6 id="priority"><a href="#priority" class="headerlink" title="priority"></a>priority</h6><blockquote>
+<p>进程的优先级，高优先级的程序将最后一个启动和第一个关闭。主要可以用于处理进程之间的依赖关系。</p>
+</blockquote>
+<p>默认值：999<br>是否必填：否<br>例如：<code>priority = 999</code></p>
+<h6 id="autostart"><a href="#autostart" class="headerlink" title="autostart"></a>autostart</h6><blockquote>
+<p>子进程是否随着 supervisord 进程的启动而启动。</p>
+</blockquote>
+<p>默认值：true<br>是否必填：否<br>例如：<code>autostart = true</code></p>
+<h6 id="startsecs"><a href="#startsecs" class="headerlink" title="startsecs"></a>startsecs</h6><blockquote>
+<p>子进程启动多少秒之后，如果状态依然是 RUNNGIN，则我们认为它启动成功了。</p>
+</blockquote>
+<p>默认值：1<br>是否必填：否<br>例如：<code>startsecs = 1</code></p>
+<h6 id="startretries"><a href="#startretries" class="headerlink" title="startretries"></a>startretries</h6><blockquote>
+<p>当进程启动失败后，最大尝试启动的次数。默认是 3 次，当超过 3 次后，supervisord 将把此进程的状态设置为 FAIL。</p>
+</blockquote>
+<p>默认值：3<br>是否必填：否<br>例如：<code>startretries = 3</code></p>
+<h6 id="autorestart"><a href="#autorestart" class="headerlink" title="autorestart"></a>autorestart</h6><blockquote>
+<p>如果进程已处于 RUNNING 状态后进程退出，supervisord 是否应该自动重启子进程。有三种选项：<code>false</code> 表示不自动重启， <code>unexpected</code> 表示只有进程退出码为下面 exitcodes 里定义的退出码时才重启， <code>true</code> 表示总是重启。</p>
+</blockquote>
+<p>默认值：unexpected<br>是否必填：否<br>例如：<code>autorestart = unexpected</code></p>
+<h6 id="exitcodes"><a href="#exitcodes" class="headerlink" title="exitcodes"></a>exitcodes</h6><blockquote>
+<p>进程退出码列表，与 autorestart 配合使用。</p>
+</blockquote>
+<p>默认值：0<br>是否必填：否<br>例如：<code>exitcodes = 0</code> 或者 <code>exitcodes = 0,2</code></p>
+<h6 id="stopsignal"><a href="#stopsignal" class="headerlink" title="stopsignal"></a>stopsignal</h6><blockquote>
+<p>进程停止信号，可以为 <code>TERM</code>, <code>HUP</code>, <code>INT</code>, <code>QUIT</code>, <code>KILL</code>, <code>USR1</code>, <code>USR2</code> 等信号。将执行 stop 命令的时候，supervisord 将用指定的信号杀死进程。</p>
+</blockquote>
+<p>默认值：TERM<br>是否必填：否<br>例如：<code>stopsignal = TERM</code></p>
+<h6 id="stopwaitsecs"><a href="#stopwaitsecs" class="headerlink" title="stopwaitsecs"></a>stopwaitsecs</h6><blockquote>
+<p>向子进程发送 stopsignal 后，到子进程退出，系统返回信息到 supervisord 所等待的时间。如果超时，supervisord 进程将强制杀死子进程。</p>
+</blockquote>
+<p>默认值：10<br>是否必填：否<br>例如：<code>stopwaitsecs = 10</code></p>
+<h6 id="stopasgroup"><a href="#stopasgroup" class="headerlink" title="stopasgroup"></a>stopasgroup</h6><blockquote>
+<p>如果子进程也有子进程，supervisord 仅仅干掉子进程的话，子进程的子进程可能会变成孤儿进程。该选项定义是否把整个子进程组全部停止。该选项发送的是终止信号。</p>
+</blockquote>
+<p>默认值：false<br>是否必填：否<br>例如：<code>stopasgroup = false</code></p>
+<h6 id="killasgroup"><a href="#killasgroup" class="headerlink" title="killasgroup"></a>killasgroup</h6><blockquote>
+<p>与 stopasgroup 道理相同，不过 killasgroup 会强制杀死子进程。</p>
+</blockquote>
+<p>默认值：false<br>是否必填：否<br>例如：<code>killasgroup = false</code></p>
+<h6 id="user-1"><a href="#user-1" class="headerlink" title="user"></a>user</h6><blockquote>
+<p>supervisord 进程启动子进程时，使用哪个用户身份运行子进程。只有 supervisord 进程以 root 用户启动才生效。</p>
+</blockquote>
+<p>默认值：不切换<br>是否必填：否<br>例如：<code>user = user</code></p>
+<p><strong>注意</strong>：supervisord 仅仅使用 <code>setuid</code> 更改用户，并不会处理用户的环境变量，所以不会更改 <code>USER</code>、<code>HOME</code> 等环境变量的值。如果子进程依赖这些环境变量的话，可以通过下面的 environment 选项来配置。</p>
+<h6 id="redirect-stderr"><a href="#redirect-stderr" class="headerlink" title="redirect_stderr"></a>redirect_stderr</h6><blockquote>
+<p>将子进程的错误输出也写入标准输出的日志文件中。</p>
+</blockquote>
+<p>默认值：false<br>是否必填：否<br>例如：<code>redirect_stderr = false</code></p>
+<h6 id="stdout-logfile"><a href="#stdout-logfile" class="headerlink" title="stdout_logfile"></a>stdout_logfile</h6><blockquote>
+<p>将子进程的标准输出写入到指定的文件，如果配置了 redirect_stderr 则错误输出也会写入到这个文件。如果未设置 stdout_logfile 或者此设置的值为 AUTO，supervisord 将自动选择文件位置，并在重启时清理这些文件。如果设置为 NONE，则 supervisord 不会创建任何日志文件。</p>
+</blockquote>
+<p>默认值：AUTO<br>是否必填：否<br>例如：<code>stdout_logfile = /tmp/process.log</code></p>
+<p><strong>注意</strong>：如果将 stdout_logfile 设置为 <code>/dev/stdout</code> 等特殊文件，则必须通过设置 <code>stdout_logfile_maxbytes = 0</code> 来禁用日志轮转。</p>
+<h6 id="stdout-logfile-maxbytes"><a href="#stdout-logfile-maxbytes" class="headerlink" title="stdout_logfile_maxbytes"></a>stdout_logfile_maxbytes</h6><blockquote>
+<p>子进程日志文件在被轮转前最大字节数，将此值设置为 0 表示无限制。</p>
+</blockquote>
+<p>默认值：50MB<br>是否必填：否<br>例如：<code>stdout_logfile_maxbytes = 50MB</code></p>
+<h6 id="stdout-logfile-backups"><a href="#stdout-logfile-backups" class="headerlink" title="stdout_logfile_backups"></a>stdout_logfile_backups</h6><blockquote>
+<p>由于日志文件轮转导致的备份数量，如果设置为 0 则不会对因为轮转被分割的日志文件进行备份。</p>
+</blockquote>
+<p>默认值：10<br>是否必填：否<br>例如：<code>stdout_logfile_backups = 10</code></p>
+<h6 id="stdout-capture-maxbytes"><a href="#stdout-capture-maxbytes" class="headerlink" title="stdout_capture_maxbytes"></a>stdout_capture_maxbytes</h6><blockquote>
+<p>设置捕获模式管道的大小，当值不为 0 的时候，子进程可以从 stdout 发送消息，而 supervisord 可以根据信息发送相应的事件。</p>
+</blockquote>
+<p>默认值：0<br>是否必填：否<br>例如：<code>stdout_capture_maxbytes = 1MB</code></p>
+<h6 id="stdout-events-enabled"><a href="#stdout-events-enabled" class="headerlink" title="stdout_events_enabled"></a>stdout_events_enabled</h6><blockquote>
+<p>当设置为 true，子进程向 stdout 文件描述符写数据的时候，supervisord 将发送 <code>PROCESS_LOG_STDOUT</code> 类型的事件。</p>
+</blockquote>
+<p>默认值：0<br>是否必填：否<br>例如：<code>stdout_events_enabled = 0</code></p>
+<h6 id="stdout-syslog"><a href="#stdout-syslog" class="headerlink" title="stdout_syslog"></a>stdout_syslog</h6><blockquote>
+<p>如果为 true，则子进程标准输出与子进程的名字一同被定向到 syslog。</p>
+</blockquote>
+<p>默认值：false<br>是否必填：否<br>例如：<code>stdout_syslog = false</code></p>
+<h6 id="stderr-logfile"><a href="#stderr-logfile" class="headerlink" title="stderr_logfile"></a>stderr_logfile</h6><blockquote>
+<p><code>redirect_stderr = false</code> 的情况下，子进程的错误输出写入指定的文件。</p>
+</blockquote>
+<p>默认值：AUTO<br>是否必填：否<br>例如：<code>stderr_logfile = /tmp/process-stderr.log</code></p>
+<h6 id="stderr-logfile-maxbytes"><a href="#stderr-logfile-maxbytes" class="headerlink" title="stderr_logfile_maxbytes"></a>stderr_logfile_maxbytes</h6><blockquote>
+<p>作用与 stdout_logfile_maxbytes 相同，只不过作用与子进程的错误输出。</p>
+</blockquote>
+<p>默认值：50MB<br>是否必填：否<br>例如：<code>stderr_logfile_maxbytes = 50MB</code></p>
+<h6 id="stderr-logfile-backups"><a href="#stderr-logfile-backups" class="headerlink" title="stderr_logfile_backups"></a>stderr_logfile_backups</h6><blockquote>
+<p>作用与 stdout_logfile_backups 相同，只不过作用与子进程的错误输出。</p>
+</blockquote>
+<p>默认值：10<br>是否必填：否<br>例如：<code>stderr_logfile_backups = 10</code></p>
+<h6 id="stderr-capture-maxbytes"><a href="#stderr-capture-maxbytes" class="headerlink" title="stderr_capture_maxbytes"></a>stderr_capture_maxbytes</h6><blockquote>
+<p>作用与 stdout_capture_maxbytes 相同，只不过作用与子进程的错误输出。</p>
+</blockquote>
+<p>默认值：0<br>是否必填：否<br>例如：<code>stderr_capture_maxbytes = 1MB</code></p>
+<h6 id="stderr-events-enabled"><a href="#stderr-events-enabled" class="headerlink" title="stderr_events_enabled"></a>stderr_events_enabled</h6><blockquote>
+<p>作用与 stdout_events_enabled 相同，只不过作用与子进程的错误输出。</p>
+</blockquote>
+<p>默认值：0<br>是否必填：否<br>例如：<code>stderr_events_enabled = 0</code></p>
+<h6 id="stderr-syslog"><a href="#stderr-syslog" class="headerlink" title="stderr_syslog"></a>stderr_syslog</h6><blockquote>
+<p>作用与 stdout_syslog 相同，只不过作用与子进程的错误输出。</p>
+</blockquote>
+<p>默认值：false<br>是否必填：否<br>例如：<code>stderr_syslog = false</code></p>
+<h6 id="environment-1"><a href="#environment-1" class="headerlink" title="environment"></a>environment</h6><blockquote>
+<p>用于设置子进程启动时的环境变量。</p>
+</blockquote>
+<p>默认值：无<br>是否必填：否<br>例如：<code>environment = HOME=&quot;/home/user&quot;,USER=&quot;user&quot;</code></p>
+<p><strong>注意</strong>：多个环境变量用逗号隔开，此环境变量是子进程独享的，不与其他进程共享。</p>
+<h6 id="directory-1"><a href="#directory-1" class="headerlink" title="directory"></a>directory</h6><blockquote>
+<p>运行子进程前，会先切换到这个目录。</p>
+</blockquote>
+<p>默认值：继承 supervisord 的目录<br>是否必填：否<br>例如：<code>directory = /tmp</code></p>
+<h6 id="umask-1"><a href="#umask-1" class="headerlink" title="umask"></a>umask</h6><blockquote>
+<p>子进程创建文件的 umask。</p>
+</blockquote>
+<p>默认值：继承 supervisord 的 umask<br>是否必填：否<br>例如：<code>umask = 022</code></p>
+<h6 id="serverurl-1"><a href="#serverurl-1" class="headerlink" title="serverurl"></a>serverurl</h6><blockquote>
+<p>supervisord 将 serverurl 的值通过环境变量传递给子进程，子进程可以通过读取环境变量 <code>SUPERVISOR_SERVER_URL</code> 来获取值。</p>
+</blockquote>
+<p>默认值：AUTO<br>是否必填：否<br>例如：<code>serverurl = AUTO</code></p>
+<h5 id="include"><a href="#include" class="headerlink" title="[include]"></a>[include]</h5><p>此配置项用于定义包含其他配置文件。</p>
+<h6 id="files"><a href="#files" class="headerlink" title="files"></a>files</h6><blockquote>
+<p>定义其他配置文件的路径，可以使用通配符来匹配文件。</p>
+</blockquote>
+<p>默认值：无<br>是否必填：否<br>例如：<code>files = /etc/supervisord.d/*.conf</code></p>
+<p><strong>注意</strong>：我们应该养成良好的习惯，将子进程相关的配置放到 <code>/etc/supervisord.d/</code> 下而不是和 supervisord.conf 放到一起。</p>
+<h5 id="group-xxx"><a href="#group-xxx" class="headerlink" title="[group:xxx]"></a>[group:xxx]</h5><p>进程组相关的配置。<code>[group:xxx]</code> 中的 <code>xxx</code> 是分组名称。</p>
+<h6 id="programs"><a href="#programs" class="headerlink" title="programs"></a>programs</h6><blockquote>
+<p>配置哪些进程属于这个分组</p>
+</blockquote>
+<p>默认值：无<br>是否必填：是<br>例如：<code>programs = bar,foo</code></p>
+<h6 id="priority-1"><a href="#priority-1" class="headerlink" title="priority"></a>priority</h6><blockquote>
+<p>进程组的优先级</p>
+</blockquote>
+<p>默认值：999<br>是否必填：否<br>例如：<code>priority = 999</code></p>
+<h5 id="fcgi-program-xxx"><a href="#fcgi-program-xxx" class="headerlink" title="[fcgi-program:xxx]"></a>[fcgi-program:xxx]</h5><p>提供对 fast-cgi 程序的支持，这里不做过多讲解。</p>
+<h5 id="eventlistener-xxx"><a href="#eventlistener-xxx" class="headerlink" title="[eventlistener:xxx]"></a>[eventlistener:xxx]</h5><p>事件监听器相关配置，地位和 program 一样，也是 supervisord 的子进程，只不过主要功能用于订阅 supervisord 发送的事件，我们可以在事件监听器中做一系列的处理。supervisor 中事件监听相关的用法，后面的章节会详细介绍。</p>
+<p>事件监听器除了支持 program 所有的配置外，还支持以下几个特有的配置</p>
+<h6 id="buffer-size"><a href="#buffer-size" class="headerlink" title="buffer_size"></a>buffer_size</h6><blockquote>
+<p>事件监听器的事件队列缓冲区大小，当事件缓冲区溢出时，将丢弃缓冲区中最旧的事件。</p>
+</blockquote>
+<p>默认值：10<br>是否必填：否<br>例如：<code>buffer_size = 10</code></p>
+<h6 id="events"><a href="#events" class="headerlink" title="events"></a>events</h6><blockquote>
+<p>事件的类型，只有在这里定义了的事件才会被发送给事件的订阅者。</p>
+</blockquote>
+<p>默认值：无<br>是否必填：是<br>例如：<code>events = PROCESS_STATE_STARTING</code></p>
+<h6 id="result-handler"><a href="#result-handler" class="headerlink" title="result_handler"></a>result_handler</h6><blockquote>
+<p>一个 <code>pkg_resources</code> 入口点的字符串解析为 Python 可调用。默认值是 <code>supervisor.dispatchers:default_handler</code>。</p>
+</blockquote>
+<p>默认值：<code>supervisor.dispatchers:default_handler</code><br>是否必填：否<br>例如：<code>result_handler = supervisor.dispatchers:default_handler</code></p>
+<h5 id="rpcinterface-supervisor"><a href="#rpcinterface-supervisor" class="headerlink" title="[rpcinterface:supervisor]"></a>[rpcinterface:supervisor]</h5><p>这个配置项作用与 <code>HTTP/XML-RPC</code>，如果想使用 Web 管理或者 supervisorctl 管理 supervisord，则必须开启此项。如果想添加 RPC 接口来自定义 supervisor 的功能，可以查看官方文档获取更详细的教程。</p>
+<h6 id="supervisor-rpcinterface-factory"><a href="#supervisor-rpcinterface-factory" class="headerlink" title="supervisor.rpcinterface_factory"></a>supervisor.rpcinterface_factory</h6><blockquote>
+<p>RPC 接口的入口工厂函数。</p>
+</blockquote>
+<p>默认值：<code>supervisor.rpcinterface:make_main_rpcinterface</code><br>是否必填：否<br>例如：<code>supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface</code></p>
+<h3 id="子进程状态"><a href="#子进程状态" class="headerlink" title="子进程状态"></a>子进程状态</h3><ul>
+<li><code>STOPPED</code>：通过 stop 命令停止或从未启动过的进程状态。</li>
+<li><code>STARTING</code>：接收到 start 命令进程正在启动中。</li>
+<li><code>RUNNING</code>：进程正在运行。</li>
+<li><code>BACKOFF</code>：进程进入 STARTING 状态后退出太快而无法进入 RUNNING 状态。</li>
+<li><code>STOPPING</code>： 接收到 stop 命令进程正在停止中。</li>
+<li><code>EXITED</code>：进程意外的从 RUNNING 状态退出。</li>
+<li><code>FATAL</code>：程序无法启动成功。</li>
+<li><code>UNKNOWN</code>：未知状态，一般属于 supervisord 进程的错误。</li>
+</ul>
+<h3 id="事件处理"><a href="#事件处理" class="headerlink" title="事件处理"></a>事件处理</h3><blockquote>
+<p>事件是 supervisor 的一个高级特性，常用于被管理的子进程崩溃的时候发送报警等额外操作。</p>
+</blockquote>
+<p>supervisord 会在子进程运行的各各阶段发出不同的事件，只要定义了事件监听器，并订阅相应的事件，就可以在事件触发后对这些事件进行额外的处理。事件监听器是作为 supervisord 的子进程存在，事件通知协议是通过子进程的标准输入和标准输出来通信。supervisord 将特殊格式的字符串通过标准输入传递给子进程，子进程将结果通过标准输出返回给 supervisord。因此 事件监听器可以由任何语言来写，但是 supervisor 为 Python 提供了 <code>supervisor.childutils</code> 模块来简化了通信过程，因此会比其他语言更方便些。</p>
+<h4 id="事件通知消息格式"><a href="#事件通知消息格式" class="headerlink" title="事件通知消息格式"></a>事件通知消息格式</h4><blockquote>
+<p>在编写事件监听器之前我们需要先知道 supervisord 和事件监听器交流的数据格式是什么。</p>
+</blockquote>
+<h5 id="消息-head"><a href="#消息-head" class="headerlink" title="消息 head"></a>消息 head</h5><p>事件通知消息分为两部分 <code>head</code> 和 <code>body</code>。以下是 <code>head</code> 部分的格式样例：</p>
+<pre><code>ver:3.0 server:supervisor serial:15 pool:pyhttp_eventlistener poolserial:2 eventname:PROCESS_STATE_RUNNING len:66
+</code></pre><table>
+<thead>
+<tr>
+<th>键</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ver</td>
+<td>事件协议的版本</td>
+<td>3.0</td>
+</tr>
+<tr>
+<td>server</td>
+<td>supervisord 的标识符</td>
+<td>supervisor</td>
+</tr>
+<tr>
+<td>serial</td>
+<td>事件编号</td>
+<td>15</td>
+</tr>
+<tr>
+<td>pool</td>
+<td>生成此事件的事件侦听器池的名称</td>
+<td>pyhttp_eventlistener</td>
+</tr>
+<tr>
+<td>poolserial</td>
+<td>事件池的编号</td>
+<td>2</td>
+</tr>
+<tr>
+<td>eventname</td>
+<td>事件名称</td>
+<td>PROCESS_STATE_RUNNING</td>
+</tr>
+<tr>
+<td>len</td>
+<td>data长度，这个非常重要</td>
+<td>66</td>
+</tr>
+</tbody>
+</table>
+<h5 id="消息-body"><a href="#消息-body" class="headerlink" title="消息 body"></a>消息 body</h5><p>根据 <code>head</code> 中的 <code>len</code> 字段，可以得知 <code>data</code> 的长度，然后通过长度可以读取到完整的 <code>data</code> 内容了。以下是 <code>data</code> 部分示例：</p>
+<pre><code>processname:pyhttp2 groupname:pyhttp2 from_state:STARTING pid:9896
+</code></pre><table>
+<thead>
+<tr>
+<th>键</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processname</td>
+<td>进程名</td>
+<td>pyhttp2</td>
+</tr>
+<tr>
+<td>groupname</td>
+<td>进程组名</td>
+<td>pyhttp2</td>
+</tr>
+<tr>
+<td>from_state</td>
+<td>上一次的进程状态</td>
+<td>STARTING</td>
+</tr>
+<tr>
+<td>pid</td>
+<td>进程ID</td>
+<td>9896</td>
+</tr>
+</tbody>
+</table>
+<h4 id="事件监听器消息通知"><a href="#事件监听器消息通知" class="headerlink" title="事件监听器消息通知"></a>事件监听器消息通知</h4><blockquote>
+<p>事件监听器也有自己的状态和事件需要通知给 supervisord，例如在某个事件监听器正在工作，没法处理新事件时，supervisord 将不会发送通知给这个事件监听器。</p>
+</blockquote>
+<h5 id="事件监听器状态"><a href="#事件监听器状态" class="headerlink" title="事件监听器状态"></a>事件监听器状态</h5><p>事件监听器主要有三种状态：</p>
+<table>
+<thead>
+<tr>
+<th>键</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ACKNOWLEDGED</td>
+<td>事件监听器已确认（接受或拒绝）事件发送</td>
+</tr>
+<tr>
+<td>READY</td>
+<td>事件监听器已就绪</td>
+</tr>
+<tr>
+<td>BUSY</td>
+<td>事件监听器正在工作</td>
+</tr>
+</tbody>
+</table>
+<p>事件监听器首次启动时， supervisord 会自动将其设置为 <code>ACKNOWLEDGED</code> 状态，只有当监听器通过标准输出发送 <code>READY\n</code> 时，supervisord 才会将事件通知给这个监听器，此时监听器将处于 <code>BUSY</code> 状态。直到事件监听器向 supervisord 发送 <code>RESULT 2\nOK</code> 或者 <code>RESULT 2\nFAIL</code> 时，监听器才会重新回到 <code>ACKNOWLEDGED</code> 状态。当监听器再次向 supervisord 发送 <code>READY\n</code> 后才可以继续接收到新的事件。</p>
+<h5 id="事件监听器示例"><a href="#事件监听器示例" class="headerlink" title="事件监听器示例"></a>事件监听器示例</h5><p>编辑 <code>/root/listener.py</code> 写入如下内容：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write_stdout</span><span class="params">(s)</span>:</span></span><br><span class="line">    sys.stdout.write(s)</span><br><span class="line">    sys.stdout.flush()</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">        <span class="comment"># transition from ACKNOWLEDGED to READY</span></span><br><span class="line">        write_stdout(<span class="string">'READY\n'</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># read header line and print it to stderr</span></span><br><span class="line">        line = sys.stdin.readline()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">with</span> open(<span class="string">'event.log'</span>, <span class="string">'a'</span>) <span class="keyword">as</span> f:</span><br><span class="line">            f.write(line)</span><br><span class="line"></span><br><span class="line">        headers = dict([ x.split(<span class="string">':'</span>) <span class="keyword">for</span> x <span class="keyword">in</span> line.split() ])</span><br><span class="line">        data = sys.stdin.read(int(headers[<span class="string">'len'</span>]))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">with</span> open(<span class="string">'event.log'</span>, <span class="string">'a'</span>) <span class="keyword">as</span> f:</span><br><span class="line">            f.write(data)</span><br><span class="line">            f.write(<span class="string">'\n\n'</span>)</span><br><span class="line"></span><br><span class="line">        write_stdout(<span class="string">'RESULT 2\nOK'</span>)</span><br><span class="line">        </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<p>这段代码简单的将从 supervisord 接收到的事件通知写入 event.log 文件，然后继续下一次的接受通知。</p>
+<p>接着将以下配置项追加到 <code>/etc/supervisord.conf</code>：</p>
+<pre><code>[eventlistener:pyhttp_eventlistener]
+command=python3 /root/listener.py
+events=PROCESS_STATE
+</code></pre><p>这个事件监听器订阅了 <code>PROCESS_STATE</code> 事件，这个事件会在子进程状态改变时触发。更新 supervisord：</p>
+<pre><code>(supervisor) root@ubuntu:~# supervisorctl update
+pyhttp_eventlistener: stopped
+pyhttp_eventlistener: updated process group
+(supervisor) root@ubuntu:~# supervisorctl status
+pyhttp2                          RUNNING   pid 9896, uptime 0:55:57
+pyhttp_eventlistener             RUNNING   pid 10056, uptime 0:00:05
+simpleHttp:pyhttp                RUNNING   pid 9889, uptime 0:56:35
+simpleHttp:pyhttp1               RUNNING   pid 9888, uptime 0:56:35
+(supervisor) root@ubuntu:~#
+</code></pre><p>接着我们重启一个子进程，就可以看到 <code>event.log</code> 的内容了：</p>
+<pre><code>(supervisor) root@ubuntu:~# supervisorctl restart simpleHttp:pyhttp
+simpleHttp:pyhttp: stopped
+simpleHttp:pyhttp: started
+(supervisor) root@ubuntu:~# cat event.log 
+ver:3.0 server:supervisor serial:76 pool:pyhttp_eventlistener poolserial:2 eventname:PROCESS_STATE_STOPPING len:67
+processname:pyhttp groupname:simpleHttp from_state:RUNNING pid:9889
+
+ver:3.0 server:supervisor serial:77 pool:pyhttp_eventlistener poolserial:3 eventname:PROCESS_STATE_STOPPED len:68
+processname:pyhttp groupname:simpleHttp from_state:STOPPING pid:9889
+
+ver:3.0 server:supervisor serial:78 pool:pyhttp_eventlistener poolserial:4 eventname:PROCESS_STATE_STARTING len:66
+processname:pyhttp groupname:simpleHttp from_state:STOPPED tries:0
+
+ver:3.0 server:supervisor serial:79 pool:pyhttp_eventlistener poolserial:5 eventname:PROCESS_STATE_RUNNING len:69
+processname:pyhttp groupname:simpleHttp from_state:STARTING pid:10068
+</code></pre><p>日志中记录了 <code>simpleHttp:pyhttp</code> 进程从退出到重启成功过程中所有的事件。</p>
+<p>如果使用 Python 编写监听器，<code>supervisor.childutils</code> 可以更方便的帮助我们处理事件：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> supervisor <span class="keyword">import</span> childutils</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">        headers, payload = childutils.listener.wait(sys.stdin, sys.stdout)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">with</span> open(<span class="string">'event.pro.log'</span>, <span class="string">'a'</span>) <span class="keyword">as</span> f:</span><br><span class="line">            f.write(json.dumps(headers))</span><br><span class="line">        childutils.listener.ok(sys.stdout)</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<p>supervisord 将事件监听器也当作普通子进程管理，所以事件监听器的配置项包含了所有 <code>[program:xxx]</code> 的配置，不过事件监听器配置项必须存在一个 <code>events</code> 的配置用来定义监听器订阅的事件。</p>
+<h4 id="事件类型"><a href="#事件类型" class="headerlink" title="事件类型"></a>事件类型</h4><blockquote>
+<p>以下是可以被订阅的所有事件名和它的作用。</p>
+</blockquote>
+<h5 id="EVENT"><a href="#EVENT" class="headerlink" title="EVENT"></a>EVENT</h5><p>基本事件类型，所有事件的父类，订阅此事件会接收所有的事件类型，但永远不会接收到此事件。</p>
+<h5 id="PROCESS-STATE"><a href="#PROCESS-STATE" class="headerlink" title="PROCESS_STATE"></a>PROCESS_STATE</h5><p>表示进程由一种状态转为另一种状态，订阅者永远不会收到此类型的事件，但是订阅此事件可以接收所有此事件类型的子类。</p>
+<h5 id="PROCESS-STATE-STARTING"><a href="#PROCESS-STATE-STARTING" class="headerlink" title="PROCESS_STATE_STARTING"></a>PROCESS_STATE_STARTING</h5><p>进程状态变成 <code>STARTING</code> 时会触发此事件。父类是 <code>PROCESS_STATE</code>。</p>
+<p>事件内容示例：</p>
+<pre><code>processname:cat groupname:cat from_state:STOPPED tries:0
+</code></pre><h5 id="PROCESS-STATE-RUNNING"><a href="#PROCESS-STATE-RUNNING" class="headerlink" title="PROCESS_STATE_RUNNING"></a>PROCESS_STATE_RUNNING</h5><p>进程状态变成 <code>RUNNING</code> 时会触发此事件。父类是 <code>PROCESS_STATE</code>。</p>
+<p>事件内容示例：</p>
+<pre><code>processname:cat groupname:cat from_state:STARTING pid:2766
+</code></pre><h5 id="PROCESS-STATE-BACKOFF"><a href="#PROCESS-STATE-BACKOFF" class="headerlink" title="PROCESS_STATE_BACKOFF"></a>PROCESS_STATE_BACKOFF</h5><p>进程状态变成 <code>BACKOFF</code> 时会触发此事件，表示进程未成功启动。父类是 <code>PROCESS_STATE</code>。</p>
+<p>事件内容示例：</p>
+<pre><code>processname:cat groupname:cat from_state:STOPPED tries:0
+</code></pre><p>tries 字段表示已经尝试重启的次数。</p>
+<h5 id="PROCESS-STATE-STOPPING"><a href="#PROCESS-STATE-STOPPING" class="headerlink" title="PROCESS_STATE_STOPPING"></a>PROCESS_STATE_STOPPING</h5><p>进程状态变成 <code>STOPPING</code> 时会触发此事件。父类是 <code>PROCESS_STATE</code>。</p>
+<p>事件内容示例：</p>
+<pre><code>processname:cat groupname:cat from_state:STARTING pid:2766
+</code></pre><h5 id="PROCESS-STATE-EXITED"><a href="#PROCESS-STATE-EXITED" class="headerlink" title="PROCESS_STATE_EXITED"></a>PROCESS_STATE_EXITED</h5><p>进程状态变成 <code>EXITED</code> 时会触发此事件。父类是 <code>PROCESS_STATE</code>。</p>
+<p>事件内容示例：</p>
+<pre><code>processname:cat groupname:cat from_state:RUNNING expected:0 pid:2766
+</code></pre><p>expected 字段用来标识进程是否是正常退出，如果是非正常退出，它的值是 0。</p>
+<h5 id="PROCESS-STATE-STOPPED"><a href="#PROCESS-STATE-STOPPED" class="headerlink" title="PROCESS_STATE_STOPPED"></a>PROCESS_STATE_STOPPED</h5><p>进程状态变成 <code>STOPPED</code> 时会触发此事件。父类是 <code>PROCESS_STATE</code>。</p>
+<p>事件内容示例：</p>
+<pre><code>processname:cat groupname:cat from_state:STOPPING pid:2766
+</code></pre><h5 id="PROCESS-STATE-FATAL"><a href="#PROCESS-STATE-FATAL" class="headerlink" title="PROCESS_STATE_FATAL"></a>PROCESS_STATE_FATAL</h5><p>进程状态变成 <code>FATAL</code> 时会触发此事件。父类是 <code>PROCESS_STATE</code>。</p>
+<p>事件内容示例：</p>
+<pre><code>processname:cat groupname:cat from_state:BACKOFF
+</code></pre><h5 id="PROCESS-STATE-UNKNOWN"><a href="#PROCESS-STATE-UNKNOWN" class="headerlink" title="PROCESS_STATE_UNKNOWN"></a>PROCESS_STATE_UNKNOWN</h5><p>进程状态变成 <code>UNKNOWN</code> 时会触发此事件，只有 supervisord 发生错误时才会导致此状态。父类是 <code>PROCESS_STATE</code>。</p>
+<p>事件内容示例：</p>
+<pre><code>processname:cat groupname:cat from_state:BACKOFF
+</code></pre><h5 id="REMOTE-COMMUNICATION"><a href="#REMOTE-COMMUNICATION" class="headerlink" title="REMOTE_COMMUNICATION"></a>REMOTE_COMMUNICATION</h5><p>在 supervisord 的 RPC 接口上调用 <code>supervisor.sendRemoteCommEvent()</code> 方法时触发。父类是 EVENT。</p>
+<p>事件内容示例：</p>
+<pre><code>type:type
+data
+</code></pre><h5 id="PROCESS-LOG"><a href="#PROCESS-LOG" class="headerlink" title="PROCESS_LOG"></a>PROCESS_LOG</h5><p>进程写入 stdout 或 stderr 时触发。只有 <code>stdout_events_enabled</code> 或 <code>stderr_events_enabled</code> 为 true 时且未处于捕获模式才生效。订阅者永远不会收到此类型的事件，但是订阅此事件可以接收所有此事件类型的子类。</p>
+<h5 id="PROCESS-LOG-STDOUT"><a href="#PROCESS-LOG-STDOUT" class="headerlink" title="PROCESS_LOG_STDOUT"></a>PROCESS_LOG_STDOUT</h5><p>表示子进程已经写入了 stdout 文件描述符。</p>
+<p>事件内容示例：</p>
+<pre><code>processname:name groupname:name pid:pid
+data
+</code></pre><h5 id="PROCESS-LOG-STDERR"><a href="#PROCESS-LOG-STDERR" class="headerlink" title="PROCESS_LOG_STDERR"></a>PROCESS_LOG_STDERR</h5><p>表示子进程已经写入了 stderr 文件描述符。</p>
+<p>事件内容示例：</p>
+<pre><code>processname:name groupname:name pid:pid
+data
+</code></pre><h5 id="PROCESS-COMMUNICATION"><a href="#PROCESS-COMMUNICATION" class="headerlink" title="PROCESS_COMMUNICATION"></a>PROCESS_COMMUNICATION</h5><p>只有 <code>stdout_capture_maxbytes</code> 或 <code>stderr_capture_maxbytes</code> 的值不为 0 时，子进程在向 stdout 或者 stderr 中输出 <code>&lt;!--XSUPERVISOR:BEGIN--&gt;</code> 和 <code>&lt;!--XSUPERVISOR:END--&gt;</code> 标签时会触发此类型事件的子类。标签中的内容会被作为事件日志发送给订阅者。</p>
+<h5 id="PROCESS-COMMUNICATION-STDOUT"><a href="#PROCESS-COMMUNICATION-STDOUT" class="headerlink" title="PROCESS_COMMUNICATION_STDOUT"></a>PROCESS_COMMUNICATION_STDOUT</h5><p>子进程通过 stdout 向 supervisord 发送消息。</p>
+<p>例如子进程在 stdout 中输出了 <code>&lt;!--XSUPERVISOR:BEGIN--&gt;message_from:fgtest&lt;!--XSUPERVISOR:END--&gt;</code>，订阅此事件的监听者会收到：</p>
+<pre><code>processname:fgtest groupname:fgtest pid:10902
+message_from:fgtest
+</code></pre><h5 id="PROCESS-COMMUNICATION-STDERR"><a href="#PROCESS-COMMUNICATION-STDERR" class="headerlink" title="PROCESS_COMMUNICATION_STDERR"></a>PROCESS_COMMUNICATION_STDERR</h5><p>子进程通过 stderr 向 supervisord 发送消息。</p>
+<h5 id="SUPERVISOR-STATE-CHANGE"><a href="#SUPERVISOR-STATE-CHANGE" class="headerlink" title="SUPERVISOR_STATE_CHANGE"></a>SUPERVISOR_STATE_CHANGE</h5><p>当 supervisord 进程的状态发送变化时引发的事件类型。订阅者永远不会收到此类型的事件，但是订阅此事件可以接收所有此事件类型的子类。</p>
+<h5 id="SUPERVISOR-STATE-CHANGE-RUNNING"><a href="#SUPERVISOR-STATE-CHANGE-RUNNING" class="headerlink" title="SUPERVISOR_STATE_CHANGE_RUNNING"></a>SUPERVISOR_STATE_CHANGE_RUNNING</h5><p>supervisord 进程启动会发送此事件，事件消息体为空字符串。</p>
+<h5 id="SUPERVISOR-STATE-CHANGE-STOPPING"><a href="#SUPERVISOR-STATE-CHANGE-STOPPING" class="headerlink" title="SUPERVISOR_STATE_CHANGE_STOPPING"></a>SUPERVISOR_STATE_CHANGE_STOPPING</h5><p>supervisord 进程停止会发送此事件，事件消息体为空字符串。</p>
+<h5 id="TICK"><a href="#TICK" class="headerlink" title="TICK"></a>TICK</h5><p>监听者会隔 5、60、360 秒被事件唤醒，订阅者永远不会收到此类型的事件，但是订阅此事件可以接收所有此事件类型的子类。</p>
+<h5 id="TICK-5"><a href="#TICK-5" class="headerlink" title="TICK_5"></a>TICK_5</h5><p>每隔 5 秒会通过此类型事件唤醒监听者。</p>
+<p>事件内容示例：</p>
+<pre><code>when:1201063880
+</code></pre><h5 id="TICK-60"><a href="#TICK-60" class="headerlink" title="TICK_60"></a>TICK_60</h5><p>每隔 60 秒会通过此类型事件唤醒监听者。</p>
+<p>事件内容示例：</p>
+<pre><code>when:1201063880
+</code></pre><h5 id="TICK-3600"><a href="#TICK-3600" class="headerlink" title="TICK_3600"></a>TICK_3600</h5><p>每隔 3600 秒会通过此类型事件唤醒监听者。</p>
+<p>事件内容示例：</p>
+<pre><code>when:1201063880
+</code></pre><h5 id="PROCESS-GROUP"><a href="#PROCESS-GROUP" class="headerlink" title="PROCESS_GROUP"></a>PROCESS_GROUP</h5><p>将进程组从 supervisord 中添加或删除会触发的事件类型。订阅者永远不会收到此类型的事件，但是订阅此事件可以接收所有此事件类型的子类。</p>
+<h5 id="PROCESS-GROUP-ADDED"><a href="#PROCESS-GROUP-ADDED" class="headerlink" title="PROCESS_GROUP_ADDED"></a>PROCESS_GROUP_ADDED</h5><p>添加进程组将会触发这个事件</p>
+<p>事件内容示例：</p>
+<pre><code>groupname:cat
+</code></pre><h5 id="PROCESS-GROUP-REMOVED"><a href="#PROCESS-GROUP-REMOVED" class="headerlink" title="PROCESS_GROUP_REMOVED"></a>PROCESS_GROUP_REMOVED</h5><p>删除进程组将会触发这个事件</p>
+<p>事件内容示例：</p>
+<pre><code>groupname:cat
+</code></pre><h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="配置开机自启-supervisord"><a href="#配置开机自启-supervisord" class="headerlink" title="配置开机自启 supervisord"></a>配置开机自启 supervisord</h3><p>将 <code>/data/venv/supervisor/bin/supervisord -c /etc/supervisord.conf</code> 添加到 <code>/etc/rc.local</code> 即可。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"><i class="fa fa-tag"></i> python</a>
+          
+            <a href="/tags/supervisor/" rel="tag"><i class="fa fa-tag"></i> supervisor</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/31/2018/回调地狱的终结：Pormise & Async/" rel="next" title="回调地狱的终结：Pormise & Async">
+                <i class="fa fa-chevron-left"></i> 回调地狱的终结：Pormise & Async
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/23/2019/LXC Linux系统容器/" rel="prev" title="LXC Linux系统容器">
+                LXC Linux系统容器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="魏云飞">
+            
+              <p class="site-author-name" itemprop="name">魏云飞</p>
+              <p class="site-description motion-element" itemprop="description">帅的人已经醒来 而丑的人还在沉睡</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">61</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/yunfwe" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#系统环境"><span class="nav-number">2.1.</span> <span class="nav-text">系统环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#软件环境"><span class="nav-number">2.2.</span> <span class="nav-text">软件环境</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#教程"><span class="nav-number">3.</span> <span class="nav-text">教程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">3.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#快速开始"><span class="nav-number">3.2.</span> <span class="nav-text">快速开始</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#提供一个配置文件"><span class="nav-number">3.2.1.</span> <span class="nav-text">提供一个配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#启动-Supervisord"><span class="nav-number">3.2.2.</span> <span class="nav-text">启动 Supervisord</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#管理一个进程"><span class="nav-number">3.2.3.</span> <span class="nav-text">管理一个进程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#进程控制"><span class="nav-number">3.2.4.</span> <span class="nav-text">进程控制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#停止-Supervisord"><span class="nav-number">3.2.5.</span> <span class="nav-text">停止 Supervisord</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-Web-管理"><span class="nav-number">3.2.6.</span> <span class="nav-text">使用 Web 管理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令行程序"><span class="nav-number">3.3.</span> <span class="nav-text">命令行程序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#supervisord"><span class="nav-number">3.3.1.</span> <span class="nav-text">supervisord</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#命令帮助"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">命令帮助</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#信号处理"><span class="nav-number">3.3.1.2.</span> <span class="nav-text">信号处理</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#supervisorctl"><span class="nav-number">3.3.2.</span> <span class="nav-text">supervisorctl</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#命令帮助-1"><span class="nav-number">3.3.2.1.</span> <span class="nav-text">命令帮助</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#连接-supervisord"><span class="nav-number">3.3.2.2.</span> <span class="nav-text">连接 supervisord</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#控制命令"><span class="nav-number">3.3.2.3.</span> <span class="nav-text">控制命令</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#update"><span class="nav-number">3.3.2.3.1.</span> <span class="nav-text">update</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#status"><span class="nav-number">3.3.2.3.2.</span> <span class="nav-text">status</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#stop"><span class="nav-number">3.3.2.3.3.</span> <span class="nav-text">stop</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#start"><span class="nav-number">3.3.2.3.4.</span> <span class="nav-text">start</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#restart"><span class="nav-number">3.3.2.3.5.</span> <span class="nav-text">restart</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#pid"><span class="nav-number">3.3.2.3.6.</span> <span class="nav-text">pid</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#reload"><span class="nav-number">3.3.2.3.7.</span> <span class="nav-text">reload</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#remove"><span class="nav-number">3.3.2.3.8.</span> <span class="nav-text">remove</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#avail"><span class="nav-number">3.3.2.3.9.</span> <span class="nav-text">avail</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#add"><span class="nav-number">3.3.2.3.10.</span> <span class="nav-text">add</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#reread"><span class="nav-number">3.3.2.3.11.</span> <span class="nav-text">reread</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#tail"><span class="nav-number">3.3.2.3.12.</span> <span class="nav-text">tail</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#maintail"><span class="nav-number">3.3.2.3.13.</span> <span class="nav-text">maintail</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#clear"><span class="nav-number">3.3.2.3.14.</span> <span class="nav-text">clear</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#version"><span class="nav-number">3.3.2.3.15.</span> <span class="nav-text">version</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#fg"><span class="nav-number">3.3.2.3.16.</span> <span class="nav-text">fg</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#signal"><span class="nav-number">3.3.2.3.17.</span> <span class="nav-text">signal</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#help"><span class="nav-number">3.3.2.3.18.</span> <span class="nav-text">help</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#open"><span class="nav-number">3.3.2.3.19.</span> <span class="nav-text">open</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#quit"><span class="nav-number">3.3.2.3.20.</span> <span class="nav-text">quit</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#exit"><span class="nav-number">3.3.2.3.21.</span> <span class="nav-text">exit</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#shutdown"><span class="nav-number">3.3.2.3.22.</span> <span class="nav-text">shutdown</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#echo-supervisord-conf"><span class="nav-number">3.3.3.</span> <span class="nav-text">echo_supervisord_conf</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pidproxy"><span class="nav-number">3.3.4.</span> <span class="nav-text">pidproxy</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置文件详解"><span class="nav-number">3.4.</span> <span class="nav-text">配置文件详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#默认配置文件查找"><span class="nav-number">3.4.1.</span> <span class="nav-text">默认配置文件查找</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置文件格式"><span class="nav-number">3.4.2.</span> <span class="nav-text">配置文件格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置单元"><span class="nav-number">3.4.3.</span> <span class="nav-text">配置单元</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#unix-http-server"><span class="nav-number">3.4.3.1.</span> <span class="nav-text">[unix_http_server]</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#file"><span class="nav-number">3.4.3.1.1.</span> <span class="nav-text">file</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#chmod"><span class="nav-number">3.4.3.1.2.</span> <span class="nav-text">chmod</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#chown"><span class="nav-number">3.4.3.1.3.</span> <span class="nav-text">chown</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#username"><span class="nav-number">3.4.3.1.4.</span> <span class="nav-text">username</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#password"><span class="nav-number">3.4.3.1.5.</span> <span class="nav-text">password</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#inet-http-server"><span class="nav-number">3.4.3.2.</span> <span class="nav-text">[inet_http_server]</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#port"><span class="nav-number">3.4.3.2.1.</span> <span class="nav-text">port</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#username-1"><span class="nav-number">3.4.3.2.2.</span> <span class="nav-text">username</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#password-1"><span class="nav-number">3.4.3.2.3.</span> <span class="nav-text">password</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#supervisord-1"><span class="nav-number">3.4.3.3.</span> <span class="nav-text">[supervisord]</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#logfile"><span class="nav-number">3.4.3.3.1.</span> <span class="nav-text">logfile</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#logfile-maxbytes"><span class="nav-number">3.4.3.3.2.</span> <span class="nav-text">logfile_maxbytes</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#logfile-backups"><span class="nav-number">3.4.3.3.3.</span> <span class="nav-text">logfile_backups</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#loglevel"><span class="nav-number">3.4.3.3.4.</span> <span class="nav-text">loglevel</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#pidfile"><span class="nav-number">3.4.3.3.5.</span> <span class="nav-text">pidfile</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#umask"><span class="nav-number">3.4.3.3.6.</span> <span class="nav-text">umask</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#nodaemon"><span class="nav-number">3.4.3.3.7.</span> <span class="nav-text">nodaemon</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#minfds"><span class="nav-number">3.4.3.3.8.</span> <span class="nav-text">minfds</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#minprocs"><span class="nav-number">3.4.3.3.9.</span> <span class="nav-text">minprocs</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#nocleanup"><span class="nav-number">3.4.3.3.10.</span> <span class="nav-text">nocleanup</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#childlogdir"><span class="nav-number">3.4.3.3.11.</span> <span class="nav-text">childlogdir</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#user"><span class="nav-number">3.4.3.3.12.</span> <span class="nav-text">user</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#directory"><span class="nav-number">3.4.3.3.13.</span> <span class="nav-text">directory</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#strip-ansi"><span class="nav-number">3.4.3.3.14.</span> <span class="nav-text">strip_ansi</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#environment"><span class="nav-number">3.4.3.3.15.</span> <span class="nav-text">environment</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#identifier"><span class="nav-number">3.4.3.3.16.</span> <span class="nav-text">identifier</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#supervisorctl-1"><span class="nav-number">3.4.3.4.</span> <span class="nav-text">[supervisorctl]</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#serverurl"><span class="nav-number">3.4.3.4.1.</span> <span class="nav-text">serverurl</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#username-2"><span class="nav-number">3.4.3.4.2.</span> <span class="nav-text">username</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#password-2"><span class="nav-number">3.4.3.4.3.</span> <span class="nav-text">password</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#prompt"><span class="nav-number">3.4.3.4.4.</span> <span class="nav-text">prompt</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#history-file"><span class="nav-number">3.4.3.4.5.</span> <span class="nav-text">history_file</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#program-xxx"><span class="nav-number">3.4.3.5.</span> <span class="nav-text">[program:xxx]</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#command"><span class="nav-number">3.4.3.5.1.</span> <span class="nav-text">command</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#process-name"><span class="nav-number">3.4.3.5.2.</span> <span class="nav-text">process_name</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#numprocs"><span class="nav-number">3.4.3.5.3.</span> <span class="nav-text">numprocs</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#numprocs-start"><span class="nav-number">3.4.3.5.4.</span> <span class="nav-text">numprocs_start</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#priority"><span class="nav-number">3.4.3.5.5.</span> <span class="nav-text">priority</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#autostart"><span class="nav-number">3.4.3.5.6.</span> <span class="nav-text">autostart</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#startsecs"><span class="nav-number">3.4.3.5.7.</span> <span class="nav-text">startsecs</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#startretries"><span class="nav-number">3.4.3.5.8.</span> <span class="nav-text">startretries</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#autorestart"><span class="nav-number">3.4.3.5.9.</span> <span class="nav-text">autorestart</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#exitcodes"><span class="nav-number">3.4.3.5.10.</span> <span class="nav-text">exitcodes</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#stopsignal"><span class="nav-number">3.4.3.5.11.</span> <span class="nav-text">stopsignal</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#stopwaitsecs"><span class="nav-number">3.4.3.5.12.</span> <span class="nav-text">stopwaitsecs</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#stopasgroup"><span class="nav-number">3.4.3.5.13.</span> <span class="nav-text">stopasgroup</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#killasgroup"><span class="nav-number">3.4.3.5.14.</span> <span class="nav-text">killasgroup</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#user-1"><span class="nav-number">3.4.3.5.15.</span> <span class="nav-text">user</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#redirect-stderr"><span class="nav-number">3.4.3.5.16.</span> <span class="nav-text">redirect_stderr</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#stdout-logfile"><span class="nav-number">3.4.3.5.17.</span> <span class="nav-text">stdout_logfile</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#stdout-logfile-maxbytes"><span class="nav-number">3.4.3.5.18.</span> <span class="nav-text">stdout_logfile_maxbytes</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#stdout-logfile-backups"><span class="nav-number">3.4.3.5.19.</span> <span class="nav-text">stdout_logfile_backups</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#stdout-capture-maxbytes"><span class="nav-number">3.4.3.5.20.</span> <span class="nav-text">stdout_capture_maxbytes</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#stdout-events-enabled"><span class="nav-number">3.4.3.5.21.</span> <span class="nav-text">stdout_events_enabled</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#stdout-syslog"><span class="nav-number">3.4.3.5.22.</span> <span class="nav-text">stdout_syslog</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#stderr-logfile"><span class="nav-number">3.4.3.5.23.</span> <span class="nav-text">stderr_logfile</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#stderr-logfile-maxbytes"><span class="nav-number">3.4.3.5.24.</span> <span class="nav-text">stderr_logfile_maxbytes</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#stderr-logfile-backups"><span class="nav-number">3.4.3.5.25.</span> <span class="nav-text">stderr_logfile_backups</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#stderr-capture-maxbytes"><span class="nav-number">3.4.3.5.26.</span> <span class="nav-text">stderr_capture_maxbytes</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#stderr-events-enabled"><span class="nav-number">3.4.3.5.27.</span> <span class="nav-text">stderr_events_enabled</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#stderr-syslog"><span class="nav-number">3.4.3.5.28.</span> <span class="nav-text">stderr_syslog</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#environment-1"><span class="nav-number">3.4.3.5.29.</span> <span class="nav-text">environment</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#directory-1"><span class="nav-number">3.4.3.5.30.</span> <span class="nav-text">directory</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#umask-1"><span class="nav-number">3.4.3.5.31.</span> <span class="nav-text">umask</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#serverurl-1"><span class="nav-number">3.4.3.5.32.</span> <span class="nav-text">serverurl</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#include"><span class="nav-number">3.4.3.6.</span> <span class="nav-text">[include]</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#files"><span class="nav-number">3.4.3.6.1.</span> <span class="nav-text">files</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#group-xxx"><span class="nav-number">3.4.3.7.</span> <span class="nav-text">[group:xxx]</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#programs"><span class="nav-number">3.4.3.7.1.</span> <span class="nav-text">programs</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#priority-1"><span class="nav-number">3.4.3.7.2.</span> <span class="nav-text">priority</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#fcgi-program-xxx"><span class="nav-number">3.4.3.8.</span> <span class="nav-text">[fcgi-program:xxx]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#eventlistener-xxx"><span class="nav-number">3.4.3.9.</span> <span class="nav-text">[eventlistener:xxx]</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#buffer-size"><span class="nav-number">3.4.3.9.1.</span> <span class="nav-text">buffer_size</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#events"><span class="nav-number">3.4.3.9.2.</span> <span class="nav-text">events</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#result-handler"><span class="nav-number">3.4.3.9.3.</span> <span class="nav-text">result_handler</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#rpcinterface-supervisor"><span class="nav-number">3.4.3.10.</span> <span class="nav-text">[rpcinterface:supervisor]</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#supervisor-rpcinterface-factory"><span class="nav-number">3.4.3.10.1.</span> <span class="nav-text">supervisor.rpcinterface_factory</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#子进程状态"><span class="nav-number">3.5.</span> <span class="nav-text">子进程状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事件处理"><span class="nav-number">3.6.</span> <span class="nav-text">事件处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#事件通知消息格式"><span class="nav-number">3.6.1.</span> <span class="nav-text">事件通知消息格式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#消息-head"><span class="nav-number">3.6.1.1.</span> <span class="nav-text">消息 head</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#消息-body"><span class="nav-number">3.6.1.2.</span> <span class="nav-text">消息 body</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#事件监听器消息通知"><span class="nav-number">3.6.2.</span> <span class="nav-text">事件监听器消息通知</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#事件监听器状态"><span class="nav-number">3.6.2.1.</span> <span class="nav-text">事件监听器状态</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#事件监听器示例"><span class="nav-number">3.6.2.2.</span> <span class="nav-text">事件监听器示例</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#事件类型"><span class="nav-number">3.6.3.</span> <span class="nav-text">事件类型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#EVENT"><span class="nav-number">3.6.3.1.</span> <span class="nav-text">EVENT</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROCESS-STATE"><span class="nav-number">3.6.3.2.</span> <span class="nav-text">PROCESS_STATE</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROCESS-STATE-STARTING"><span class="nav-number">3.6.3.3.</span> <span class="nav-text">PROCESS_STATE_STARTING</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROCESS-STATE-RUNNING"><span class="nav-number">3.6.3.4.</span> <span class="nav-text">PROCESS_STATE_RUNNING</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROCESS-STATE-BACKOFF"><span class="nav-number">3.6.3.5.</span> <span class="nav-text">PROCESS_STATE_BACKOFF</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROCESS-STATE-STOPPING"><span class="nav-number">3.6.3.6.</span> <span class="nav-text">PROCESS_STATE_STOPPING</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROCESS-STATE-EXITED"><span class="nav-number">3.6.3.7.</span> <span class="nav-text">PROCESS_STATE_EXITED</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROCESS-STATE-STOPPED"><span class="nav-number">3.6.3.8.</span> <span class="nav-text">PROCESS_STATE_STOPPED</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROCESS-STATE-FATAL"><span class="nav-number">3.6.3.9.</span> <span class="nav-text">PROCESS_STATE_FATAL</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROCESS-STATE-UNKNOWN"><span class="nav-number">3.6.3.10.</span> <span class="nav-text">PROCESS_STATE_UNKNOWN</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#REMOTE-COMMUNICATION"><span class="nav-number">3.6.3.11.</span> <span class="nav-text">REMOTE_COMMUNICATION</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROCESS-LOG"><span class="nav-number">3.6.3.12.</span> <span class="nav-text">PROCESS_LOG</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROCESS-LOG-STDOUT"><span class="nav-number">3.6.3.13.</span> <span class="nav-text">PROCESS_LOG_STDOUT</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROCESS-LOG-STDERR"><span class="nav-number">3.6.3.14.</span> <span class="nav-text">PROCESS_LOG_STDERR</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROCESS-COMMUNICATION"><span class="nav-number">3.6.3.15.</span> <span class="nav-text">PROCESS_COMMUNICATION</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROCESS-COMMUNICATION-STDOUT"><span class="nav-number">3.6.3.16.</span> <span class="nav-text">PROCESS_COMMUNICATION_STDOUT</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROCESS-COMMUNICATION-STDERR"><span class="nav-number">3.6.3.17.</span> <span class="nav-text">PROCESS_COMMUNICATION_STDERR</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SUPERVISOR-STATE-CHANGE"><span class="nav-number">3.6.3.18.</span> <span class="nav-text">SUPERVISOR_STATE_CHANGE</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SUPERVISOR-STATE-CHANGE-RUNNING"><span class="nav-number">3.6.3.19.</span> <span class="nav-text">SUPERVISOR_STATE_CHANGE_RUNNING</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SUPERVISOR-STATE-CHANGE-STOPPING"><span class="nav-number">3.6.3.20.</span> <span class="nav-text">SUPERVISOR_STATE_CHANGE_STOPPING</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#TICK"><span class="nav-number">3.6.3.21.</span> <span class="nav-text">TICK</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#TICK-5"><span class="nav-number">3.6.3.22.</span> <span class="nav-text">TICK_5</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#TICK-60"><span class="nav-number">3.6.3.23.</span> <span class="nav-text">TICK_60</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#TICK-3600"><span class="nav-number">3.6.3.24.</span> <span class="nav-text">TICK_3600</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROCESS-GROUP"><span class="nav-number">3.6.3.25.</span> <span class="nav-text">PROCESS_GROUP</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROCESS-GROUP-ADDED"><span class="nav-number">3.6.3.26.</span> <span class="nav-text">PROCESS_GROUP_ADDED</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROCESS-GROUP-REMOVED"><span class="nav-number">3.6.3.27.</span> <span class="nav-text">PROCESS_GROUP_REMOVED</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">4.</span> <span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置开机自启-supervisord"><span class="nav-number">4.1.</span> <span class="nav-text">配置开机自启 supervisord</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">魏云飞</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">713k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+    <span title="站点总阅读时长">11:53</span>
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.0.4</div>
+<div class="BbeiAn-info"">
+  渝ICP备 -
+  <a href="http://www.beian.miit.gov.cn/">18019763号</a>
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.json";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<script>
+var OriginTitile = document.title;
+ var titleTime;
+ document.addEventListener('visibilitychange', function () {
+     if (document.hidden) {
+         $('[rel="icon"]').attr('href', "/img/TEP.ico");
+         document.title = '╭(°A°`)╮ 页面崩溃啦 ~ ';
+         clearTimeout(titleTime);
+     }
+     else {
+         $('[rel="icon"]').attr('href', "/favicon.ico");
+         document.title = '(ฅ>ω<*ฅ) 噫又好了~' + OriginTitile;
+         titleTime = setTimeout(function () {
+             document.title = OriginTitile;
+         }, 2000);
+     }
+ });
+</script>
+</html>
